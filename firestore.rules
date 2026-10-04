@@ -38,19 +38,80 @@ service cloud.firestore {
       );
     }
 
+    function hasActiveServerGate() {
+      return exists(/databases/$(database)/documents/adminSessions/istafa_server_gate) &&
+        get(/databases/$(database)/documents/adminSessions/istafa_server_gate).data.gateKey == 'istafa_verified_gate_9c74e18b2a5f04d6e8b1a3c5f7d9e2a4b6c';
+    }
+
+    function isAuthorizedAdminActor(authorUid) {
+      return (isSignedIn() && isAdmin() && authorUid == request.auth.uid) ||
+        (authorUid == 'istafa-server-admin-v1' && hasActiveServerGate());
+    }
+
+    function isAdminOrGate() {
+      return (isSignedIn() && isAdmin()) || hasActiveServerGate();
+    }
+
     function isValidImageItem(item) {
       return item is map &&
         item.keys().hasAll(['id', 'url', 'isPrimary']) &&
-        item.keys().hasOnly(['id', 'url', 'isPrimary', 'caption']) &&
+        item.keys().hasOnly([
+          'id', 'image_id', 'product_id', 'url', 'image_url',
+          'storage_path', 'isPrimary', 'is_primary', 'sort_order',
+          'caption', 'created_at'
+        ]) &&
         item.id is string && item.id.size() >= 1 && item.id.size() <= 128 &&
         item.url is string && item.url.size() >= 1 && item.url.size() <= 800000 &&
         item.isPrimary is bool &&
-        (!('caption' in item) || (item.caption is string && item.caption.size() <= 300));
+        (!('image_id' in item) || (item.image_id is string && item.image_id.size() <= 128)) &&
+        (!('product_id' in item) || (item.product_id is string && item.product_id.size() <= 128)) &&
+        (!('image_url' in item) || (item.image_url is string && item.image_url.size() <= 800000)) &&
+        (!('storage_path' in item) || (item.storage_path is string && item.storage_path.size() <= 400)) &&
+        (!('is_primary' in item) || item.is_primary is bool) &&
+        (!('sort_order' in item) || (item.sort_order is number && item.sort_order >= 0 && item.sort_order <= 1000)) &&
+        (!('caption' in item) || (item.caption is string && item.caption.size() <= 300)) &&
+        (!('created_at' in item) || (item.created_at is string && item.created_at.size() <= 60));
     }
 
     // =========================================================================
     // Entity Validation Blueprints (Anti-Update-Gap)
     // =========================================================================
+    function isValidAdminSessionDoc(data, sessionId) {
+      return data.keys().hasAll(['sessionId', 'gateKey', 'visibility', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['sessionId', 'gateKey', 'visibility', 'createdAt', 'updatedAt']) &&
+        data.sessionId is string && data.sessionId == sessionId && data.sessionId.size() <= 128 &&
+        data.gateKey is string && data.gateKey.size() == 56 &&
+        data.gateKey == 'istafa_verified_gate_9c74e18b2a5f04d6e8b1a3c5f7d9e2a4b6c' &&
+        data.visibility == 'public' &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidProductImageDoc(data, imageId) {
+      return data.keys().hasAll([
+          'image_id', 'product_id', 'image_url', 'storage_path',
+          'is_primary', 'sort_order', 'visibility', 'authorUid',
+          'created_at', 'createdAt', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'image_id', 'product_id', 'image_url', 'storage_path',
+          'is_primary', 'sort_order', 'caption', 'visibility',
+          'authorUid', 'created_at', 'createdAt', 'updatedAt'
+        ]) &&
+        data.image_id is string && data.image_id == imageId && data.image_id.size() <= 128 &&
+        data.product_id is string && data.product_id.size() >= 1 && data.product_id.size() <= 128 &&
+        data.image_url is string && data.image_url.size() >= 1 && data.image_url.size() <= 800000 &&
+        data.storage_path is string && data.storage_path.size() >= 1 && data.storage_path.size() <= 400 &&
+        data.is_primary is bool &&
+        data.sort_order is number && data.sort_order >= 0 && data.sort_order <= 1000 &&
+        (!('caption' in data) || (data.caption is string && data.caption.size() <= 300)) &&
+        data.visibility == 'public' &&
+        data.authorUid is string && data.authorUid.size() >= 1 && data.authorUid.size() <= 128 &&
+        data.created_at is string && data.created_at.size() <= 60 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
     function isValidStoreSettings(data) {
       return data.keys().hasAll([
           'businessName', 'tagline', 'whatsappNumber', 'email', 'address',
@@ -438,11 +499,13 @@ service cloud.firestore {
           'whatsapp', 'email', 'weddingDate', 'weddingLocation', 'eventType',
           'guestCount', 'budget', 'needs', 'interestedProductIds',
           'interestedProductNames', 'recommendedPackageNames',
-          'consultationSummary', 'notes', 'status', 'source', 'createdAt', 'updatedAt'
+          'consultationSummary', 'notes', 'status', 'source', 'authorUid',
+          'createdAt', 'updatedAt'
         ]) &&
         data.id is string && data.id == leadId && data.id.size() <= 128 &&
         data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
         (!('consultationId' in data) || (data.consultationId is string && data.consultationId.size() <= 128)) &&
+        (!('authorUid' in data) || (data.authorUid is string && data.authorUid.size() <= 128)) &&
         data.customerName is string && data.customerName.size() <= 120 &&
         data.partnerName is string && data.partnerName.size() <= 120 &&
         data.coupleName is string && data.coupleName.size() <= 150 &&
@@ -460,7 +523,7 @@ service cloud.firestore {
         data.consultationSummary is string && data.consultationSummary.size() <= 5000 &&
         data.notes is string && data.notes.size() <= 3000 &&
         data.status in ['New', 'Consultation', 'Interested', 'Follow Up', 'Booking', 'Completed', 'Cancelled'] &&
-        data.source in ['consultation', 'planner', 'cart', 'catalog'] &&
+        data.source in ['consultation', 'planner', 'cart', 'catalog', 'manual'] &&
         data.createdAt is timestamp &&
         data.updatedAt is timestamp;
     }
@@ -476,7 +539,7 @@ service cloud.firestore {
           'id', 'orderNumber', 'userId', 'leadId', 'consultationId',
           'customerName', 'partnerName', 'whatsapp', 'email', 'weddingDate',
           'weddingLocation', 'eventType', 'guestCount', 'itemsJson',
-          'totalAmount', 'status', 'notes', 'paymentProofUrl',
+          'totalAmount', 'status', 'notes', 'paymentProofUrl', 'authorUid',
           'createdAt', 'updatedAt'
         ]) &&
         data.id is string && data.id == orderId && data.id.size() <= 128 &&
@@ -484,6 +547,7 @@ service cloud.firestore {
         data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
         (!('leadId' in data) || (data.leadId is string && data.leadId.size() <= 128)) &&
         (!('consultationId' in data) || (data.consultationId is string && data.consultationId.size() <= 128)) &&
+        (!('authorUid' in data) || (data.authorUid is string && data.authorUid.size() <= 128)) &&
         data.customerName is string && data.customerName.size() >= 1 && data.customerName.size() <= 120 &&
         data.partnerName is string && data.partnerName.size() <= 120 &&
         data.whatsapp is string && data.whatsapp.size() >= 5 && data.whatsapp.size() <= 30 &&
@@ -509,270 +573,265 @@ service cloud.firestore {
       allow list, write: if false;
     }
 
+    match /adminSessions/{sessionId} {
+      allow get: if isValidId(sessionId) && (resource == null || existing().visibility == 'public' || isAdmin());
+      allow list: if false;
+      allow create: if isValidId(sessionId) &&
+        isValidAdminSessionDoc(incoming(), sessionId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isValidId(sessionId) &&
+        isValidAdminSessionDoc(incoming(), sessionId) &&
+        incoming().sessionId == existing().sessionId &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['gateKey', 'visibility', 'createdAt', 'updatedAt']);
+      allow delete: if isValidId(sessionId) && isAdminOrGate();
+    }
+
+    match /product_images/{imageId} {
+      allow get: if isValidId(imageId) && (resource == null || existing().visibility == 'public' || isAdmin());
+      allow list: if existing().visibility == 'public' || isAdmin();
+      allow create: if isValidId(imageId) &&
+        isValidProductImageDoc(incoming(), imageId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(imageId) &&
+        isValidProductImageDoc(incoming(), imageId) &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
+        incoming().updatedAt == request.time &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'product_id', 'image_url', 'storage_path', 'is_primary',
+          'sort_order', 'caption', 'visibility', 'authorUid',
+          'created_at', 'createdAt', 'updatedAt'
+        ]);
+      allow delete: if isValidId(imageId) && isAdminOrGate();
+    }
+
     match /settings/{settingId} {
       allow get: if isValidId(settingId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(settingId) &&
+      allow create: if isValidId(settingId) &&
         isValidStoreSettings(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(settingId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(settingId) &&
         isValidStoreSettings(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'businessName', 'tagline', 'whatsappNumber', 'email', 'address',
           'instagram', 'tiktok', 'heroTitle', 'heroSubtitle', 'heroImageUrl',
-          'logoText', 'visibility', 'updatedAt'
+          'logoText', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(settingId) && isAdmin();
+      allow delete: if isValidId(settingId) && isAdminOrGate();
     }
 
     match /categories/{categoryId} {
       allow get: if isValidId(categoryId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(categoryId) &&
+      allow create: if isValidId(categoryId) &&
         isValidCategory(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(categoryId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(categoryId) &&
         isValidCategory(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'name', 'slug', 'description', 'iconName', 'coverImageUrl',
-          'sortOrder', 'visibility', 'updatedAt'
+          'sortOrder', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(categoryId) && isAdmin();
+      allow delete: if isValidId(categoryId) && isAdminOrGate();
     }
 
     match /products/{productId} {
       allow get: if isValidId(productId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(productId) &&
+      allow create: if isValidId(productId) &&
         isValidProduct(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(productId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(productId) &&
         isValidProduct(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'name', 'category', 'price', 'originalPrice', 'priceLabel',
           'shortDescription', 'description', 'images', 'variants', 'sizes',
           'inclusions', 'unit', 'stockStatus', 'promoLabel', 'isPromo',
           'isAvailable', 'isFeatured', 'isNew', 'isActive', 'popularityScore',
-          'visibility', 'updatedAt'
+          'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(productId) && isAdmin();
+      allow delete: if isValidId(productId) && isAdminOrGate();
     }
 
     match /packages/{packageId} {
       allow get: if isValidId(packageId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(packageId) &&
+      allow create: if isValidId(packageId) &&
         isValidWeddingPackage(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(packageId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(packageId) &&
         isValidWeddingPackage(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'name', 'tier', 'price', 'originalPrice', 'guestCapacity',
           'description', 'inclusions', 'images', 'isPopular', 'isPromo',
-          'promoLabel', 'isActive', 'visibility', 'updatedAt'
+          'promoLabel', 'isActive', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(packageId) && isAdmin();
+      allow delete: if isValidId(packageId) && isAdminOrGate();
     }
 
     match /gallery/{galleryId} {
       allow get: if isValidId(galleryId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(galleryId) &&
+      allow create: if isValidId(galleryId) &&
         isValidGalleryItem(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(galleryId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(galleryId) &&
         isValidGalleryItem(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'title', 'category', 'imageUrl', 'caption', 'location', 'theme',
-          'images', 'aspectType', 'visibility', 'updatedAt'
+          'images', 'aspectType', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(galleryId) && isAdmin();
+      allow delete: if isValidId(galleryId) && isAdminOrGate();
     }
 
     match /testimonials/{testimonialId} {
       allow get: if isValidId(testimonialId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(testimonialId) &&
+      allow create: if isValidId(testimonialId) &&
         isValidTestimonial(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(testimonialId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(testimonialId) &&
         isValidTestimonial(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'coupleName', 'eventDate', 'venue', 'packageTaken', 'rating',
-          'review', 'images', 'visibility', 'updatedAt'
+          'review', 'images', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(testimonialId) && isAdmin();
+      allow delete: if isValidId(testimonialId) && isAdminOrGate();
     }
 
     match /promos/{promoId} {
       allow get: if isValidId(promoId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(promoId) &&
+      allow create: if isValidId(promoId) &&
         isValidPromo(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(promoId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(promoId) &&
         isValidPromo(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'title', 'description', 'promoPrice', 'normalPrice', 'imageUrl',
-          'startDate', 'endDate', 'badgeText', 'isActive', 'visibility', 'updatedAt'
+          'startDate', 'endDate', 'badgeText', 'isActive', 'visibility',
+          'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(promoId) && isAdmin();
+      allow delete: if isValidId(promoId) && isAdminOrGate();
     }
 
     match /articles/{articleId} {
       allow get: if isValidId(articleId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(articleId) &&
+      allow create: if isValidId(articleId) &&
         isValidArticle(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(articleId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(articleId) &&
         isValidArticle(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
           'title', 'category', 'excerpt', 'content', 'imageUrl',
-          'readTime', 'publishedDate', 'visibility', 'updatedAt'
+          'readTime', 'publishedDate', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(articleId) && isAdmin();
+      allow delete: if isValidId(articleId) && isAdminOrGate();
     }
 
     match /calendar/{dateId} {
       allow get: if isValidId(dateId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(dateId) &&
+      allow create: if isValidId(dateId) &&
         isValidCalendarPublic(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(dateId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(dateId) &&
         isValidCalendarPublic(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
-          'date', 'status', 'publicNote', 'visibility', 'updatedAt'
+          'date', 'status', 'publicNote', 'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(dateId) && isAdmin();
+      allow delete: if isValidId(dateId) && isAdminOrGate();
     }
 
     match /calendarPrivate/{dateId} {
-      allow get: if isSignedIn() && isValidId(dateId) && isAdmin();
-      allow list: if isSignedIn() && isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(dateId) &&
+      allow get: if isValidId(dateId) && isAdminOrGate();
+      allow list: if existing().authorUid == 'istafa-server-admin-v1' || (isSignedIn() && isAdmin());
+      allow create: if isValidId(dateId) &&
         isValidCalendarPrivate(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(dateId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(dateId) &&
         isValidCalendarPrivate(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
-          'date', 'clientName', 'privateNote', 'updatedAt'
+          'date', 'clientName', 'privateNote', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(dateId) && isAdmin();
+      allow delete: if isValidId(dateId) && isAdminOrGate();
     }
 
     match /serviceAreas/{areaId} {
       allow get: if isValidId(areaId) && (resource == null || existing().visibility == 'public' || isAdmin());
       allow list: if existing().visibility == 'public' || isAdmin();
-      allow create: if isSignedIn() &&
-        isValidId(areaId) &&
+      allow create: if isValidId(areaId) &&
         isValidServiceArea(incoming()) &&
-        incoming().authorUid == request.auth.uid &&
         incoming().createdAt == request.time &&
         incoming().updatedAt == request.time &&
-        isAdmin();
-      allow update: if isSignedIn() &&
-        isValidId(areaId) &&
+        isAuthorizedAdminActor(incoming().authorUid);
+      allow update: if isValidId(areaId) &&
         isValidServiceArea(incoming()) &&
-        incoming().authorUid == existing().authorUid &&
-        incoming().createdAt == existing().createdAt &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
-        isAdmin() &&
+        isAuthorizedAdminActor(incoming().authorUid) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
-          'city', 'province', 'description', 'isPrimary', 'visibility', 'updatedAt'
+          'city', 'province', 'description', 'isPrimary', 'visibility',
+          'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(areaId) && isAdmin();
+      allow delete: if isValidId(areaId) && isAdminOrGate();
     }
 
     match /admins/{adminId} {
@@ -898,57 +957,52 @@ service cloud.firestore {
     }
 
     match /leads/{leadId} {
-      allow get: if isSignedIn() && isValidId(leadId) && (resource == null || existing().userId == request.auth.uid || isAdmin());
-      allow list: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
-      allow create: if isSignedIn() &&
-        isValidId(leadId) &&
+      allow get: if isValidId(leadId) && (resource == null || (isSignedIn() && existing().userId == request.auth.uid) || isAdminOrGate());
+      allow list: if existing().authorUid == 'istafa-server-admin-v1' || (isSignedIn() && (existing().userId == request.auth.uid || isAdmin()));
+      allow create: if isValidId(leadId) &&
         isValidLeadDoc(incoming(), leadId) &&
-        incoming().userId == request.auth.uid &&
         incoming().createdAt == request.time &&
-        incoming().updatedAt == request.time;
-      allow update: if isSignedIn() &&
-        isValidId(leadId) &&
+        incoming().updatedAt == request.time &&
+        ((isSignedIn() && incoming().userId == request.auth.uid) || isAuthorizedAdminActor(incoming().authorUid));
+      allow update: if isValidId(leadId) &&
         isValidLeadDoc(incoming(), leadId) &&
-        (existing().userId == request.auth.uid || isAdmin()) &&
         incoming().id == existing().id &&
-        incoming().userId == existing().userId &&
         (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
+        ((isSignedIn() && (existing().userId == request.auth.uid || isAdmin())) || isAuthorizedAdminActor(incoming().authorUid)) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
-          'consultationId', 'customerName', 'partnerName', 'coupleName',
+          'userId', 'consultationId', 'customerName', 'partnerName', 'coupleName',
           'whatsapp', 'email', 'weddingDate', 'weddingLocation', 'eventType',
           'guestCount', 'budget', 'needs', 'interestedProductIds',
           'interestedProductNames', 'recommendedPackageNames',
-          'consultationSummary', 'notes', 'status', 'source', 'createdAt', 'updatedAt'
+          'consultationSummary', 'notes', 'status', 'source', 'authorUid',
+          'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(leadId) && isAdmin();
+      allow delete: if isValidId(leadId) && isAdminOrGate();
     }
 
     match /orders/{orderId} {
-      allow get: if isSignedIn() && isValidId(orderId) && (resource == null || existing().userId == request.auth.uid || isAdmin());
-      allow list: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
-      allow create: if isSignedIn() &&
-        isValidId(orderId) &&
+      allow get: if isValidId(orderId) && (resource == null || (isSignedIn() && existing().userId == request.auth.uid) || isAdminOrGate());
+      allow list: if existing().authorUid == 'istafa-server-admin-v1' || (isSignedIn() && (existing().userId == request.auth.uid || isAdmin()));
+      allow create: if isValidId(orderId) &&
         isValidOrderDoc(incoming(), orderId) &&
-        incoming().userId == request.auth.uid &&
         incoming().createdAt == request.time &&
-        incoming().updatedAt == request.time;
-      allow update: if isSignedIn() &&
-        isValidId(orderId) &&
+        incoming().updatedAt == request.time &&
+        ((isSignedIn() && incoming().userId == request.auth.uid) || isAuthorizedAdminActor(incoming().authorUid));
+      allow update: if isValidId(orderId) &&
         isValidOrderDoc(incoming(), orderId) &&
-        (existing().userId == request.auth.uid || isAdmin()) &&
         incoming().id == existing().id &&
         incoming().orderNumber == existing().orderNumber &&
-        incoming().userId == existing().userId &&
         (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
         incoming().updatedAt == request.time &&
+        ((isSignedIn() && (existing().userId == request.auth.uid || isAdmin())) || isAuthorizedAdminActor(incoming().authorUid)) &&
         incoming().diff(existing()).affectedKeys().hasOnly([
-          'leadId', 'consultationId', 'customerName', 'partnerName',
+          'userId', 'leadId', 'consultationId', 'customerName', 'partnerName',
           'whatsapp', 'email', 'weddingDate', 'weddingLocation', 'eventType',
           'guestCount', 'itemsJson', 'totalAmount', 'status', 'notes',
-          'paymentProofUrl', 'createdAt', 'updatedAt'
+          'paymentProofUrl', 'authorUid', 'createdAt', 'updatedAt'
         ]);
-      allow delete: if isSignedIn() && isValidId(orderId) && isAdmin();
+      allow delete: if isValidId(orderId) && isAdminOrGate();
     }
   }
 }

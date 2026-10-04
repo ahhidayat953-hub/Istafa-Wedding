@@ -12,14 +12,29 @@ import firebaseConfig from '../firebase-applet-config.json';
 // Silence noisy internal WebChannel retry logs in restricted/iframe networks
 setLogLevel('silent');
 
-const app = initializeApp(firebaseConfig);
+const env = typeof import.meta !== 'undefined' ? (import.meta as { env?: Record<string, string> }).env || {} : {};
+
+export const resolvedFirebaseConfig = {
+  projectId: env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
+  appId: env.VITE_FIREBASE_APP_ID || firebaseConfig.appId,
+  apiKey: env.VITE_FIREBASE_API_KEY || firebaseConfig.apiKey,
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfig.authDomain,
+  firestoreDatabaseId:
+    env.VITE_FIREBASE_FIRESTORE_DATABASE_ID || firebaseConfig.firestoreDatabaseId,
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfig.storageBucket,
+  messagingSenderId:
+    env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseConfig.messagingSenderId,
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID || firebaseConfig.measurementId || '',
+};
+
+const app = initializeApp(resolvedFirebaseConfig);
 
 export const db = initializeFirestore(
   app,
   {
     experimentalForceLongPolling: true,
   },
-  firebaseConfig.firestoreDatabaseId
+  resolvedFirebaseConfig.firestoreDatabaseId
 );
 
 export const auth = getAuth(app);

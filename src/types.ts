@@ -1,8 +1,15 @@
 export interface ProductImage {
   id: string;
+  image_id?: string;
+  product_id?: string;
   url: string;
+  image_url?: string;
+  storage_path?: string;
   isPrimary: boolean;
+  is_primary?: boolean;
+  sort_order?: number;
   caption?: string;
+  created_at?: string;
 }
 
 export interface Product {
@@ -179,6 +186,8 @@ export interface ConsultationCartItem {
   note?: string;
 }
 
+export type CartItem = ConsultationCartItem;
+
 export interface BudgetAllocation {
   guestCount: number;
   catering: number;
@@ -350,7 +359,7 @@ export interface LeadRecord {
   consultationSummary: string;
   notes: string;
   status: LeadStatus;
-  source: 'consultation' | 'planner' | 'cart' | 'catalog';
+  source: 'consultation' | 'planner' | 'cart' | 'catalog' | 'manual';
   createdAt: string;
   updatedAt: string;
 }

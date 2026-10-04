@@ -1,0 +1,2687 @@
+{
+  "initialized": true,
+  "updatedAt": "2026-10-04T12:32:17.976Z",
+  "settings": {
+    "id": "main",
+    "businessName": "ISTAFA Wedding",
+    "tagline": "Platform Layanan, Wedding Planner & Katalog Pernikahan Impian Anda",
+    "whatsappNumber": "6282123376933",
+    "email": "info@istafawedding.id",
+    "address": "Galeri & Studio Konsultasi ISTAFA Wedding",
+    "instagram": "@istafawedding",
+    "tiktok": "@istafawedding",
+    "heroTitle": "Lengkapi Momen Pernikahan Impian Anda",
+    "heroSubtitle": "Temukan berbagai kebutuhan pernikahan mulai dari dekorasi, undangan, souvenir hingga perlengkapan mahar dalam satu tempat.",
+    "heroImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+    "logoText": "ISTAFA Wedding",
+    "visibility": "public",
+    "authorUid": "system-seed"
+  },
+  "categories": [
+    {
+      "id": "cat-dekorasi",
+      "name": "Dekorasi Pernikahan",
+      "slug": "dekorasi-pernikahan",
+      "description": "Pelaminan megah, instalasi bunga segar, meja tamu VIP, dan lorong pengantin.",
+      "iconName": "Flower2",
+      "coverImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "sortOrder": 1,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-tenda",
+      "name": "Tenda",
+      "slug": "tenda",
+      "description": "Tenda transparan roder, kain serut champagne, dan pencahayaan fairy light.",
+      "iconName": "Tent",
+      "coverImageUrl": "/images/wedding_tent_outdoor_1791077486429.jpg",
+      "sortOrder": 2,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-undangan-cetak",
+      "name": "Undangan Cetak",
+      "slug": "undangan-cetak",
+      "description": "Undangan cetak kertas katun deckle-edge, hotprint emas, dan wax seal.",
+      "iconName": "MailOpen",
+      "coverImageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "sortOrder": 3,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-undangan-digital",
+      "name": "Undangan Digital",
+      "slug": "undangan-digital",
+      "description": "Website undangan pernikahan interaktif dengan RSVP, galeri & buku tamu.",
+      "iconName": "Smartphone",
+      "coverImageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "sortOrder": 4,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-souvenir",
+      "name": "Souvenir",
+      "slug": "souvenir",
+      "description": "Bingkisan eksklusif parfum artisan, reed diffuser, dan keramik custom.",
+      "iconName": "Gift",
+      "coverImageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "sortOrder": 5,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-mahar",
+      "name": "Mahar / Tempat Mahar",
+      "slug": "mahar",
+      "description": "Bingkai mahar akrilik & kuningan, logam mulia, serta kotak cincin terarium.",
+      "iconName": "Gem",
+      "coverImageUrl": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+      "sortOrder": 6,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-seserahan",
+      "name": "Seserahan",
+      "slug": "seserahan",
+      "description": "Sewa & hias baki seserahan kuningan kaca dengan bunga preserved elegan.",
+      "iconName": "Package",
+      "coverImageUrl": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+      "sortOrder": 7,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-buket",
+      "name": "Buket Bunga",
+      "slug": "buket-bunga",
+      "description": "Hand bouquet pengantin mawar impor, anggrek bulan, dan boutonniere.",
+      "iconName": "Flower2",
+      "coverImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "sortOrder": 8,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-dokumentasi",
+      "name": "Dokumentasi",
+      "slug": "dokumentasi",
+      "description": "Dokumentasi foto & video sinematik akad, resepsi, drone, dan album kolase.",
+      "iconName": "Camera",
+      "coverImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "sortOrder": 9,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-makeup",
+      "name": "MUA — Make Up Artist",
+      "slug": "mua-make-up-artist",
+      "description": "Layanan rias pengantin profesional, hairdo/hijab styling, touch up, makeup keluarga & pendampingan.",
+      "iconName": "Sparkles",
+      "coverImageUrl": "/images/wedding_decor_table_1791077473861.jpg",
+      "sortOrder": 10,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-wo",
+      "name": "WO — Wedding Organizer",
+      "slug": "wo-wedding-organizer",
+      "description": "Layanan koordinasi acara, penyusunan rundown, koordinasi vendor, keluarga, dan hari H.",
+      "iconName": "Sparkles",
+      "coverImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "sortOrder": 11,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-sanggar",
+      "name": "Tim Sanggar",
+      "slug": "tim-sanggar",
+      "description": "Layanan pertunjukan kesenian, tari penyambutan adat, kirab pengantin & musik tradisional.",
+      "iconName": "Flower2",
+      "coverImageUrl": "/images/wedding_tent_outdoor_1791077486429.jpg",
+      "sortOrder": 12,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-attire",
+      "name": "Tim Attire",
+      "slug": "tim-attire",
+      "description": "Layanan persiapan attire, membantu persiapan & merapikan pakaian pengantin, serta pendampingan acara.",
+      "iconName": "Gem",
+      "coverImageUrl": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+      "sortOrder": 13,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-entertainment",
+      "name": "Entertainment",
+      "slug": "entertainment",
+      "description": "Layanan musik pernikahan akustik, saxophone, grand piano, chamber band & sound system profesional.",
+      "iconName": "Sparkles",
+      "coverImageUrl": "/images/wedding_decor_table_1791077473861.jpg",
+      "sortOrder": 14,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-mc",
+      "name": "MC",
+      "slug": "mc",
+      "description": "Layanan Master of Ceremony profesional untuk prosesi akad nikah sakral, adat, maupun resepsi modern.",
+      "iconName": "Sparkles",
+      "coverImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "sortOrder": 15,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-parkir-security",
+      "name": "Parkir & Security Venue",
+      "slug": "parkir-security-venue",
+      "description": "Layanan pengaturan lalu lintas tamu VIP, tata kelola parkir area venue, dan pengamanan jalannya acara.",
+      "iconName": "Sparkles",
+      "coverImageUrl": "/images/wedding_tent_outdoor_1791077486429.jpg",
+      "sortOrder": 16,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-busana",
+      "name": "Busana Pengantin",
+      "slug": "busana-pengantin",
+      "description": "Koleksi kebaya akad payet mutiara, gaun resepsi modern, dan beskap pengantin.",
+      "iconName": "Crown",
+      "coverImageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "sortOrder": 17,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-paket",
+      "name": "Paket Pernikahan",
+      "slug": "paket-pernikahan",
+      "description": "Rangkaian paket hemat, elegant, premium, hingga custom all-in yang praktis.",
+      "iconName": "Sparkles",
+      "coverImageUrl": "/images/wedding_decor_table_1791077473861.jpg",
+      "sortOrder": 18,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "cat-lainnya",
+      "name": "Produk lainnya",
+      "slug": "produk-lainnya",
+      "description": "Buku tamu custom, welcome sign mirror, kotak angpao, dan atribut acara.",
+      "iconName": "Heart",
+      "coverImageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "sortOrder": 19,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-wedding-decor-elegant",
+      "name": "Dekorasi Elegant Gold — Royal Glasshouse",
+      "category": "Dekorasi Pernikahan",
+      "price": 25500000,
+      "originalPrice": 29500000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Instalasi pelaminan 12 meter dengan anggrek bulan phalaenopsis segar, mawar champagne, chandelier kristal, dan meja tamu VIP.",
+      "description": "Hadirkan suasana resepsi yang anggun dan megah dengan koleksi Dekorasi Elegant Gold kami. Dirancang khusus menggunakan 100% bunga segar pilihan (White Phalaenopsis Orchids, English Garden Roses, dan daun Sage Eucalyptus) berpadu dengan kain drape silk ivory serta pencahayaan warm ambient.",
+      "images": [
+        {
+          "id": "img-dec-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "1. Foto utama dekorasi panggung & tirai sutra ivory"
+        },
+        {
+          "id": "img-dec-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "2. Foto meja tamu VIP dengan candelabra kuningan & bunga segar"
+        },
+        {
+          "id": "img-dec-3",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "3. Foto dekorasi malam hari dengan lampu chandelier & fairy lights"
+        },
+        {
+          "id": "img-dec-4",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "4. Foto detail rangkaian bunga mawar putih & anggrek"
+        },
+        {
+          "id": "img-dec-5",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "5. Foto area penerima tamu & galeri selamat datang"
+        }
+      ],
+      "variants": [
+        "Ivory & Champagne Gold (Signature)",
+        "Blush Dusty Rose & Cream",
+        "Sage Green & White Botanical"
+      ],
+      "sizes": [
+        "8 Meter",
+        "10 Meter",
+        "12 Meter",
+        "14 Meter Custom"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Hemat Rp 4 Juta",
+      "isPromo": true,
+      "inclusions": [
+        "Pelaminan utama 10–12 meter full fresh flowers",
+        "Mini garden depan pelaminan & karpet jalan rose petal",
+        "Dekorasi 2 meja VIP keluarga dengan candelabra",
+        "lorong masuk (pergola) bunga segar 6 meter",
+        "Backdrop photobooth & 2 meja penerima tamu"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 98,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-tenda-marquee-twilight",
+      "name": "Tenda Marquee Transparan & Drapery Champagne",
+      "category": "Tenda",
+      "price": 14500000,
+      "originalPrice": 16500000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Tenda transparan outdoor & semi-serut kain sifon champagne lengkap dengan ribuan lampu fairy lights dan instalasi bunga gantung.",
+      "description": "Ciptakan perayaan outdoor atau halaman rumah bak pesta taman bintang lima. Tenda Marquee Transparan kami menggunakan rangka kokoh berlapis kain sifon champagne lembut, dilengkapi lampu gantung chandelier dan rangkaian wisteria putih.",
+      "images": [
+        {
+          "id": "img-ten-1",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": true,
+          "caption": "1. Foto utama tenda transparan suasana senja & malam hari"
+        },
+        {
+          "id": "img-ten-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Foto integrasi tenda dengan panggung pelaminan utama"
+        },
+        {
+          "id": "img-ten-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Foto penataan meja makan tamu di bawah tenda"
+        },
+        {
+          "id": "img-ten-4",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "4. Detail pencahayaan warm white & dekorasi meja"
+        }
+      ],
+      "variants": [
+        "Full Transparan + Fairy Lights",
+        "Plafon Kain Serut Ivory & Gold",
+        "Kombinasi Semi-Transparan & Chandelier"
+      ],
+      "sizes": [
+        "100 m²",
+        "150 m²",
+        "250 m²",
+        "400 m² Roder"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Free Lampu Gantung",
+      "isPromo": true,
+      "inclusions": [
+        "Konstruksi tenda dekorasi hingga 150 m² (dapat disesuaikan)",
+        "Instalasi lampu bintang (fairy string lights) & 2 chandelier",
+        "Full flooring papan berlapis karpet baru warna cream/beige",
+        "100 kursi Tiffany / Chiavari putih lengkap dengan pita",
+        "Penyejuk udara (Misty Fan / Standing AC sesuai paket)"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 95,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-undangan-cotton-foil",
+      "name": "Undangan Cetak Fine Art — Cotton Paper & Wax Seal",
+      "category": "Undangan Cetak",
+      "price": 18500,
+      "originalPrice": 22000,
+      "priceLabel": "Mulai dari / pcs",
+      "shortDescription": "Undangan pernikahan kertas katun handmade tepi deckle-edge dengan hotprint emas, amplop bertekstur, dan segel lilin monogram.",
+      "description": "Kesan pertama pernikahan Anda dimulai dari undangan yang disentuh oleh tamu kehormatan. Dibuat menggunakan kertas katun tebal 350gsm bertepi alami (deckle-edge), dipadukan teknik cetak hotprint foil champagne gold dan segel lilin (wax seal) berukir inisial pengantin.",
+      "images": [
+        {
+          "id": "img-und-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "1. Foto utama suite undangan kertas katun & wax seal"
+        },
+        {
+          "id": "img-und-2",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "2. Detail pita sutra champagne & ornamen mutiara"
+        },
+        {
+          "id": "img-und-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Kartu menu & place card senada untuk meja tamu VIP"
+        },
+        {
+          "id": "img-und-4",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "4. Inspirasi tema floral yang selaras dengan dekorasi"
+        }
+      ],
+      "variants": [
+        "Ivory Cotton + Gold Wax Seal",
+        "Sage Botanical + Translucent Vellum",
+        "Dusty Rose Velvet + Brass Monogram"
+      ],
+      "sizes": [
+        "A5 Portrait (15x21 cm)",
+        "Square Hardcover (18x18 cm)"
+      ],
+      "unit": "Pcs",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Bonus Undangan Digital",
+      "isPromo": true,
+      "inclusions": [
+        "Kartu utama hardcover / thick cotton paper 350gsm",
+        "Amplop kalkir (vellum jacket) & segel wax seal custom inisial",
+        "Kartu suvenir, peta lokasi, dan plastik pelindung",
+        "Gratis website undangan digital untuk pemesanan min. 300 pcs"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 92,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-undangan-digital-exclusive",
+      "name": "Undangan Digital Website Interaktif — Luxury Editorial",
+      "category": "Undangan Digital",
+      "price": 350000,
+      "originalPrice": 500000,
+      "priceLabel": "Paket All-In",
+      "shortDescription": "Website undangan pernikahan premium tanpa batas nama tamu, fitur konfirmasi kehadiran (RSVP), amplop digital, dan galeri musik.",
+      "description": "Bagikan kabar bahagia secara elegan kepada kerabat di mana pun berada. Undangan Digital ISTAFA Wedding dirancang dengan tipografi editorial mewah, animasi halus, hitung mundur tanggal akad, navigasi Google Maps, serta fitur kirim ucapan langsung.",
+      "images": [
+        {
+          "id": "img-udig-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "1. Tampilan tema undangan digital editorial gold"
+        },
+        {
+          "id": "img-udig-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Galeri foto prewedding & navigasi lokasi interaktif"
+        },
+        {
+          "id": "img-udig-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Fitur konfirmasi kehadiran (RSVP) & amplop digital"
+        }
+      ],
+      "variants": [
+        "Tema Warm Ivory & Gold",
+        "Tema Botanical Sage Green",
+        "Tema Classic Black & White Editorial"
+      ],
+      "sizes": [
+        "Masa Aktif 6 Bulan",
+        "Masa Aktif 1 Tahun Selamanya"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Promo Spesial",
+      "isPromo": true,
+      "inclusions": [
+        "Unlimited nama tamu undangan (Generator link otomatis)",
+        "Galeri hingga 15 foto & 1 video highlight prewedding",
+        "Fitur RSVP konfirmasi kehadiran & ucapan doa restu",
+        "Integrasi Google Maps, Countdown Timer & E-Wallet/Rekening"
+      ],
+      "isAvailable": true,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 94,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-souvenir-parfum-artisan",
+      "name": "Souvenir Eau de Parfum Artisan & Hardbox Linen",
+      "category": "Souvenir",
+      "price": 24000,
+      "originalPrice": 28000,
+      "priceLabel": "Mulai dari / pcs",
+      "shortDescription": "Souvenir botol parfum kristal 30ml dengan aroma white tea & peony, dikemas dalam kotak linen ber-emboss emas dan pita.",
+      "description": "Berikan tanda terima kasih yang berkesan dan bermanfaat bagi setiap tamu undangan. Dikemas dalam botol kaca kristal berkapasitas 30ml dengan pilihan wewangian hotel bintang lima, lengkap dengan hardbox bertekstur linen dan kartu ucapan.",
+      "images": [
+        {
+          "id": "img-sou-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "1. Foto utama botol kristal parfum & kemasan linen gold"
+        },
+        {
+          "id": "img-sou-2",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "2. Detail pita satin champagne & label nama pengantin"
+        },
+        {
+          "id": "img-sou-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Penataan display souvenir di meja penerima tamu"
+        }
+      ],
+      "variants": [
+        "Aroma White Tea & Sage",
+        "Aroma English Pear & Freesia",
+        "Aroma Damask Rose & Oud"
+      ],
+      "sizes": [
+        "Botol 15 ml",
+        "Botol 30 ml (Favorit)",
+        "Botol 50 ml VIP"
+      ],
+      "unit": "Pcs",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Gratis Emboss Nama",
+      "isPromo": true,
+      "inclusions": [
+        "Botol kaca tebal 30ml dengan sprayer gold/silver",
+        "Kemasan hardbox atau pouch beludru custom inisial",
+        "Thank you card bertali rami / pita sutra"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 91,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-mahar-ringbox-brass",
+      "name": "Mahar Botanical Frame & Hexagonal Brass Ring Box",
+      "category": "Mahar / Tempat Mahar",
+      "price": 1650000,
+      "priceLabel": "Mulai dari / set",
+      "shortDescription": "Satu set bingkai mahar akrilik kuningan dengan bunga preserved abadi, mutiara air tawar, dan kotak cincin terarium.",
+      "description": "Abadikan simbol sakral akad nikah Anda dalam karya seni floral yang tahan bertahun-tahun. Bingkai mahar dibuat secara handmade dari kuningan (brass) dan kaca jernih, dihiasi preserved roses impor, baby breath, serta kaligrafi akrilik mirror gold.",
+      "images": [
+        {
+          "id": "img-mah-1",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": true,
+          "caption": "1. Foto utama set bingkai mahar & kotak cincin kuningan"
+        },
+        {
+          "id": "img-mah-2",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "2. Detail kaligrafi emas & penataan atribut akad"
+        },
+        {
+          "id": "img-mah-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Penataan mahar pada meja akad nikah"
+        }
+      ],
+      "variants": [
+        "Classic Arch Brass + White Preserved Rose",
+        "Hexagonal Terrarium + Champagne Gold",
+        "Acrylic Double Frame + Dried Sage"
+      ],
+      "sizes": [
+        "30x40 cm",
+        "40x50 cm Besar"
+      ],
+      "unit": "Set",
+      "stockStatus": "Tersedia",
+      "inclusions": [
+        "1 Bingkai Mahar Utama ukuran 30x40 cm atau 40x50 cm",
+        "1 Kotak Cincin (Ring Bearer) Hexagonal Brass senada",
+        "Replika logam mulia / koin kuno & ukir nama laser"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 89,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-seserahan-terrarium",
+      "name": "Paket Sewa & Hias 8 Kotak Seserahan Kuningan Kaca",
+      "category": "Seserahan",
+      "price": 1850000,
+      "originalPrice": 2200000,
+      "priceLabel": "Paket 8 Kotak",
+      "shortDescription": "Layanan sewa dan penataan artistik 8 baki seserahan kaca berbingkai kuningan dengan rangkaian bunga preserved & sutra.",
+      "description": "Tampilkan hantaran lamaran dan pernikahan yang rapi, seragam, dan berkelas. Tim florist kami merangkai setiap barang bawaan pengantin di atas baki kuningan beralas beludru krem dengan hiasan bunga anggrek serta mawar lembut.",
+      "images": [
+        {
+          "id": "img-ses-1",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": true,
+          "caption": "1. Baki seserahan kaca kuningan dengan bunga putih & krem"
+        },
+        {
+          "id": "img-ses-2",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "2. Detail hiasan pita sutra & tag nama hantaran"
+        },
+        {
+          "id": "img-ses-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Display seserahan pada acara lamaran & akad"
+        }
+      ],
+      "variants": [
+        "Tema Ivory & Gold",
+        "Tema Dusty Rose Romantic",
+        "Tema Sage Green Botanical"
+      ],
+      "sizes": [
+        "Paket 6 Kotak",
+        "Paket 8 Kotak",
+        "Paket 10 Kotak + Sangkar Burung"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Gratis Sewa Ringbox",
+      "isPromo": true,
+      "inclusions": [
+        "Sewa 8 baki kuningan penutup akrilik/kaca selama 5 hari",
+        "Jasa rangkai & hias barang seserahan oleh tim dekorator",
+        "Bunga hias premium, alas tray suede, dan pita satin"
+      ],
+      "isAvailable": true,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 87,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-buket-pengantin-orchid",
+      "name": "Hand Bouquet Pengantin — Phalaenopsis & Garden Rose",
+      "category": "Buket Bunga",
+      "price": 850000,
+      "priceLabel": "Mulai dari / buket",
+      "shortDescription": "Buket tangan pengantin dari bunga mawar impor segar dan anggrek bulan putih menjuntai lengkap dengan boutonniere mempelai pria.",
+      "description": "Dirangkai pagi hari sebelum acara dimulai agar kesegaran kelopak bunga terjaga sempurna sepanjang prosesi akad hingga resepsi. Dilengkapi pita silk panjang dan korsase (boutonniere) senada untuk jas pengantin pria.",
+      "images": [
+        {
+          "id": "img-buk-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "1. Rangkaian bunga anggrek bulan & mawar segar"
+        },
+        {
+          "id": "img-buk-2",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "2. Detail mutiara & pita sutra pada gagang buket"
+        }
+      ],
+      "variants": [
+        "Cascade White Orchid & Rose",
+        "Classic Round Ivory & Blush",
+        "Preserved Flower Bouquet (Tahan Lama)"
+      ],
+      "sizes": [
+        "Medium Posy",
+        "Royal Cascade (Menjuntai)"
+      ],
+      "unit": "Set",
+      "stockStatus": "Tersedia",
+      "inclusions": [
+        "1 Hand Bouquet Pengantin Wanita (Fresh Import Flowers)",
+        "1 Boutonniere (Korsase Jas) Pengantin Pria",
+        "2 Korsase Orang Tua & Kotak Penyimpanan Buket"
+      ],
+      "isAvailable": true,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 84,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-dokumentasi-cinematic",
+      "name": "Dokumentasi Foto & Video Cinematic Pernikahan",
+      "category": "Dokumentasi",
+      "price": 9500000,
+      "originalPrice": 11000000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Tim fotografer & videografer profesional untuk mengabadikan setiap momen sakral akad, resepsi, detail dekorasi, hingga album kolase.",
+      "description": "Abadikan setiap senyuman, air mata bahagia, dan kemegahan dekorasi pernikahan Anda melalui sentuhan visual bergaya editorial fine-art. Tim dokumentasi ISTAFA Wedding menangkap momen secara candid maupun terarah dengan tone warna hangat yang elegan, dilengkapi video highlight sinematik dan album kolase hardcover eksklusif.",
+      "images": [
+        {
+          "id": "img-dok-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "1. Dokumentasi kemegahan panggung pelaminan & prosesi"
+        },
+        {
+          "id": "img-dok-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "2. Dokumentasi detail meja jamuan VIP & suasana resepsi"
+        },
+        {
+          "id": "img-dok-3",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "3. Foto macro cincin pernikahan & mahar akad nikah"
+        },
+        {
+          "id": "img-dok-4",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "4. Dokumentasi suasana malam hari & tata cahaya"
+        },
+        {
+          "id": "img-dok-5",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "5. Flat-lay detail undangan & atribut pengantin"
+        }
+      ],
+      "variants": [
+        "Paket Foto & Video Akad + Resepsi Lengkap",
+        "Paket Royal Cinematic + Drone Aerial + Same Day Edit",
+        "Paket Dokumentasi Intimate Akad Nikah"
+      ],
+      "sizes": [
+        "Liputan 6 Jam",
+        "Liputan 8 Jam Full Day",
+        "Liputan Rangkaian Acara Penuh"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Gratis Foto Cetak + Bingkai",
+      "isPromo": true,
+      "inclusions": [
+        "Liputan Foto & Video Profesional Akad hingga Resepsi",
+        "1 Album Kolase Eksklusif 20x30 cm (Hardcover + Koper)",
+        "Video Teaser 1 Menit (Reels/TikTok) & Video Cinematic Highlight 4–5 Menit",
+        "Cetak Foto Pembesaran ukuran 40x60 cm beserta bingkai minimalis gold",
+        "Seluruh file foto asli & hasil edit tersimpan dalam Flashdisk Kristal Custom"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 96,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-makeup-pengantin-flawless",
+      "name": "MUA — Make Up Artist Profesional (Akad & Resepsi)",
+      "category": "MUA — Make Up Artist",
+      "price": 5500000,
+      "originalPrice": 6500000,
+      "priceLabel": "Mulai dari",
+      "shortDescription": "Layanan Make Up Artist (MUA) profesional untuk rias pengantin, hairdo/hijab styling, touch up, makeup keluarga, dan pendampingan pengantin.",
+      "description": "Tampil memukau dan anggun di hari bahagia dengan layanan MUA — Make Up Artist profesional ISTAFA Wedding. Menggunakan kosmetik high-end internasional dengan teknik skin-like flawless glow yang tahan lama seharian, mencakup rias akad, touch up resepsi, penataan hairdo atau hijab styling, makeup keluarga, serta pendampingan pengantin secara eksklusif.",
+      "images": [
+        {
+          "id": "img-mua-1",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": true,
+          "caption": "1. Hasil riasan pengantin flawless glow & tata rambut/hijab"
+        },
+        {
+          "id": "img-mua-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Pendampingan penampilan pengantin di pelaminan utama"
+        },
+        {
+          "id": "img-mua-3",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "3. Detail aksesori mahkota, siger & rangkaian melati segar"
+        },
+        {
+          "id": "img-mua-4",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "4. Sesi touch up & persiapan pergantian look resepsi"
+        }
+      ],
+      "variants": [
+        "Modern Flawless Bridal & Hairdo / Hijab Styling",
+        "Rias Pengantin Adat Tradisional (Siger / Paes)",
+        "Soft Dewy Editorial Bridal Look"
+      ],
+      "sizes": [
+        "Paket Layanan Akad & Resepsi Lengkap"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Promo Spesial Bridal",
+      "isPromo": true,
+      "inclusions": [
+        "Makeup pengantin",
+        "Hairdo",
+        "Touch up",
+        "Makeup keluarga",
+        "Pendampingan pengantin"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 95,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-wo-wedding-organizer",
+      "name": "WO — Wedding Organizer Profesional (Full Coordination)",
+      "category": "WO — Wedding Organizer",
+      "price": 8500000,
+      "originalPrice": 10000000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Layanan Wedding Organizer profesional untuk koordinasi acara, penyusunan rundown, koordinasi vendor, koordinasi keluarga, dan pendampingan hari H.",
+      "description": "Percayakan kelancaran seluruh rangkaian acara pernikahan Anda kepada layanan WO — Wedding Organizer ISTAFA Wedding. Mulai dari perencanaan konsep, penyusunan rundown detail, technical meeting bersama seluruh vendor, koordinasi keluarga kedua mempelai, hingga pengawalan penuh pada hari H agar pengantin dan keluarga dapat menikmati momen bahagia dengan tenang.",
+      "images": [
+        {
+          "id": "img-wo-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "1. Koordinasi alur prosesi akad & resepsi di lokasi utama"
+        },
+        {
+          "id": "img-wo-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "2. Pengaturan area jamuan VIP & kesiapan seluruh vendor"
+        },
+        {
+          "id": "img-wo-3",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "3. Manajemen waktu rundown & tata cahaya acara resepsi"
+        },
+        {
+          "id": "img-wo-4",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "4. Buku panduan rundown acara & koordinasi penerimaan tamu"
+        }
+      ],
+      "variants": [
+        "Paket Full Wedding Organizer (Persiapan + Hari H)",
+        "Paket On The Day Wedding Organizer (Akad & Resepsi)",
+        "Paket Intimate Wedding Coordination"
+      ],
+      "sizes": [
+        "Pendampingan Penuh Rangkaian Acara (Akad & Resepsi)"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Gratis Penyusunan Buku Rundown",
+      "isPromo": true,
+      "inclusions": [
+        "Koordinasi acara",
+        "Penyusunan rundown",
+        "Koordinasi vendor",
+        "Koordinasi keluarga",
+        "Pendampingan pengantin",
+        "Koordinasi hari H"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 97,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-tim-sanggar-pertunjukan",
+      "name": "Tim Sanggar — Pertunjukan Seni & Prosesi Kirab Adat",
+      "category": "Tim Sanggar",
+      "price": 6500000,
+      "originalPrice": 7500000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Layanan pertunjukan sanggar seni budaya, tari penyambutan pengantin, prosesi mapag/kirab adat, dan iringan musik tradisional.",
+      "description": "Hadirkan kemegahan budaya dan kesakralan tradisi pada momen kirab pengantin bersama layanan Tim Sanggar ISTAFA Wedding. Menyajikan pertunjukan tari penyambutan pengantin, prosesi adat mapag/kirab menuju pelaminan, serta alunan musik tradisional yang tertata anggun dan selaras dengan alur acara resepsi Anda.",
+      "images": [
+        {
+          "id": "img-sgr-1",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": true,
+          "caption": "1. Pertunjukan penyambutan & prosesi kirab pengantin di area resepsi"
+        },
+        {
+          "id": "img-sgr-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Prosesi adat pengantin menuju panggung pelaminan utama"
+        },
+        {
+          "id": "img-sgr-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Nuansa artistik pertunjukan budaya di ruang perjamuan"
+        },
+        {
+          "id": "img-sgr-4",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "4. Kelengkapan atribut adat & properti kesenian sanggar"
+        }
+      ],
+      "variants": [
+        "Tari Penyambutan Pengantin & Prosesi Kirab Adat",
+        "Prosesi Mapag Pengantin & Musik Tradisional",
+        "Pertunjukan Tari Kreasi & Kesenian Resepsi"
+      ],
+      "sizes": [
+        "Durasi Mengikuti Rangkaian Prosesi Kirab & Penyambutan (60–90 Menit)",
+        "Durasi Sesi Penuh Prosesi Adat & Resepsi"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Paket Pertunjukan Eksklusif",
+      "isPromo": true,
+      "inclusions": [
+        "Pertunjukan tari penyambutan pengantin",
+        "Pemandu prosesi kirab adat menuju pelaminan",
+        "Iringan musik tradisional & perlengkapan artistik sanggar",
+        "Kostum & atribut kesenian pertunjukan lengkap",
+        "Sinkronisasi alur pertunjukan bersama Wedding Organizer"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 93,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-tim-attire-pendampingan",
+      "name": "Tim Attire — Layanan Pendampingan Busana & Pakaian Pengantin",
+      "category": "Tim Attire",
+      "price": 3500000,
+      "originalPrice": 4200000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Layanan khusus persiapan attire, membantu persiapan pakaian pengantin, merapikan busana selama prosesi, dan pendampingan penuh selama acara.",
+      "description": "Pastikan penampilan busana pengantin selalu rapi, nyaman, dan sempurna di setiap sudut kamera bersama layanan Tim Attire ISTAFA Wedding. Layanan ini secara khusus menangani persiapan seluruh kelengkapan pakaian pengantin sebelum acara, membantu proses pemakaian dan pergantian busana antara akad dan resepsi, merapikan jatuhnya gaun/kebaya saat berjalan maupun di pelaminan, serta mendampingi pengantin sepanjang acara.",
+      "images": [
+        {
+          "id": "img-att-1",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": true,
+          "caption": "1. Persiapan detail attire, aksesori & kelengkapan busana pengantin"
+        },
+        {
+          "id": "img-att-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Pendampingan kerapian busana pengantin di pelaminan & sesi foto"
+        },
+        {
+          "id": "img-att-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Penataan veil, train gaun & atribut pakaian selama prosesi"
+        },
+        {
+          "id": "img-att-4",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "4. Manajemen persiapan ganti busana akad ke resepsi secara sigap"
+        }
+      ],
+      "variants": [
+        "Paket Pendampingan Attire Akad & Resepsi Lengkap",
+        "Paket Pendampingan Attire & Persiapan Busana Keluarga"
+      ],
+      "sizes": [
+        "Pendampingan Penuh Selama Rangkaian Acara Berlangsung"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Layanan Favorit Pengantin",
+      "isPromo": true,
+      "inclusions": [
+        "Persiapan attire",
+        "Membantu persiapan pakaian pengantin",
+        "Merapikan pakaian",
+        "Pendampingan selama acara"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 92,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-team-entertainment",
+      "name": "Entertainment — Paket Musik Akustik, Saxophone & Sound System",
+      "category": "Entertainment",
+      "price": 4500000,
+      "originalPrice": 5200000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Layanan hiburan musik pernikahan romantis lengkap dengan instrumen akustik, grand piano/keyboard, saxophone, serta tata suara jernih.",
+      "description": "Bangun suasana resepsi yang hangat, romantis, dan berkelas melalui paket layanan Entertainment ISTAFA Wedding. Paket hiburan musik ini mencakup kurasi daftar lagu spesial pilihan pengantin untuk mengiringi kirab masuk, sesi ramah tamah, hingga perjamuan makan malam keluarga, lengkap dengan sound system profesional.",
+      "images": [
+        {
+          "id": "img-ent-1",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": true,
+          "caption": "1. Penampilan musik romantis di area perjamuan pernikahan"
+        },
+        {
+          "id": "img-ent-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Tata panggung hiburan serasi dengan dekorasi utama"
+        },
+        {
+          "id": "img-ent-3",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "3. Suasana alunan musik malam hari di bawah lampu bintang"
+        }
+      ],
+      "variants": [
+        "Paket Romantic Acoustic & Saxophone Performance",
+        "Paket Chamber Music & Grand Piano Ambience",
+        "Paket Full Band Wedding Entertainment & Sound System"
+      ],
+      "sizes": [
+        "Durasi Penuh Mengiringi Rangkaian Resepsi Pernikahan"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Gratis Request Lagu Kirab",
+      "isPromo": true,
+      "inclusions": [
+        "Pertunjukan musik live selama rangkaian resepsi",
+        "Kurasi daftar lagu romantis pilihan pengantin",
+        "Iringan musik khusus prosesi kirab masuk pengantin",
+        "Sound system profesional & tata akustik ruangan",
+        "Koordinasi cue musik bersama MC dan Wedding Organizer"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 90,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-team-mc",
+      "name": "MC — Layanan Master of Ceremony Akad & Resepsi Pernikahan",
+      "category": "MC",
+      "price": 2500000,
+      "originalPrice": 3000000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Layanan pembawa acara (Master of Ceremony) profesional untuk memandu kekhidmatan akad nikah, prosesi adat, hingga kemeriahan resepsi.",
+      "description": "Setiap momen sakral pernikahan membutuhkan pemandu acara yang santun, hangat, dan artikulatif. Layanan MC Pernikahan ISTAFA Wedding memandu jalannya prosesi akad nikah yang khidmat hingga resepsi yang berkesan, lengkap dengan penyusunan naskah panduan acara (cue card) dan sinkronisasi penuh bersama tim Wedding Organizer.",
+      "images": [
+        {
+          "id": "img-mc-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "1. Pemanduan prosesi sakral akad nikah & resepsi"
+        },
+        {
+          "id": "img-mc-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "2. Suasana hangat penyambutan keluarga & tamu kehormatan"
+        }
+      ],
+      "variants": [
+        "Paket MC Akad Nikah & Resepsi Lengkap",
+        "Paket MC Prosesi Adat Tradisional & Nasional",
+        "Paket MC Bilingual (Indonesia – Inggris) Intimate Reception"
+      ],
+      "sizes": [
+        "Durasi Mengikuti Rangkaian Acara Akad & Resepsi"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Termasuk Konsultasi Teks Acara",
+      "isPromo": true,
+      "inclusions": [
+        "Pemanduan prosesi akad nikah yang khidmat & tertib",
+        "Pemanduan prosesi kirab dan resepsi pernikahan",
+        "Penyusunan teks panduan acara (script & cue card)",
+        "Koordinasi alur acara bersama keluarga & Wedding Organizer",
+        "Penyesuaian gaya bahasa (Formal, Adat, maupun Intimate)"
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 91,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-team-parkir-security",
+      "name": "Parkir & Security Venue — Layanan Tata Kelola Parkir & Keamanan Acara",
+      "category": "Parkir & Security Venue",
+      "price": 2000000,
+      "originalPrice": 2500000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Layanan penataan lalu lintas area kedatangan, pengelolaan parkir kendaraan tamu undangan, akses drop-off VIP, dan keamanan area venue.",
+      "description": "Kenyamanan tamu undangan dimulai sejak mereka tiba di lokasi acara. Layanan Parkir & Security Venue ISTAFA Wedding memastikan arus kedatangan kendaraan berjalan lancar, area drop-off keluarga dan tamu VIP tertata rapi, serta keamanan sekitar area gedung maupun kediaman terjaga kondusif sepanjang acara berlangsung.",
+      "images": [
+        {
+          "id": "img-sec-1",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": true,
+          "caption": "1. Tata kelola area kedatangan & kenyamanan akses lokasi acara"
+        },
+        {
+          "id": "img-sec-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Pengamanan area resepsi & ketertiban jalannya acara"
+        }
+      ],
+      "variants": [
+        "Paket Tata Kelola Parkir & Keamanan Area Kediaman / Outdoor",
+        "Paket Pengaturan Drop-Off VIP & Keamanan Venue Gedung"
+      ],
+      "sizes": [
+        "Durasi Penuh Persiapan hingga Selesai Acara"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "promoLabel": "Kenyamanan Tamu Terjamin",
+      "isPromo": false,
+      "inclusions": [
+        "Pengaturan arus lalu lintas kedatangan & kepulangan tamu",
+        "Penataan area parkir kendaraan keluarga & tamu VIP",
+        "Penjagaan titik drop-off lobi / pintu masuk utama",
+        "Pengamanan ketertiban area sekitar lokasi acara",
+        "Koordinasi perizinan lingkungan & alur logistik vendor"
+      ],
+      "isAvailable": true,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 85,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-busana-pengantin-royal",
+      "name": "Sewa Busana Pengantin — Kebaya Mutiara & Beskap/Jas",
+      "category": "Busana Pengantin",
+      "price": 6800000,
+      "priceLabel": "Mulai dari / paket",
+      "shortDescription": "Paket sewa koleksi busana pengantin (Kebaya Akad putih mutiara + Gaun/Kebaya Resepsi Champagne Gold) lengkap dengan jas/beskap.",
+      "description": "Koleksi busana pengantin eksklusif dengan taburan payet Jepang, kristal Swarovski, dan mutiara yang dijahit tangan. Setiap penyewaan sudah mencakup fitting penyesuaian ukuran tubuh, veil/kerudung panjang berbordir, selop pengantin, serta busana keluarga.",
+      "images": [
+        {
+          "id": "img-bus-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "1. Koleksi busana pengantin nuansa ivory & champagne gold"
+        },
+        {
+          "id": "img-bus-2",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "2. Detail payet mutiara & bordir halus"
+        },
+        {
+          "id": "img-bus-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "3. Keserasian warna busana dengan dekorasi resepsi"
+        }
+      ],
+      "variants": [
+        "Kebaya Kutubaru Modern & Beskap Lengkap",
+        "Ballgown Bridal Muslimah & Setelan Jas Formal",
+        "Busana Adat Tradisional Klasik"
+      ],
+      "sizes": [
+        "All Size (Termasuk Fitting Custom S–XXL)"
+      ],
+      "unit": "Paket",
+      "stockStatus": "Tersedia",
+      "inclusions": [
+        "Busana Pengantin Akad Nikah Lengkap",
+        "Busana Pengantin Resepsi Lengkap",
+        "Busana Orang Tua & Keluarga Inti",
+        "Busana Pendamping / Among Tamu"
+      ],
+      "isAvailable": true,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "popularityScore": 86,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "prod-lainnya-welcomesign",
+      "name": "Set Welcome Sign Mirror Gold & Buku Tamu Kaligrafi",
+      "category": "Produk lainnya",
+      "price": 950000,
+      "priceLabel": "Per Set Lengkap",
+      "shortDescription": "Cermin sambutan (Welcome Mirror) berbingkai emas lengkap dengan easel kayu, rangkaian bunga sudut, dan 2 buku tamu hardcover.",
+      "description": "Sambut kehadiran tamu undangan dengan cermin selamat datang berukir kaligrafi nama pengantin dan tanggal acara. Menjadi spot foto favorit tamu saat memasuki area resepsi.",
+      "images": [
+        {
+          "id": "img-lain-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "1. Detail tipografi & buku tamu hardcover linen"
+        },
+        {
+          "id": "img-lain-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "2. Penempatan welcome sign di pintu masuk pelaminan"
+        }
+      ],
+      "variants": [
+        "Standing Mirror Arch Gold",
+        "Acrylic Frosted Gold Sign"
+      ],
+      "sizes": [
+        "60x120 cm + Standing Easel"
+      ],
+      "unit": "Set",
+      "stockStatus": "Tersedia",
+      "inclusions": [
+        "Sewa Cermin Arch Gold + Standing Easel + Bunga Sudut",
+        "2 Buku Tamu Hardcover Custom Nama Pengantin (Kapasitas 500 Tamu)",
+        "2 Pena Gold & Kotak Angpao Akrilik Ber-gembok"
+      ],
+      "isAvailable": true,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "popularityScore": 80,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    }
+  ],
+  "packages": [
+    {
+      "id": "pkg-hemat",
+      "name": "PAKET HEMAT — Intimate & Rumah",
+      "tier": "PAKET HEMAT",
+      "price": 22500000,
+      "originalPrice": 26000000,
+      "guestCapacity": "100 – 200 Tamu Undangan",
+      "description": "Solusi hemat dan lengkap untuk akad nikah maupun resepsi hangat di rumah atau aula, mencakup dekorasi pelaminan, tenda, rias, hingga dokumentasi.",
+      "inclusions": [
+        "Dekorasi Pelaminan 6–8 Meter Bunga Segar & Mini Garden",
+        "Tenda Dekorasi Plafon Serut Champagne 100 m² + Kursi 100 buah",
+        "Makeup & Busana Pengantin Akad + Resepsi (Termasuk Keluarga)",
+        "Layanan Dokumentasi Foto & Video Profesional + Album Kolase",
+        "150 pcs Undangan Cetak + Gratis Undangan Website Digital",
+        "1 Set Bingkai Mahar & Kotak Cincin Kuningan"
+      ],
+      "images": [
+        {
+          "id": "pkg-hem-1",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": true,
+          "caption": "Tenda Dekorasi Serut & Pelaminan Rumah"
+        },
+        {
+          "id": "pkg-hem-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "Dekorasi Pelaminan Floral Hangat"
+        },
+        {
+          "id": "pkg-hem-3",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Set Mahar & Kotak Cincin Termasuk dalam Paket"
+        },
+        {
+          "id": "pkg-hem-4",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "Undangan Cetak & Digital"
+        }
+      ],
+      "isPopular": false,
+      "isPromo": true,
+      "promoLabel": "Hemat Rp 3,5 Juta",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "pkg-elegant",
+      "name": "PAKET ELEGANT — Signature All-In",
+      "tier": "PAKET ELEGANT",
+      "price": 48500000,
+      "originalPrice": 55000000,
+      "guestCapacity": "300 – 500 Tamu Undangan",
+      "description": "Paket terfavorit pilihan calon pengantin! Menghadirkan dekorasi bunga segar melimpah, tenda transparan berlampu bintang, rias busana lengkap, dokumentasi sinematik, undangan & souvenir.",
+      "inclusions": [
+        "Dekorasi Pelaminan Megah 10–12 meter Full Fresh Flowers (Orchid & Rose)",
+        "Tenda Marquee Transparan / Semi-Serut 200 m² + Chandelier & Fairy Lights",
+        "Dekorasi 4 Meja Makan VIP Keluarga dengan Kristal Candelabra",
+        "Makeup & Busana Pengantin Premium + Keluarga & Pendampingan Attire",
+        "Layanan Dokumentasi Lengkap (Foto, Video Cinematic & Album Eksklusif) + WO",
+        "300 pcs Undangan Kertas Katun Wax Seal + 300 pcs Souvenir Parfum",
+        "1 Set Mahar + Sewa Hias 8 Kotak Seserahan Terarium Brass + Hand Bouquet"
+      ],
+      "images": [
+        {
+          "id": "pkg-ele-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "Pelaminan Megah Full Fresh Flowers"
+        },
+        {
+          "id": "pkg-ele-2",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "Tenda Transparan & Fairy Lights Malam Hari"
+        },
+        {
+          "id": "pkg-ele-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Meja Tamu VIP & Candelabra"
+        },
+        {
+          "id": "pkg-ele-4",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Mahar & Kotak Seserahan Brass"
+        },
+        {
+          "id": "pkg-ele-5",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "Undangan Fine Art & Souvenir Parfum"
+        }
+      ],
+      "isPopular": true,
+      "isPromo": true,
+      "promoLabel": "Best Seller · Bonus Seserahan",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "pkg-premium",
+      "name": "PAKET PREMIUM — Royal Glasshouse Luxury",
+      "tier": "PAKET PREMIUM",
+      "price": 88000000,
+      "originalPrice": 96000000,
+      "guestCapacity": "500 – 800 Tamu Undangan",
+      "description": "Pengalaman pernikahan kemewahan paripurna. Desain instalasi floral custom penuh oleh art director kami, tenda dan tata cahaya arsitektural, busana perdana, hingga bingkisan VIP.",
+      "inclusions": [
+        "Custom Architectural Pelaminan hingga 16 meter dengan Anggrek Bulan Impor",
+        "Instalasi Bunga Gantung Plafon & Lorong Masuk Immersive 15 meter",
+        "Tenda Roder Transparan 350 m², Lantai Panggung Kayu & Chandelier Kristal",
+        "Penataan 8 Meja VIP Royal Banquet & Lounge Area Tamu Kehormatan",
+        "Makeup High-End & Busana Pengantin First-Wear + Keluarga Lengkap",
+        "Dokumentasi Royal Cinematic + Drone Aerial + Same Day Edit Video",
+        "500 pcs Undangan Box Eksklusif & 500 pcs Souvenir Eau de Parfum 50ml",
+        "Mahar Custom Logam Mulia, 10 Kotak Seserahan & Wedding Organizer Hari-H"
+      ],
+      "images": [
+        {
+          "id": "pkg-pre-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "Instalasi Pelaminan Royal Glasshouse"
+        },
+        {
+          "id": "pkg-pre-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Royal Banquet VIP Table Setup"
+        },
+        {
+          "id": "pkg-pre-3",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "Tenda Roder Transparan & Tata Cahaya"
+        },
+        {
+          "id": "pkg-pre-4",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": false,
+          "caption": "Undangan Hardbox & Hampers Souvenir VIP"
+        },
+        {
+          "id": "pkg-pre-5",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Koleksi Mahar & Ring Bearer Eksklusif"
+        }
+      ],
+      "isPopular": false,
+      "isPromo": true,
+      "promoLabel": "Gratis Layanan WO Hari-H",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    },
+    {
+      "id": "pkg-custom",
+      "name": "PAKET CUSTOM — Rancang Sesuai Impian & Budget Anda",
+      "tier": "PAKET CUSTOM",
+      "price": 35000000,
+      "originalPrice": 40000000,
+      "guestCapacity": "Fleksibel Sesuai Kebutuhan Tamu",
+      "description": "Bebas memilih kombinasi dekorasi pelaminan, tenda, MUA, Wedding Organizer, Tim Sanggar, Tim Attire, dokumentasi, undangan, hingga souvenir sesuai tema dan anggaran pernikahan Anda.",
+      "inclusions": [
+        "Bebas pilih model & ukuran Dekorasi Pelaminan sesuai lokasi venue/rumah",
+        "Kombinasi fleksibel layanan MUA, WO, Tim Sanggar & Tim Attire",
+        "Pilihan dokumentasi foto, video sinematik, entertainment & MC",
+        "Jumlah undangan cetak, undangan digital & souvenir menyesuaikan tamu",
+        "Pendampingan konsultasi personal bersama Wedding Planner ISTAFA",
+        "Penyesuaian bertahap melalui fitur Kalkulator Budget & Rencana Pernikahan"
+      ],
+      "images": [
+        {
+          "id": "pkg-cus-1",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": true,
+          "caption": "Kurasi Dekorasi & Layanan Sesuai Konsep Impian"
+        },
+        {
+          "id": "pkg-cus-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "Pilihan Pelaminan Modern, Klasik, maupun Tradisional"
+        },
+        {
+          "id": "pkg-cus-3",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Kustomisasi Mahar, Seserahan & Atribut Pernikahan"
+        }
+      ],
+      "isPopular": false,
+      "isPromo": true,
+      "promoLabel": "Fleksibel Sesuai Budget",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gal-1",
+      "title": "Pernikahan Nadia & Reza — Glasshouse Conservatory",
+      "category": "Pelaminan",
+      "imageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "caption": "Perpaduan tirai sutra ivory, chandelier kristal, dan anggrek bulan menjuntai.",
+      "location": "Glasshouse Bogor",
+      "theme": "Elegant Ivory & Champagne Gold",
+      "images": [
+        {
+          "id": "g1-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "Panggung Pelaminan Utama 12 Meter"
+        },
+        {
+          "id": "g1-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Meja Jamuan Tamu VIP Keluarga"
+        },
+        {
+          "id": "g1-3",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Meja Akad & Set Mahar Kuningan"
+        }
+      ],
+      "aspectType": "landscape",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "gal-2",
+      "title": "Intimate Dinner Reception — Candlelight VIP Table",
+      "category": "Dekorasi",
+      "imageUrl": "/images/wedding_decor_table_1791077473861.jpg",
+      "caption": "Sentuhan brass candelabra, gelas kristal, dan mawar dusty rose untuk jamuan keluarga.",
+      "location": "Heritage Hall Bandung",
+      "theme": "Romantic Soft Luxury",
+      "images": [
+        {
+          "id": "g2-1",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": true,
+          "caption": "Penataan Long Table Dinner & Candelabra"
+        },
+        {
+          "id": "g2-2",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "Area Backdrop Pelaminan Intimate"
+        }
+      ],
+      "aspectType": "portrait",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "gal-3",
+      "title": "Resepsi Malam Aisyah & Fikri — Twilight Marquee Tent",
+      "category": "Tenda",
+      "imageUrl": "/images/wedding_tent_outdoor_1791077486429.jpg",
+      "caption": "Suasana malam romantis dengan ribuan lampu bintang dan wisteria putih.",
+      "location": "Garden Venue Jakarta Selatan",
+      "theme": "Garden Twilight & Gold",
+      "images": [
+        {
+          "id": "g3-1",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": true,
+          "caption": "Tenda Marquee Transparan Malam Hari"
+        },
+        {
+          "id": "g3-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Penataan Kursi Chiavari & Meja Tamu"
+        }
+      ],
+      "aspectType": "landscape",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "gal-4",
+      "title": "Undangan Kertas Katun & Souvenir Parfum Clarissa & Dimas",
+      "category": "Undangan",
+      "imageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "caption": "Kaligrafi foil emas di atas kertas handmade dengan segel lilin monogram.",
+      "location": "Studio ISTAFA Wedding",
+      "theme": "Minimalist Cream & Gold Foil",
+      "images": [
+        {
+          "id": "g4-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "Suite Undangan & Souvenir Parfum Kristal"
+        },
+        {
+          "id": "g4-2",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Detail Seserahan & Ring Box Senada"
+        }
+      ],
+      "aspectType": "square",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "gal-5",
+      "title": "Koleksi Mahar & Kotak Cincin Terarium Kuningan",
+      "category": "Mahar",
+      "imageUrl": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+      "caption": "Rangkaian preserved white rose dan mutiara air tawar dalam bingkai kuningan.",
+      "location": "Galeri ISTAFA Wedding",
+      "theme": "Botanical White & Brass",
+      "images": [
+        {
+          "id": "g5-1",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": true,
+          "caption": "Bingkai Mahar & Hexagonal Ring Box"
+        }
+      ],
+      "aspectType": "portrait",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "gal-6",
+      "title": "Souvenir Eau de Parfum Botanical",
+      "category": "Souvenir",
+      "imageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "caption": "Bingkisan parfum botol kristal dengan aroma white tea & sage.",
+      "location": "Ballroom Hotel Mulia",
+      "theme": "White & Gold",
+      "images": [
+        {
+          "id": "g6-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "Display Souvenir Parfum Tamu VIP"
+        }
+      ],
+      "aspectType": "landscape",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "gal-7",
+      "title": "Dokumentasi Editorial Akad & Resepsi",
+      "category": "Dokumentasi",
+      "imageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "caption": "Hasil dokumentasi foto dan tata cahaya hangat di area pelaminan pengantin.",
+      "location": "Masjid Agung & Ballroom",
+      "theme": "Tradisional Modern Gold",
+      "images": [
+        {
+          "id": "g7-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "Liputan Prosesi Resepsi di Pelaminan"
+        },
+        {
+          "id": "g7-2",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": false,
+          "caption": "Liputan Suasana Malam Hari"
+        }
+      ],
+      "aspectType": "landscape",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "testi-1",
+      "coupleName": "Nadia & Reza Pratama",
+      "eventDate": "September 2026",
+      "venue": "Glasshouse Conservatory",
+      "packageTaken": "PAKET ELEGANT — Signature All-In",
+      "rating": 5,
+      "review": "Awalnya kami sempat bingung menyamakan konsep pelaminan, meja VIP, dan tim dokumentasi. Tim ISTAFA Wedding membantu mengkurasi semuanya dari awal hingga hari-H. Bunga anggrek dan mawar segarnya wangi sekali, dan hasil foto-foto dokumentasinya benar-benar mewah seperti majalah pernikahan!",
+      "images": [
+        {
+          "id": "t1-img-1",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": true,
+          "caption": "Dokumentasi Pelaminan Utama Nadia & Reza"
+        },
+        {
+          "id": "t1-img-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Dokumentasi Meja Jamuan Tamu VIP Keluarga"
+        },
+        {
+          "id": "t1-img-3",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Detail Mahar & Cincin Akad Nikah"
+        }
+      ],
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "testi-2",
+      "coupleName": "Aisyah Putri & Fikri Ramadhan",
+      "eventDate": "Agustus 2026",
+      "venue": "Garden Venue Outdoor",
+      "packageTaken": "Tenda Marquee Transparan & Dekorasi",
+      "rating": 5,
+      "review": "Impian kami mengadakan resepsi malam di taman akhirnya terwujud berkat tenda transparan dan lampu bintang dari ISTAFA Wedding. Semua tamu memuji betapa hangat dan romantis suasananya, serta pemasangan di lokasi sangat rapi tepat waktu.",
+      "images": [
+        {
+          "id": "t2-img-1",
+          "url": "/images/wedding_tent_outdoor_1791077486429.jpg",
+          "isPrimary": true,
+          "caption": "Suasana Malam Tenda Transparan Aisyah & Fikri"
+        },
+        {
+          "id": "t2-img-2",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Penataan Kursi & Meja Makan Malam Tamu"
+        },
+        {
+          "id": "t2-img-3",
+          "url": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+          "isPrimary": false,
+          "caption": "Area Panggung Pelaminan Malam Hari"
+        }
+      ],
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "testi-3",
+      "coupleName": "Clarissa & Dimas Wijaya",
+      "eventDate": "Juli 2026",
+      "venue": "Ballroom Hotel & Intimate Hall",
+      "packageTaken": "Undangan Fine Art, Souvenir & Mahar",
+      "rating": 5,
+      "review": "Mulai dari undangan kertas katun ber-wax seal, souvenir parfum kristal, hingga mahar terarium kuningan semuanya dikerjakan sangat detail oleh ISTAFA Wedding. Fitur kalkulator budget di websitenya juga sangat membantu kami merencanakan biaya sejak awal!",
+      "images": [
+        {
+          "id": "t3-img-1",
+          "url": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+          "isPrimary": true,
+          "caption": "Dokumentasi Undangan & Souvenir Clarissa & Dimas"
+        },
+        {
+          "id": "t3-img-2",
+          "url": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+          "isPrimary": false,
+          "caption": "Dokumentasi Bingkai Mahar & Kotak Cincin"
+        },
+        {
+          "id": "t3-img-3",
+          "url": "/images/wedding_decor_table_1791077473861.jpg",
+          "isPrimary": false,
+          "caption": "Dokumentasi Long Table Intimate Reception"
+        }
+      ],
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "promos": [
+    {
+      "id": "promo-early-bird",
+      "title": "Promo Bundling Dekorasi Pelaminan + Dokumentasi Cinematic",
+      "description": "Booking dekorasi pelaminan fresh flowers minimal 10 meter sekaligus paket dokumentasi foto & video, dapatkan potongan langsung Rp 4.500.000 serta gratis sewa 1 set mahar & welcome mirror.",
+      "promoPrice": 31500000,
+      "normalPrice": 36000000,
+      "imageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "startDate": "2026-09-01",
+      "endDate": "2027-03-31",
+      "badgeText": "Hemat Rp 4,5 Juta",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "promo-tenda-dekor",
+      "title": "Paket Spesial Resepsi Rumah: Tenda Transparan + Pelaminan",
+      "description": "Sulap halaman rumah menjadi sekelas ballroom hotel dengan paket tenda sifon champagne/transparan 150m², lantai karpet, lampu bintang, dan pelaminan bunga segar.",
+      "promoPrice": 24900000,
+      "normalPrice": 28500000,
+      "imageUrl": "/images/wedding_tent_outdoor_1791077486429.jpg",
+      "startDate": "2026-09-15",
+      "endDate": "2027-04-30",
+      "badgeText": "Gratis 2 Misty Fan",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "promo-undangan-souvenir",
+      "title": "Paket 300 Pcs Undangan Hardcover + 300 Souvenir Parfum",
+      "description": "Pesan 300 pcs undangan cetak kertas katun ber-wax seal dan 300 pcs souvenir Eau de Parfum dalam satu paket hemat. Sudah termasuk gratis website undangan digital interaktif.",
+      "promoPrice": 11200000,
+      "normalPrice": 13500000,
+      "imageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "startDate": "2026-10-01",
+      "endDate": "2027-06-30",
+      "badgeText": "Free Web Undangan",
+      "isActive": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "articles": [
+    {
+      "id": "art-checklist-persiapan",
+      "title": "Checklist Persiapan Pernikahan Lengkap dari 6 Bulan Sebelum Hari-H",
+      "category": "Checklist & Perencanaan",
+      "excerpt": "Panduan terstruktur langkah demi langkah mulai dari penentuan tanggal, alokasi budget, pemilihan dekorasi, hingga kesiapan hari bahagia.",
+      "content": "Merencanakan pernikahan impian tidak harus terasa membingungkan jika Anda memiliki panduan waktu yang terukur. Berikut adalah checklist persiapan pernikahan yang telah dikurasi oleh tim ISTAFA Wedding:\n\n1. 6 Bulan Sebelum Pernikahan:\n• Tentukan tanggal akad & resepsi bersama kedua keluarga.\n• Tetapkan estimasi jumlah tamu undangan dan total budget menggunakan Kalkulator Budget ISTAFA Wedding.\n• Booking venue atau tentukan ukuran area jika resepsi diadakan di rumah menggunakan tenda dekorasi.\n• Pilih konsep warna utama (seperti Ivory & Champagne Gold, Sage Botanical, atau Dusty Rose).\n\n2. 4 Bulan Sebelum Pernikahan:\n• Konsultasikan desain dekorasi pelaminan, meja tamu VIP, dan pencahayaan.\n• Lakukan fitting awal busana pengantin serta booking MUA dan tim dokumentasi foto/video.\n• Mulai mendesain undangan cetak dan memesan souvenir agar tidak terburu-buru.\n\n3. 2 Bulan Sebelum Pernikahan:\n• Siapkan perlengkapan mahar akad nikah, kotak cincin, dan barang-barang seserahan untuk dihias.\n• Finalisasi daftar nama tamu dan sebarkan undangan cetak maupun undangan website digital.\n\n4. 2 Minggu Sebelum Hari-H:\n• Lakukan technical meeting bersama koordinator lapangan dan tim dekorasi ISTAFA Wedding.\n• Pastikan Anda beristirahat cukup agar tampil segar dan bahagia di hari istimewa!",
+      "imageUrl": "/images/wedding_hero_pelaminan_1791077458144.jpg",
+      "readTime": "4 Menit Baca",
+      "publishedDate": "Oktober 2026",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "art-tips-memilih-dekorasi",
+      "title": "Tips Memilih Dekorasi Pelaminan & Tenda Sesuai Lokasi Acara",
+      "category": "Tips Dekorasi",
+      "excerpt": "Cara memadukan tinggi plafon, pencahayaan warm white, dan palet warna bunga segar agar ruangan maupun halaman tampak luas dan mewah.",
+      "content": "Dekorasi adalah elemen visual utama yang membangun atmosfer pernikahan Anda dan terekam di setiap foto dokumentasi. Berikut tips memilih dekorasi yang tepat:\n\n1. Sesuaikan Proporsi Pelaminan dengan Area:\nUntuk acara di rumah atau halaman, pilih pelaminan berdimensi 6–8 meter dengan kedalaman efisien, dipadukan tenda plafon serut berwarna terang (ivory atau champagne) agar ruangan terasa tinggi dan lega. Untuk gedung atau taman luas, pelaminan 10–16 meter dengan struktur lengkung (arch) memberikan kesan megah.\n\n2. Perhatikan Pencahayaan (Lighting):\nBunga yang indah membutuhkan pencahayaan hangat (warm white 2700K–3000K). Hindari lampu neon putih kebiruan di sekitar pelaminan agar warna kulit pengantin di foto dokumentasi terlihat glowing dan romantis.\n\n3. Padukan Bunga Segar Fokus Utama:\nGunakan bunga segar beraroma lembut seperti anggrek bulan putih, mawar kebun, dan daun eucalyptus di titik fokus seperti pelaminan utama, meja akad, dan meja makan VIP keluarga.",
+      "imageUrl": "/images/wedding_tent_outdoor_1791077486429.jpg",
+      "readTime": "3 Menit Baca",
+      "publishedDate": "September 2026",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "art-tips-budget-souvenir",
+      "title": "Tips Menentukan Budget Pernikahan & Memilih Souvenir yang Berkesan",
+      "category": "Budget & Souvenir",
+      "excerpt": "Strategi membagi persentase anggaran pernikahan secara bijak serta ide bingkisan souvenir dan seserahan yang disukai tamu.",
+      "content": "Membagi anggaran pernikahan dengan proporsional akan menghindarkan Anda dari pengeluaran tak terduga. Rumus ideal yang sering digunakan oleh wedding planner adalah:\n\n• 40% – 45% untuk Jamuan & Catering Tamu\n• 20% – 25% untuk Dekorasi Pelaminan, Tenda & Kenyamanan Venue\n• 10% – 15% untuk Rias Makeup, Busana Pengantin & Dokumentasi Foto/Video\n• 10% untuk Undangan, Souvenir, Mahar & Seserahan\n• 5% – 10% untuk Dana Cadangan\n\nDalam memilih souvenir dan undangan, prioritaskan barang yang fungsional dengan kemasan elegan—seperti Eau de Parfum ukuran travel, diffuser aroma terapi, atau pouch ber-emboss inisial sederhana sehingga tamu dapat menggunakannya sehari-hari.",
+      "imageUrl": "/images/wedding_invitation_souvenir_1791077592040.jpg",
+      "readTime": "5 Menit Baca",
+      "publishedDate": "September 2026",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "art-ide-mahar-seserahan",
+      "title": "Inspirasi Tema Mahar & Ide Seserahan Modern Klasik yang Timeless",
+      "category": "Ide Mahar & Seserahan",
+      "excerpt": "Mengenal tren bingkai mahar kuningan kaca (terrarium brass) dengan bunga preserved yang awet dipajang di rumah baru Anda.",
+      "content": "Mahar dan seserahan bukan sekadar simbolik prosesi akad nikah, melainkan kenang-kenangan yang akan menghiasi kamar pengantin baru Anda.\n\n1. Gunakan Bunga Preserved (Bunga Abadi):\nBunga mawar asli yang telah melalui proses pengawetan khusus dapat bertahan hingga 3–5 tahun tanpa layu, menjadikan bingkai mahar tampak selalu segar.\n\n2. Seragamkan Warna Baki Seserahan:\nPilih baki kuningan berpenutup kaca jernih (terrarium box) agar isi seserahan terlihat jelas dari segala sisi tanpa tertutup plastik pembungkus yang berlebih.",
+      "imageUrl": "/images/wedding_mahar_ringbox_1791077609532.jpg",
+      "readTime": "3 Menit Baca",
+      "publishedDate": "Agustus 2026",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "calendarPublic": [
+    {
+      "date": "2026-10-10",
+      "status": "unavailable",
+      "publicNote": "Full Booked (2 Jadwal Resepsi)",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-11",
+      "status": "reserved",
+      "publicNote": "Tersisa 1 Slot Dekorasi Intimate",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-17",
+      "status": "reserved",
+      "publicNote": "Reservasi Masuk — Tersisa 1 Slot Tim",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-18",
+      "status": "available",
+      "publicNote": "Tersedia untuk Semua Paket",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-24",
+      "status": "unavailable",
+      "publicNote": "Full Booked",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-25",
+      "status": "available",
+      "publicNote": "Tersedia untuk Semua Paket",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-11-07",
+      "status": "reserved",
+      "publicNote": "Waiting List / Tersisa 1 Slot",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-11-14",
+      "status": "available",
+      "publicNote": "Tanggal Cantik — Slot Masih Tersedia",
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "calendarPrivate": [
+    {
+      "date": "2026-10-10",
+      "clientName": "Keluarga Bpk. Hendra (Ballroom) & Pasangan Rina-Adi",
+      "privateNote": "Loading dekorasi H-1 pukul 21.00 WIB.",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-17",
+      "clientName": "Pasangan Dinda & Farhan (Paket Elegant)",
+      "privateNote": "DP 50% sudah masuk, jadwal fitting kebaya minggu depan.",
+      "authorUid": "system-seed"
+    },
+    {
+      "date": "2026-10-24",
+      "clientName": "Pasangan Tiara & Bagus (Paket Premium)",
+      "privateNote": "Instalasi tenda roder 300m² di kediaman mempelai wanita.",
+      "authorUid": "system-seed"
+    }
+  ],
+  "serviceAreas": [
+    {
+      "id": "area-jakarta",
+      "city": "Jakarta (Selatan, Pusat, Timur, Barat, Utara)",
+      "province": "DKI Jakarta",
+      "description": "Layanan penuh dekorasi gedung, hotel, masjid, tenda kediaman, dokumentasi, dan pengiriman undangan/souvenir.",
+      "isPrimary": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "area-bogor",
+      "city": "Bogor & Sentul",
+      "province": "Jawa Barat",
+      "description": "Spesialis garden wedding outdoor, glasshouse conservatory, tenda marquee transparan, dan paket all-in.",
+      "isPrimary": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "area-depok",
+      "city": "Depok & Cibubur",
+      "province": "Jawa Barat",
+      "description": "Gratis survei lokasi rumah maupun gedung serbaguna untuk pemasangan tenda dekorasi dan pelaminan.",
+      "isPrimary": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "area-tangerang",
+      "city": "Tangerang, BSD & Tangerang Selatan",
+      "province": "Banten",
+      "description": "Cakupan penuh dekorasi ballroom, intimate wedding venue, seserahan, rias pengantin, dan dokumentasi.",
+      "isPrimary": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "area-bekasi",
+      "city": "Bekasi & Cikarang",
+      "province": "Jawa Barat",
+      "description": "Layanan instalasi dekorasi pernikahan gedung & rumah, tenda VIP, paket pernikahan hemat hingga premium.",
+      "isPrimary": true,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    },
+    {
+      "id": "area-nasional",
+      "city": "Pengiriman Seluruh Indonesia",
+      "province": "Nasional (Kargo & Ekspedisi Aman)",
+      "description": "Khusus pemesanan Undangan Cetak, Undangan Digital, Souvenir Pernikahan, dan Bingkai Mahar dengan packing kayu aman.",
+      "isPrimary": false,
+      "visibility": "public",
+      "authorUid": "system-seed"
+    }
+  ],
+  "leads": [
+    {
+      "id": "lead-cons_mutp1vcv_p68tx",
+      "userId": "guest_mutoip3t_she7dqfr",
+      "consultationId": "cons_mutp1vcv_p68tx",
+      "customerName": "",
+      "partnerName": "",
+      "coupleName": "Calon Pengantin",
+      "whatsapp": "",
+      "email": "",
+      "weddingDate": "2026-11-14",
+      "weddingLocation": "",
+      "eventType": "",
+      "guestCount": 0,
+      "budget": 50000000,
+      "needs": [],
+      "interestedProductIds": [
+        "prod-meja-tamu-banquet",
+        "prod-undangan-cotton-foil",
+        "prod-souvenir-parfum-artisan",
+        "prod-mahar-ringbox-brass",
+        "prod-team-mc",
+        "prod-team-entertainment",
+        "prod-wedding-decor-elegant",
+        "prod-makeup-pengantin-flawless",
+        "prod-dokumentasi-cinematic"
+      ],
+      "interestedProductNames": [
+        "Undangan Cetak Fine Art — Cotton Paper & Wax Seal",
+        "Souvenir Eau de Parfum Artisan & Hardbox Linen",
+        "Mahar Botanical Frame & Hexagonal Brass Ring Box",
+        "MC — Layanan Master of Ceremony Akad & Resepsi Pernikahan",
+        "Entertainment — Paket Musik Akustik, Saxophone & Sound System",
+        "Dekorasi Elegant Gold — Royal Glasshouse",
+        "MUA — Make Up Artist Profesional (Akad & Resepsi)",
+        "Dokumentasi Foto & Video Cinematic Pernikahan"
+      ],
+      "recommendedPackageNames": [],
+      "consultationSummary": "Pasangan: Calon Pengantin • Tanggal: 2026-11-14 • Budget: Rp 50.000.000 • Rekomendasi: Undangan Cetak Fine Art — Cotton Paper & Wax Seal, Souvenir Eau de Parfum Artisan & Hardbox Linen, Mahar Botanical Frame & Hexagonal Brass Ring Box, MC — Layanan Master of Ceremony Akad & Resepsi Pernikahan",
+      "notes": "",
+      "status": "Consultation",
+      "source": "consultation",
+      "createdAt": "2026-10-04T12:32:17.857Z",
+      "updatedAt": "2026-10-04T12:32:17.976Z"
+    },
+    {
+      "id": "lead-init-1",
+      "userId": "sample-user-1",
+      "consultationId": "cons-sample-1",
+      "customerName": "Nadia Putri",
+      "partnerName": "Reza Prakoso",
+      "coupleName": "Nadia & Reza",
+      "whatsapp": "6281298765432",
+      "email": "nadia.putri@email.com",
+      "weddingDate": "2026-11-14",
+      "weddingLocation": "Glasshouse Bogor",
+      "eventType": "Akad & Resepsi (Indoor / Gedung)",
+      "guestCount": 300,
+      "budget": 50000000,
+      "needs": [
+        "Dekorasi Pernikahan",
+        "MUA — Make Up Artist",
+        "Wedding Organizer (WO)",
+        "Undangan Cetak",
+        "Souvenir"
+      ],
+      "interestedProductIds": [
+        "prod-wedding-decor-elegant",
+        "prod-makeup-pengantin-flawless",
+        "prod-wo-wedding-organizer"
+      ],
+      "interestedProductNames": [
+        "Dekorasi Pelaminan Royal Glasshouse Floral",
+        "MUA — Make Up Artist Pengantin Flawless",
+        "Layanan Wedding Organizer (WO) Full Day"
+      ],
+      "recommendedPackageNames": [
+        "Intimate Elegance Package"
+      ],
+      "consultationSummary": "Calon pengantin Nadia & Reza merencanakan Akad & Resepsi di Glasshouse Bogor pada 2026-11-14 untuk 300 tamu dengan target budget Rp 50.000.000.",
+      "notes": "Tertarik konsep Elegant Gold & Ivory. Ingin jadwal fitting & test makeup bulan depan.",
+      "status": "Interested",
+      "source": "consultation",
+      "createdAt": "2026-10-04T12:01:12.139Z",
+      "updatedAt": "2026-10-04T12:01:12.139Z"
+    }
+  ],
+  "consultations": [
+    {
+      "id": "cons_mutp1vcv_p68tx",
+      "userId": "guest_mutoip3t_she7dqfr",
+      "title": "Konsultasi: Rp 30.000.000",
+      "coupleName": "",
+      "weddingDate": "2026-11-14",
+      "weddingLocation": "",
+      "guestCount": 0,
+      "targetBudget": 50000000,
+      "weddingTheme": "",
+      "desiredColors": "",
+      "messages": [
+        {
+          "id": "msg_init_mutp1vcv",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Halo 👋 Selamat datang di Konsultasi Pernikahan ISTAFA. Ceritakan rencana pernikahan Anda, dan kami akan membantu memberikan rekomendasi berdasarkan pilihan produk dan layanan yang tersedia di ISTAFA Wedding.",
+          "recommendations": [],
+          "createdAt": "2026-10-04T10:44:36.991Z"
+        },
+        {
+          "id": "msg_u_mutpmt7p_lo2y",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "Budget saya 30 juta",
+          "recommendations": [],
+          "createdAt": "2026-10-04T11:00:53.989Z"
+        },
+        {
+          "id": "msg_c_mutpmtxc_vc3e",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Terima kasih atas informasinya. Untuk rencana pernikahan dengan target budget **Rp 30.000.000** dan perkiraan **300 tamu**, berikut simulasi kombinasi produk & layanan dari katalog ISTAFA Wedding:\n\nKombinasi ini berada dalam batas anggaran Anda dengan sisa ruang budget sekitar **Rp 19.577.000**. Berikut 3 produk utama yang paling kami rekomendasikan:",
+          "recommendations": [
+            {
+              "productId": "prod-meja-tamu-banquet",
+              "reason": "Pilihan unggulan kategori Dekorasi di katalog ISTAFA Wedding, sudah termasuk rangkaian bunga segar sepanjang meja (hydrangea & rose) & set candelabra kuningan & lilin taper anti-tetes.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-undangan-cotton-foil",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, sudah termasuk kartu utama kertas katun 350gsm dengan hotprint gold foil & amplop bertekstur dengan cetak liner motif floral halus.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-souvenir-parfum-artisan",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, sudah termasuk botol kaca kristal tebal dengan label custom nama & tanggal pernikahan & pilihan 3 aroma signature: white tea & sage, english rose, champagne musk.",
+              "suggestedQuantity": 1
+            }
+          ],
+          "budgetBreakdown": {
+            "targetBudget": 30000000,
+            "guestCount": 300,
+            "dekorasi": 8500000,
+            "undangan": 28000,
+            "souvenir": 45000,
+            "dokumentasi": 0,
+            "makeup": 0,
+            "layananLainnya": 1850000,
+            "totalEstimate": 10423000,
+            "isOverBudget": false,
+            "overBudgetAmount": 0,
+            "items": [
+              {
+                "categoryLabel": "Dekorasi",
+                "productId": "prod-meja-tamu-banquet",
+                "productName": "Long Table Banquet & VIP Table Styling",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 8500000,
+                "subtotal": 8500000
+              },
+              {
+                "categoryLabel": "Undangan",
+                "productId": "prod-undangan-cotton-foil",
+                "productName": "Undangan Fine Art Kertas Katun & Wax Seal",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 28000,
+                "subtotal": 28000
+              },
+              {
+                "categoryLabel": "Souvenir",
+                "productId": "prod-souvenir-parfum-artisan",
+                "productName": "Souvenir Eau de Parfum & Reed Diffuser Botanical",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 45000,
+                "subtotal": 45000
+              },
+              {
+                "categoryLabel": "Layanan lainnya",
+                "productId": "prod-mahar-ringbox-brass",
+                "productName": "Mahar Pernikahan & Ring Bearer Box Terarium Brass",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 1850000,
+                "subtotal": 1850000
+              }
+            ]
+          },
+          "extractedContext": {
+            "targetBudget": 30000000
+          },
+          "createdAt": "2026-10-04T11:00:54.912Z"
+        },
+        {
+          "id": "msg_u_mutpnxwe_z1yz",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "saya pengen nikah tapi uang saya ada 5 juta apakah kamu bisa mengatur semuan pernikahan saya",
+          "recommendations": [],
+          "createdAt": "2026-10-04T11:01:46.718Z"
+        },
+        {
+          "id": "msg_c_mutpny24_r0f4",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Saat ini pilihan tersebut belum tersedia di katalog ISTAFA Wedding. Silakan hubungi kami melalui WhatsApp untuk konsultasi lebih lanjut.",
+          "recommendations": [],
+          "extractedContext": {
+            "targetBudget": 5000000,
+            "requestedCategories": [
+              "makeup"
+            ]
+          },
+          "isUnavailableNotice": true,
+          "createdAt": "2026-10-04T11:01:46.924Z"
+        },
+        {
+          "id": "msg_u_mutpyek1_k1qx",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "langkah apa yang harus saya lakukan untuk pernikahan",
+          "recommendations": [],
+          "createdAt": "2026-10-04T11:09:54.865Z"
+        },
+        {
+          "id": "msg_c_mutpyntc_39wq",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Untuk memulai persiapan pernikahan secara terencana dan bijak, berikut beberapa langkah awal yang dapat Anda dan pasangan lakukan:\n\n1. **Menentukan Format Acara**: Diskusikan bersama pasangan dan keluarga untuk mengutamakan prosesi akad nikah yang khidmat dan intimate, misalnya di KUA atau kediaman bersama keluarga terdekat.\n2. **Pengurusan Administrasi KUA**: Daftarkan berkas pernikahan ke KUA setempat untuk memastikan tanggal dan kelengkapan dokumen sah secara negara dan agama.\n3. **Mempersiapkan Rukun & Kebutuhan Inti**: Siapkan mahar/mas kawin serta jalannya prosesi agar ijab kabul berlangsung tertib dan penuh kesan.\n\nUntuk mendukung langkah awal prosesi akad nikah Anda agar tetap istimewa dan tertata dengan baik, berikut rekomendasi esensial dari katalog ISTAFA Wedding:",
+          "recommendations": [
+            {
+              "productId": "prod-mahar-ringbox-brass",
+              "reason": "Mahar merupakan rukun utama dalam pernikahan. Set bingkai mahar dan kotak cincin terarium kuningan ini akan mempercantik momen penyerahan mahar secara elegan dan berkesan.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-team-mc",
+              "reason": "Memandu jalannya prosesi akad nikah agar berlangsung khidmat, tertib, dan menyentuh hati di hadapan keluarga kedua mempelai.",
+              "suggestedQuantity": 1
+            }
+          ],
+          "extractedContext": {},
+          "createdAt": "2026-10-04T11:10:06.864Z"
+        },
+        {
+          "id": "msg_u_mutpzwv8_5kss",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "saya tidak punya uang tapi pengen nikah",
+          "recommendations": [],
+          "createdAt": "2026-10-04T11:11:05.252Z"
+        },
+        {
+          "id": "msg_c_mutpzzul_e743",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Berikut **Rekomendasi untuk Anda** berdasarkan koleksi yang tersedia di katalog ISTAFA Wedding (disesuaikan dengan kapasitas **300 tamu**, budget **Rp 5.000.000**):\n\nAnda dapat menekan tombol **Lihat Produk**, **Tambah ke Keranjang**, atau **Tambah ke Rencana** pada kartu di bawah, atau katakan *\"Saya pilih yang ini\"* untuk memasukkannya langsung ke keranjang.",
+          "recommendations": [
+            {
+              "productId": "prod-team-mc",
+              "reason": "Pilihan unggulan kategori MC di katalog ISTAFA Wedding, sedang memiliki penawaran harga spesial (Rp 2.500.000).",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-mahar-ringbox-brass",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, sudah termasuk 1 bingkai mahar kuningan kaca ganda ukuran 40x50 cm & 1 kotak cincin terarium heksagonal berlapis beludru ivory.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-team-entertainment",
+              "reason": "Pilihan unggulan kategori Entertainment di katalog ISTAFA Wedding, sedang memiliki penawaran harga spesial (Rp 4.500.000).",
+              "suggestedQuantity": 1
+            }
+          ],
+          "extractedContext": {},
+          "createdAt": "2026-10-04T11:11:09.117Z"
+        },
+        {
+          "id": "msg_u_mutrkq1i_7a6b",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "tolong atur pernikahan saya mana saja yang harus saya beli budget nikah saya 100 juta tolong kalkulatorka budget saya",
+          "recommendations": [],
+          "createdAt": "2026-10-04T11:55:15.798Z"
+        },
+        {
+          "id": "msg_c_mutrkrnu_5g0r",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Terima kasih atas informasinya. Untuk rencana pernikahan dengan target budget **Rp 100.000.000** dan perkiraan **300 tamu**, berikut simulasi kombinasi produk & layanan dari katalog ISTAFA Wedding:\n\nKombinasi ini berada dalam batas anggaran Anda dengan sisa ruang budget sekitar **Rp 62.927.000**. Berikut 3 produk utama yang paling kami rekomendasikan:",
+          "recommendations": [
+            {
+              "productId": "prod-wedding-decor-elegant",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, sudah termasuk pelaminan utama lebar 8–12 meter dengan bunga segar penuh & taman mini depan pelaminan (mini garden) & karpet jalan rose petal.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-undangan-cotton-foil",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, sudah termasuk kartu utama kertas katun 350gsm dengan hotprint gold foil & amplop bertekstur dengan cetak liner motif floral halus.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-souvenir-parfum-artisan",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, sudah termasuk botol kaca kristal tebal dengan label custom nama & tanggal pernikahan & pilihan 3 aroma signature: white tea & sage, english rose, champagne musk.",
+              "suggestedQuantity": 1
+            }
+          ],
+          "budgetBreakdown": {
+            "targetBudget": 100000000,
+            "guestCount": 300,
+            "dekorasi": 28500000,
+            "undangan": 28000,
+            "souvenir": 45000,
+            "dokumentasi": 0,
+            "makeup": 0,
+            "layananLainnya": 8500000,
+            "totalEstimate": 37073000,
+            "isOverBudget": false,
+            "overBudgetAmount": 0,
+            "items": [
+              {
+                "categoryLabel": "Dekorasi",
+                "productId": "prod-wedding-decor-elegant",
+                "productName": "Wedding Decoration Elegant — Royal Botanical",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 28500000,
+                "subtotal": 28500000
+              },
+              {
+                "categoryLabel": "Undangan",
+                "productId": "prod-undangan-cotton-foil",
+                "productName": "Undangan Fine Art Kertas Katun & Wax Seal",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 28000,
+                "subtotal": 28000
+              },
+              {
+                "categoryLabel": "Souvenir",
+                "productId": "prod-souvenir-parfum-artisan",
+                "productName": "Souvenir Eau de Parfum & Reed Diffuser Botanical",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 45000,
+                "subtotal": 45000
+              },
+              {
+                "categoryLabel": "Layanan lainnya",
+                "productId": "prod-wo-wedding-organizer",
+                "productName": "WO — Wedding Organizer Profesional (Full Coordination)",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 8500000,
+                "subtotal": 8500000
+              }
+            ]
+          },
+          "extractedContext": {
+            "targetBudget": 100000000
+          },
+          "createdAt": "2026-10-04T11:55:17.898Z"
+        },
+        {
+          "id": "msg_u_mutrwwiq_9bav",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "saya budget 50 juta tolong di rencanakan",
+          "recommendations": [],
+          "createdAt": "2026-10-04T12:04:44.066Z"
+        },
+        {
+          "id": "msg_c_mutrwwpq_b8ka",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Terima kasih informasinya Kak! Untuk rencana pernikahan dengan target budget **Rp 50.000.000** dan perkiraan **300 tamu**, berikut simulasi kombinasi produk & layanan dari katalog ISTAFA Wedding:\n\nKombinasi ini masuk dengan nyaman di dalam anggaran kamu dengan sisa ruang budget sekitar **Rp 12.927.000**. Berikut 3 rekomendasi produk utamanya:",
+          "recommendations": [
+            {
+              "productId": "prod-wedding-decor-elegant",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, harga Rp 28.500.000 sesuai dengan kisaran budget Rp 50.000.000.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-undangan-cotton-foil",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, harga Rp 28.000 sesuai dengan kisaran budget Rp 50.000.000.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-souvenir-parfum-artisan",
+              "reason": "Cocok untuk tema elegant dengan warna cream dan champagne gold, harga Rp 45.000 sesuai dengan kisaran budget Rp 50.000.000.",
+              "suggestedQuantity": 1
+            }
+          ],
+          "budgetBreakdown": {
+            "targetBudget": 50000000,
+            "guestCount": 300,
+            "dekorasi": 28500000,
+            "undangan": 28000,
+            "souvenir": 45000,
+            "dokumentasi": 0,
+            "makeup": 0,
+            "layananLainnya": 8500000,
+            "totalEstimate": 37073000,
+            "isOverBudget": false,
+            "overBudgetAmount": 0,
+            "items": [
+              {
+                "categoryLabel": "Dekorasi",
+                "productId": "prod-wedding-decor-elegant",
+                "productName": "Wedding Decoration Elegant — Royal Botanical",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 28500000,
+                "subtotal": 28500000
+              },
+              {
+                "categoryLabel": "Undangan",
+                "productId": "prod-undangan-cotton-foil",
+                "productName": "Undangan Fine Art Kertas Katun & Wax Seal",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 28000,
+                "subtotal": 28000
+              },
+              {
+                "categoryLabel": "Souvenir",
+                "productId": "prod-souvenir-parfum-artisan",
+                "productName": "Souvenir Eau de Parfum & Reed Diffuser Botanical",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 45000,
+                "subtotal": 45000
+              },
+              {
+                "categoryLabel": "Layanan lainnya",
+                "productId": "prod-wo-wedding-organizer",
+                "productName": "WO — Wedding Organizer Profesional (Full Coordination)",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 8500000,
+                "subtotal": 8500000
+              }
+            ]
+          },
+          "extractedContext": {
+            "targetBudget": 50000000
+          },
+          "createdAt": "2026-10-04T12:04:44.318Z"
+        },
+        {
+          "id": "msg_u_mutswca1_lelp",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "user",
+          "message": "saya puya uang 50 juta tolong di perbaiki",
+          "recommendations": [],
+          "createdAt": "2026-10-04T12:32:17.449Z"
+        },
+        {
+          "id": "msg_c_mutswchl_h6s8",
+          "consultationId": "cons_mutp1vcv_p68tx",
+          "userId": "guest_mutoip3t_she7dqfr",
+          "sender": "consultant",
+          "message": "Terima kasih informasinya Kak! Untuk rencana pernikahan dengan target budget **Rp 50.000.000** dan perkiraan **300 tamu**, berikut simulasi kombinasi produk & layanan dari katalog ISTAFA Wedding:\n\nRencana standar melebihi budget sekitar **Rp 11.750.000**. Saya sudah menyiapkan alternatif kombinasi yang lebih hemat dari katalog ISTAFA Wedding di bawah ini agar tetap nyaman di budget kamu.",
+          "recommendations": [
+            {
+              "productId": "prod-wedding-decor-elegant",
+              "reason": "Alternatif hemat dari katalog ISTAFA (Rp 25.500.000) agar sesuai dengan budget Rp 50.000.000.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-makeup-pengantin-flawless",
+              "reason": "Alternatif hemat dari katalog ISTAFA (Rp 5.500.000) agar sesuai dengan budget Rp 50.000.000.",
+              "suggestedQuantity": 1
+            },
+            {
+              "productId": "prod-dokumentasi-cinematic",
+              "reason": "Alternatif hemat dari katalog ISTAFA (Rp 9.500.000) agar sesuai dengan budget Rp 50.000.000.",
+              "suggestedQuantity": 1
+            }
+          ],
+          "budgetBreakdown": {
+            "targetBudget": 50000000,
+            "guestCount": 300,
+            "dekorasi": 25500000,
+            "undangan": 5550000,
+            "souvenir": 7200000,
+            "dokumentasi": 9500000,
+            "makeup": 5500000,
+            "layananLainnya": 8500000,
+            "totalEstimate": 61750000,
+            "isOverBudget": true,
+            "overBudgetAmount": 11750000,
+            "items": [
+              {
+                "categoryLabel": "Dekorasi",
+                "productId": "prod-wedding-decor-elegant",
+                "productName": "Dekorasi Elegant Gold — Royal Glasshouse",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 25500000,
+                "subtotal": 25500000
+              },
+              {
+                "categoryLabel": "Undangan",
+                "productId": "prod-undangan-cotton-foil",
+                "productName": "Undangan Cetak Fine Art — Cotton Paper & Wax Seal",
+                "quantity": 300,
+                "unit": "Pcs",
+                "unitPrice": 18500,
+                "subtotal": 5550000
+              },
+              {
+                "categoryLabel": "Souvenir",
+                "productId": "prod-souvenir-parfum-artisan",
+                "productName": "Souvenir Eau de Parfum Artisan & Hardbox Linen",
+                "quantity": 300,
+                "unit": "Pcs",
+                "unitPrice": 24000,
+                "subtotal": 7200000
+              },
+              {
+                "categoryLabel": "Dokumentasi",
+                "productId": "prod-dokumentasi-cinematic",
+                "productName": "Dokumentasi Foto & Video Cinematic Pernikahan",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 9500000,
+                "subtotal": 9500000
+              },
+              {
+                "categoryLabel": "Makeup",
+                "productId": "prod-makeup-pengantin-flawless",
+                "productName": "MUA — Make Up Artist Profesional (Akad & Resepsi)",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 5500000,
+                "subtotal": 5500000
+              },
+              {
+                "categoryLabel": "Layanan lainnya",
+                "productId": "prod-wo-wedding-organizer",
+                "productName": "WO — Wedding Organizer Profesional (Full Coordination)",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 8500000,
+                "subtotal": 8500000
+              }
+            ],
+            "alternativeItems": [
+              {
+                "categoryLabel": "Dekorasi",
+                "productId": "prod-wedding-decor-elegant",
+                "productName": "Dekorasi Elegant Gold — Royal Glasshouse",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 25500000,
+                "subtotal": 25500000
+              },
+              {
+                "categoryLabel": "Makeup",
+                "productId": "prod-makeup-pengantin-flawless",
+                "productName": "MUA — Make Up Artist Profesional (Akad & Resepsi)",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 5500000,
+                "subtotal": 5500000
+              },
+              {
+                "categoryLabel": "Dokumentasi",
+                "productId": "prod-dokumentasi-cinematic",
+                "productName": "Dokumentasi Foto & Video Cinematic Pernikahan",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 9500000,
+                "subtotal": 9500000
+              },
+              {
+                "categoryLabel": "Undangan",
+                "productId": "prod-undangan-digital-exclusive",
+                "productName": "Undangan Digital Website Interaktif — Luxury Editorial",
+                "quantity": 1,
+                "unit": "Paket",
+                "unitPrice": 350000,
+                "subtotal": 350000
+              },
+              {
+                "categoryLabel": "Souvenir",
+                "productId": "prod-souvenir-parfum-artisan",
+                "productName": "Souvenir Eau de Parfum Artisan & Hardbox Linen",
+                "quantity": 180,
+                "unit": "Pcs",
+                "unitPrice": 24000,
+                "subtotal": 4320000
+              },
+              {
+                "categoryLabel": "Layanan lainnya",
+                "productId": "prod-mahar-ringbox-brass",
+                "productName": "Mahar Botanical Frame & Hexagonal Brass Ring Box",
+                "quantity": 1,
+                "unit": "Set",
+                "unitPrice": 1650000,
+                "subtotal": 1650000
+              }
+            ],
+            "alternativeTotal": 46820000
+          },
+          "extractedContext": {
+            "targetBudget": 50000000
+          },
+          "quickReplies": [
+            "Saya pilih yang ini",
+            "Rekomendasi Undangan & Souvenir",
+            "Rekomendasi MUA & WO",
+            "Konsultasikan dengan Istafa"
+          ],
+          "createdAt": "2026-10-04T12:32:17.721Z"
+        }
+      ],
+      "createdAt": "2026-10-04T10:44:36.991Z",
+      "updatedAt": "2026-10-04T12:32:17.976Z",
+      "customerName": "",
+      "partnerName": "",
+      "whatsapp": "",
+      "email": "",
+      "needs": [],
+      "interestedProductIds": [],
+      "status": "recommended"
+    }
+  ],
+  "orders": [],
+  "inquiries": [
+    {
+      "id": "inq-sample-1",
+      "userId": "sample-user-1",
+      "coupleName": "Nadia & Reza",
+      "customerName": "Nadia Putri",
+      "partnerName": "Reza Prakoso",
+      "whatsapp": "6281298765432",
+      "weddingLocation": "Glasshouse Bogor",
+      "weddingDate": "2026-11-14",
+      "type": "consultation",
+      "customerDate": "2026-11-14",
+      "guestCount": 300,
+      "itemsSummary": [
+        "Dekorasi Pelaminan Royal Glasshouse Floral",
+        "MUA — Make Up Artist Pengantin Flawless",
+        "Layanan Wedding Organizer (WO) Full Day"
+      ],
+      "totalEstimate": 48250000,
+      "status": "Interested",
+      "createdAt": "2026-10-04"
+    }
+  ],
+  "workspaces": {}
+}

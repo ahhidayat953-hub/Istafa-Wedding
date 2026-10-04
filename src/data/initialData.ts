@@ -14,11 +14,11 @@ import {
 } from '../types';
 
 export const WEDDING_IMAGES = {
-  pelaminan: '/src/assets/images/wedding_hero_pelaminan_1791077458144.jpg',
-  decorTable: '/src/assets/images/wedding_decor_table_1791077473861.jpg',
-  tentOutdoor: '/src/assets/images/wedding_tent_outdoor_1791077486429.jpg',
-  invitationSouvenir: '/src/assets/images/wedding_invitation_souvenir_1791077592040.jpg',
-  maharRingbox: '/src/assets/images/wedding_mahar_ringbox_1791077609532.jpg',
+  pelaminan: '/images/wedding_hero_pelaminan_1791077458144.jpg',
+  decorTable: '/images/wedding_decor_table_1791077473861.jpg',
+  tentOutdoor: '/images/wedding_tent_outdoor_1791077486429.jpg',
+  invitationSouvenir: '/images/wedding_invitation_souvenir_1791077592040.jpg',
+  maharRingbox: '/images/wedding_mahar_ringbox_1791077609532.jpg',
 };
 
 export const PRESET_GALLERY_CHOICES = [

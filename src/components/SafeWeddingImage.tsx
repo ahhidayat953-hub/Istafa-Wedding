@@ -1,34 +1,53 @@
-import React, { useState } from 'react';
-import { Flower2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Sparkles } from 'lucide-react';
+import {
+  DEFAULT_WEDDING_FALLBACK_IMAGE,
+  normalizeWeddingImageUrl,
+} from '../utils/imageUtils';
 
-interface SafeWeddingImageProps {
-  src: string;
-  alt: string;
-  className?: string;
-  onClick?: () => void;
+interface SafeWeddingImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  fallbackSrc?: string;
 }
 
-/**
- * Resilient image component enforcing Zero-Broken-Image Policy.
- * Includes referrerPolicy="no-referrer" and a soft luxury botanical fallback if an external URL fails.
- */
 export const SafeWeddingImage: React.FC<SafeWeddingImageProps> = ({
   src,
   alt,
+  fallbackSrc = DEFAULT_WEDDING_FALLBACK_IMAGE,
   className = '',
-  onClick,
+  onError,
+  ...rest
 }) => {
-  const [hasError, setHasError] = useState(false);
+  const normalizedPrimary = normalizeWeddingImageUrl(
+    typeof src === 'string' ? src : undefined
+  );
+  const normalizedFallback = normalizeWeddingImageUrl(fallbackSrc);
 
-  if (!src || hasError) {
+  const [imgSrc, setImgSrc] = useState<string>(normalizedPrimary);
+  const [hasFailedAll, setHasFailedAll] = useState<boolean>(false);
+
+  useEffect(() => {
+    const nextUrl = normalizeWeddingImageUrl(
+      typeof src === 'string' ? src : undefined
+    );
+    setImgSrc(nextUrl);
+    setHasFailedAll(false);
+  }, [src, fallbackSrc]);
+
+  if (hasFailedAll) {
     return (
       <div
-        onClick={onClick}
-        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#F5EFE6] via-[#EFE6D5] to-[#E5D8C1] text-[#7C6A56] p-6 text-center select-none ${className}`}
+        className={`bg-gradient-to-br from-[#F4EFE4] via-[#EFE5D2] to-[#E5D7BD] flex flex-col items-center justify-center text-center p-4 select-none ${className}`}
+        role="img"
+        aria-label={alt || 'ISTAFA Wedding Collection'}
       >
-        <Flower2 className="w-8 h-8 stroke-[1.25] text-[#B68D40] mb-2 opacity-80" />
-        <span className="font-serif-display italic text-sm line-clamp-2 max-w-[200px]">
-          {alt || 'Koleksi Pernikahan Aurelia'}
+        <div className="w-10 h-10 rounded-full bg-white/80 text-[#9E762C] flex items-center justify-center shadow-xs mb-2">
+          <Sparkles className="w-5 h-5" />
+        </div>
+        <span className="font-serif-display text-xs sm:text-sm font-semibold text-[#26211D] line-clamp-1">
+          {alt || 'ISTAFA Wedding'}
+        </span>
+        <span className="text-[10px] uppercase tracking-widest text-[#7C6A56] mt-0.5">
+          Koleksi Eksklusif
         </span>
       </div>
     );
@@ -36,13 +55,20 @@ export const SafeWeddingImage: React.FC<SafeWeddingImageProps> = ({
 
   return (
     <img
-      src={src}
-      alt={alt}
-      referrerPolicy="no-referrer"
-      onError={() => setHasError(true)}
-      onClick={onClick}
+      {...rest}
+      src={imgSrc}
+      alt={alt || 'ISTAFA Wedding'}
+      loading={rest.loading || 'lazy'}
+      decoding="async"
       className={className}
-      loading="lazy"
+      onError={(e) => {
+        if (imgSrc !== normalizedFallback) {
+          setImgSrc(normalizedFallback);
+        } else {
+          setHasFailedAll(true);
+        }
+        if (onError) onError(e);
+      }}
     />
   );
 };

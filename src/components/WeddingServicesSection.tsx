@@ -244,7 +244,7 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
       : [
           {
             id: 'fallback',
-            url: '/src/assets/images/wedding_hero_pelaminan_1791077458144.jpg',
+            url: '/images/wedding_hero_pelaminan_1791077458144.jpg',
             isPrimary: true,
             caption: service.name,
           },

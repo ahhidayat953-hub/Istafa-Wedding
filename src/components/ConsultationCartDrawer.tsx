@@ -126,7 +126,7 @@ export const ConsultationCartDrawer: React.FC<ConsultationCartDrawerProps> = ({
 
   const handleSaveBookingOrder = async () => {
     setFormError(null);
-    const cleanName = customerName.trim() || weddingPlan.coupleName.trim();
+    const cleanName = customerName.trim() || (weddingPlan.coupleName || '').trim();
     const cleanWa = whatsappInput.trim();
     if (!cleanName) {
       setFormError('Mohon isi Nama Calon Pengantin terlebih dahulu.');
@@ -199,7 +199,7 @@ export const ConsultationCartDrawer: React.FC<ConsultationCartDrawerProps> = ({
   };
 
   const handleConsultClick = () => {
-    const cleanName = customerName.trim() || weddingPlan.coupleName.trim() || 'Calon Pengantin';
+    const cleanName = customerName.trim() || (weddingPlan.coupleName || '').trim() || 'Calon Pengantin';
     void saveLead({
       consultationId: activeConsultation.id,
       customerName: cleanName,

@@ -706,8 +706,9 @@ const WeddingCatalogueApp: React.FC = () => {
                     <div className="rounded-t-[130px] sm:rounded-t-[180px] rounded-b-3xl p-2 sm:p-2.5 border border-[#D5C096] bg-white/70 shadow-xl">
                       <div className="relative aspect-[4/5] rounded-t-[122px] sm:rounded-t-[170px] rounded-b-2xl overflow-hidden bg-[#EFE6D5]">
                         <SafeWeddingImage
-                          src="/src/assets/images/wedding_hero_pelaminan_1791077458144.jpg"
+                          src={settings.heroImageUrl || '/images/wedding_hero_pelaminan_1791077458144.jpg'}
                           alt="Dekorasi Pelaminan Pernikahan Impian Istafa Wedding"
+                          loading="eager"
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent p-4 sm:p-6 text-white">

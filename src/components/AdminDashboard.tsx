@@ -57,7 +57,14 @@ import {
   WeddingOrder,
   WeddingPackage,
 } from '../types';
-import { buildWhatsAppUrl, compressImageFile, formatRupiah, getPrimaryImage } from '../utils/imageUtils';
+import {
+  buildWhatsAppUrl,
+  compressImageFile,
+  enrichProductImagesForDatabase,
+  formatRupiah,
+  getPrimaryImage,
+  isValidPersistentImageUrl,
+} from '../utils/imageUtils';
 import { MultiPhotoUploader } from './MultiPhotoUploader';
 import { SafeWeddingImage } from './SafeWeddingImage';
 
@@ -138,6 +145,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [saveBanner, setSaveBanner] = useState<string | null>(null);
+  const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     title: string;
     message: string;
@@ -285,7 +293,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [bizInstagram, setBizInstagram] = useState(settings.instagram);
   const [bizAddress, setBizAddress] = useState(settings.address);
   const [bizHours, setBizHours] = useState(settings.email);
-  const [bizUsername, setBizUsername] = useState(adminUsername || 'istafa');
+  const [bizUsername, setBizUsername] = useState(adminUsername || '');
   const [bizPassword, setBizPassword] = useState('');
 
   const [areaId, setAreaId] = useState<string | null>(null);
@@ -296,10 +304,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [areaFeatured, setAreaFeatured] = useState(true);
 
   const showSuccessBanner = (msg: string) => {
+    setErrorBanner(null);
     setSaveBanner(msg);
     setTimeout(() => {
       setSaveBanner(null);
-    }, 3400);
+    }, 3800);
+  };
+
+  const showErrorBanner = (msg: string) => {
+    setSaveBanner(null);
+    setErrorBanner(msg);
   };
 
   // Duplicate an existing product with all its photos & specs (Requirement 7)
@@ -379,6 +393,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       customerName: newOrderCustomer.trim(),
       partnerName: newOrderPartner.trim(),
       whatsapp: newOrderWa.trim(),
+      email: '',
       weddingDate: newOrderDate || 'Belum ditentukan',
       weddingLocation: newOrderLocation.trim() || '-',
       eventType: 'Akad & Resepsi',
@@ -464,8 +479,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!prodName.trim()) return;
 
     setIsSavingProduct(true);
+    setErrorBanner(null);
     try {
-      const finalImages: ProductImage[] =
+      const targetProdId =
+        editingProductId ||
+        `prod-${prodName
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          .slice(0, 32)}-${Date.now().toString(36)}`;
+
+      const rawImages: ProductImage[] =
         prodImages.length > 0
           ? prodImages
           : [
@@ -473,12 +498,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 id: `img-default-${Date.now()}`,
                 url: PRESET_GALLERY_CHOICES[0].url,
                 isPrimary: true,
-                caption: `${prodName} - Foto Utama`,
+                caption: `${prodName.trim()} - Foto Utama`,
               },
             ];
 
+      // Validate that all photos have valid persistent storage URLs
+      const hasInvalidPhoto = rawImages.some(
+        (img) => !isValidPersistentImageUrl(img.image_url || img.url)
+      );
+      if (hasInvalidPhoto) {
+        showErrorBanner('Foto belum berhasil diupload. Silakan coba lagi.');
+        return;
+      }
+
+      const finalImages = enrichProductImagesForDatabase(targetProdId, rawImages);
+
       await saveProduct({
-        id: editingProductId || undefined,
+        id: targetProdId,
         name: prodName.trim(),
         category: prodCategory,
         price: Number(prodPrice) || 0,
@@ -510,7 +546,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       });
       setIsEditingProduct(false);
       showSuccessBanner(
-        `Produk "${prodName.trim()}" berhasil disimpan dengan ${finalImages.length} foto.`
+        `Produk "${prodName.trim()}" berhasil disimpan ke database dengan ${finalImages.length} foto.`
+      );
+    } catch (err) {
+      showErrorBanner(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Foto belum berhasil diupload. Silakan coba lagi.'
       );
     } finally {
       setIsSavingProduct(false);
@@ -667,8 +709,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!file) return;
     setIsUploadingCategoryFile(true);
     try {
-      const uploaded = await compressImageFile(file, 1000, 0.74, 'categories');
+      const uploaded = await compressImageFile(file, 1080, 0.78, 'categories');
       setCatImageUrl(uploaded);
+    } catch {
+      showErrorBanner('Foto belum berhasil diupload. Silakan coba lagi.');
     } finally {
       setIsUploadingCategoryFile(false);
       e.target.value = '';
@@ -680,8 +724,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!file) return;
     setIsUploadingPromoFile(true);
     try {
-      const uploaded = await compressImageFile(file, 1000, 0.74, 'promos');
+      const uploaded = await compressImageFile(file, 1080, 0.78, 'promos');
       setPromoImg(uploaded);
+    } catch {
+      showErrorBanner('Foto belum berhasil diupload. Silakan coba lagi.');
     } finally {
       setIsUploadingPromoFile(false);
       e.target.value = '';
@@ -693,8 +739,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!file) return;
     setIsUploadingArticleFile(true);
     try {
-      const uploaded = await compressImageFile(file, 1000, 0.74, 'articles');
+      const uploaded = await compressImageFile(file, 1080, 0.78, 'articles');
       setArtImg(uploaded);
+    } catch {
+      showErrorBanner('Foto belum berhasil diupload. Silakan coba lagi.');
     } finally {
       setIsUploadingArticleFile(false);
       e.target.value = '';
@@ -706,8 +754,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!file) return;
     setIsUploadingGalleryFile(true);
     try {
-      const uploaded = await compressImageFile(file, 1000, 0.74, 'gallery');
+      const uploaded = await compressImageFile(file, 1080, 0.78, 'gallery');
       setGalImageUrl(uploaded);
+    } catch {
+      showErrorBanner('Foto belum berhasil diupload. Silakan coba lagi.');
     } finally {
       setIsUploadingGalleryFile(false);
     }
@@ -1018,7 +1068,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button
               type="button"
               onClick={() => setSaveBanner(null)}
-              className="text-white/80 hover:text-white"
+              className="text-white/80 hover:text-white cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Error banner */}
+        {errorBanner && (
+          <div className="mt-4 rounded-xl bg-[#9E3B3B] text-white px-4 py-3 text-xs sm:text-sm font-medium flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-[#FADBD8]" />
+              <span>{errorBanner}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setErrorBanner(null)}
+              className="text-white/80 hover:text-white cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -1522,6 +1589,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   images={prodImages}
                   onChange={setProdImages}
                   storageFolder="products"
+                  productId={editingProductId || 'new-product'}
                 />
 
                 {/* Specs, Variants & Sizes */}

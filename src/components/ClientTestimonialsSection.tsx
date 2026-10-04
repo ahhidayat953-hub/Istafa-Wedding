@@ -189,7 +189,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       : [
           {
             id: 'fallback',
-            url: '/src/assets/images/wedding_hero_pelaminan_1791077458144.jpg',
+            url: '/images/wedding_hero_pelaminan_1791077458144.jpg',
             isPrimary: true,
             caption: `Dokumentasi ${item.coupleName}`,
           },

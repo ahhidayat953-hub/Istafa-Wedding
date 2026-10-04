@@ -13,7 +13,14 @@ import {
 } from 'lucide-react';
 import { PRESET_GALLERY_CHOICES } from '../data/initialData';
 import { ProductImage } from '../types';
-import { compressImageFile, deleteStorageUrls, validateImageFile } from '../utils/imageUtils';
+import {
+  compressImageFile,
+  deleteStorageUrls,
+  isValidPersistentImageUrl,
+  normalizeWeddingImageUrl,
+  resolveImageStoragePath,
+  validateImageFile,
+} from '../utils/imageUtils';
 import { SafeWeddingImage } from './SafeWeddingImage';
 
 interface MultiPhotoUploaderProps {
@@ -21,6 +28,41 @@ interface MultiPhotoUploaderProps {
   images: ProductImage[];
   onChange: (newImages: ProductImage[]) => void;
   storageFolder?: string;
+  productId?: string;
+}
+
+function syncImageOrderAndPrimary(
+  list: ProductImage[],
+  productId = 'draft-product'
+): ProductImage[] {
+  const nowIso = new Date().toISOString();
+  const hasPrimary = list.some((img) => Boolean(img.isPrimary || img.is_primary));
+  return list.map((img, idx) => {
+    const cleanId =
+      img.image_id ||
+      img.id ||
+      `img-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 6)}`;
+    const normalizedUrl = normalizeWeddingImageUrl(img.image_url || img.url);
+    const isPrim = hasPrimary ? Boolean(img.isPrimary || img.is_primary) : idx === 0;
+    return {
+      ...img,
+      id: cleanId,
+      image_id: cleanId,
+      product_id: img.product_id || productId,
+      url: normalizedUrl,
+      image_url: normalizedUrl,
+      storage_path: resolveImageStoragePath(
+        normalizedUrl,
+        img.product_id || productId,
+        cleanId,
+        img.storage_path
+      ),
+      isPrimary: isPrim,
+      is_primary: isPrim,
+      sort_order: idx,
+      created_at: img.created_at || nowIso,
+    };
+  });
 }
 
 export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
@@ -28,6 +70,7 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
   images,
   onChange,
   storageFolder = 'products',
+  productId = 'draft-product',
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const replaceInputRef = useRef<HTMLInputElement | null>(null);
@@ -61,15 +104,17 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
         const file = filesArray[i];
         const check = validateImageFile(file);
         if (!check.valid) {
-          errors.push(check.error || `File ${file.name} tidak valid.`);
+          errors.push(
+            check.error || 'Foto belum berhasil diupload. Silakan coba lagi.'
+          );
           continue;
         }
 
         try {
           const uploadedUrl = await compressImageFile(
             file,
-            1000,
-            0.74,
+            1080,
+            0.78,
             storageFolder,
             (percent, status) => {
               const overall = Math.round(
@@ -80,43 +125,67 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
             }
           );
 
-          if (uploadedUrl && uploadedUrl.trim().length > 0) {
+          if (
+            uploadedUrl &&
+            uploadedUrl.trim().length > 0 &&
+            isValidPersistentImageUrl(uploadedUrl)
+          ) {
             const cleanFileName = file.name
               .replace(/\.[^/.]+$/, '')
               .replace(/[-_]/g, ' ');
+            const imageId = `img-${Date.now()}-${i}-${Math.random()
+              .toString(36)
+              .slice(2, 6)}`;
+            const isPrim = images.length === 0 && uploadedItems.length === 0;
+            const nowIso = new Date().toISOString();
+
             uploadedItems.push({
-              id: `img-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+              id: imageId,
+              image_id: imageId,
+              product_id: productId,
               url: uploadedUrl,
-              isPrimary: images.length === 0 && uploadedItems.length === 0,
+              image_url: uploadedUrl,
+              storage_path: resolveImageStoragePath(
+                uploadedUrl,
+                productId,
+                imageId
+              ),
+              isPrimary: isPrim,
+              is_primary: isPrim,
+              sort_order: images.length + uploadedItems.length,
               caption:
                 cleanFileName || `Foto ${images.length + uploadedItems.length + 1}`,
+              created_at: nowIso,
             });
+          } else {
+            errors.push('Foto belum berhasil diupload. Silakan coba lagi.');
           }
         } catch (fileErr) {
           errors.push(
-            fileErr instanceof Error
+            fileErr instanceof Error && fileErr.message
               ? fileErr.message
-              : `Gagal mengunggah "${file.name}".`
+              : 'Foto belum berhasil diupload. Silakan coba lagi.'
           );
         }
       }
 
       if (errors.length > 0) {
-        setUploadError(errors.join(' · '));
+        setUploadError(
+          errors.includes('Foto belum berhasil diupload. Silakan coba lagi.')
+            ? 'Foto belum berhasil diupload. Silakan coba lagi.'
+            : `Foto belum berhasil diupload. Silakan coba lagi. (${errors.join(' · ')})`
+        );
       }
 
       if (uploadedItems.length > 0) {
-        const combined = [...images, ...uploadedItems].slice(0, 20);
-        if (combined.length > 0 && !combined.some((img) => img.isPrimary)) {
-          combined[0].isPrimary = true;
-        }
+        const combined = syncImageOrderAndPrimary(
+          [...images, ...uploadedItems].slice(0, 20),
+          productId
+        );
         onChange(combined);
       }
-    } catch (error) {
-      console.error('Gagal memproses foto:', error);
-      setUploadError(
-        error instanceof Error ? error.message : 'Gagal mengunggah foto.'
-      );
+    } catch {
+      setUploadError('Foto belum berhasil diupload. Silakan coba lagi.');
     } finally {
       setIsCompressing(false);
       setUploadProgress(0);
@@ -134,7 +203,9 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
 
     const check = validateImageFile(file);
     if (!check.valid) {
-      setUploadError(check.error || 'Format atau ukuran foto tidak valid.');
+      setUploadError(
+        check.error || 'Foto belum berhasil diupload. Silakan coba lagi.'
+      );
       setReplacingIndex(null);
       if (replaceInputRef.current) replaceInputRef.current.value = '';
       return;
@@ -148,33 +219,45 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
       const oldUrl = images[replacingIndex]?.url;
       const uploadedUrl = await compressImageFile(
         file,
-        1000,
-        0.74,
+        1080,
+        0.78,
         storageFolder,
         (percent, status) => {
           setUploadProgress(percent);
           setUploadStatusText(status);
         }
       );
-      if (uploadedUrl && uploadedUrl.trim().length > 0) {
-        const updated = images.map((img, idx) =>
-          idx === replacingIndex
-            ? {
-                ...img,
-                url: uploadedUrl,
-              }
-            : img
+      if (
+        uploadedUrl &&
+        uploadedUrl.trim().length > 0 &&
+        isValidPersistentImageUrl(uploadedUrl)
+      ) {
+        const updated = syncImageOrderAndPrimary(
+          images.map((img, idx) =>
+            idx === replacingIndex
+              ? {
+                  ...img,
+                  url: uploadedUrl,
+                  image_url: uploadedUrl,
+                  storage_path: resolveImageStoragePath(
+                    uploadedUrl,
+                    productId,
+                    img.image_id || img.id
+                  ),
+                }
+              : img
+          ),
+          productId
         );
         onChange(updated);
         if (oldUrl && oldUrl !== uploadedUrl) {
           void deleteStorageUrls([oldUrl]);
         }
+      } else {
+        setUploadError('Foto belum berhasil diupload. Silakan coba lagi.');
       }
-    } catch (error) {
-      console.error('Gagal mengganti foto:', error);
-      setUploadError(
-        error instanceof Error ? error.message : 'Gagal mengganti foto.'
-      );
+    } catch {
+      setUploadError('Foto belum berhasil diupload. Silakan coba lagi.');
     } finally {
       setIsCompressing(false);
       setUploadProgress(0);
@@ -192,10 +275,14 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
   };
 
   const handleSetPrimary = (index: number) => {
-    const updated = images.map((img, idx) => ({
-      ...img,
-      isPrimary: idx === index,
-    }));
+    const updated = syncImageOrderAndPrimary(
+      images.map((img, idx) => ({
+        ...img,
+        isPrimary: idx === index,
+        is_primary: idx === index,
+      })),
+      productId
+    );
     onChange(updated);
   };
 
@@ -204,8 +291,9 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
     const remaining = images.filter((_, idx) => idx !== index);
     if (remaining.length > 0 && !remaining.some((img) => img.isPrimary)) {
       remaining[0].isPrimary = true;
+      remaining[0].is_primary = true;
     }
-    onChange(remaining);
+    onChange(syncImageOrderAndPrimary(remaining, productId));
     if (removed?.url) {
       void deleteStorageUrls([removed.url]);
     }
@@ -215,7 +303,7 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
     const updated = images.map((img, idx) =>
       idx === index ? { ...img, caption } : img
     );
-    onChange(updated);
+    onChange(syncImageOrderAndPrimary(updated, productId));
   };
 
   const handleMovePhoto = (fromIndex: number, toIndex: number) => {
@@ -223,7 +311,7 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
     const copy = [...images];
     const [moved] = copy.splice(fromIndex, 1);
     copy.splice(toIndex, 0, moved);
-    onChange(copy);
+    onChange(syncImageOrderAndPrimary(copy, productId));
   };
 
   // Drag & Drop handlers
@@ -250,15 +338,33 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
   };
 
   const handleAddPresetOrUrl = (url: string, defaultCaption: string) => {
-    if (!url.trim()) return;
+    const trimmed = url.trim();
+    if (!trimmed) return;
+    if (!isValidPersistentImageUrl(trimmed)) {
+      setUploadError(
+        'URL foto tidak valid untuk production. Gunakan URL HTTPS publik atau unggah foto langsung.'
+      );
+      return;
+    }
+    const normalized = normalizeWeddingImageUrl(trimmed);
+    const imageId = `img-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const isPrim = images.length === 0;
     const newImg: ProductImage = {
-      id: `img-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      url: url.trim(),
-      isPrimary: images.length === 0,
+      id: imageId,
+      image_id: imageId,
+      product_id: productId,
+      url: normalized,
+      image_url: normalized,
+      storage_path: resolveImageStoragePath(normalized, productId, imageId),
+      isPrimary: isPrim,
+      is_primary: isPrim,
+      sort_order: images.length,
       caption: defaultCaption || `Foto ${images.length + 1}`,
+      created_at: new Date().toISOString(),
     };
-    onChange([...images, newImg].slice(0, 20));
+    onChange(syncImageOrderAndPrimary([...images, newImg].slice(0, 20), productId));
     setCustomUrlInput('');
+    setUploadError(null);
   };
 
   const primaryIndex = images.findIndex((img) => img.isPrimary);

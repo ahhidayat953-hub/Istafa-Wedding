@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import crypto from 'crypto';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -244,6 +245,138 @@ function saveDatabase(data: IstafaDatabaseSchema): void {
   }
 }
 
+// ============================================================================
+// SECURE SERVER-SIDE ADMIN AUTHENTICATION & STATELESS SESSION MANAGEMENT
+// ============================================================================
+const AUTH_SCRYPT_SALT = 'istafa-wedding-auth-salt-v3-2026';
+const DEFAULT_USER_SCRYPT_HEX =
+  'e064bcfd6007cc64ae2e844b5db3ca49f632d7de60068ece219b6b79a14eb2c9';
+const DEFAULT_PASS_SCRYPT_HEX =
+  'afcbba2ab440e025e1a738cea03e87abf97a522562d53da0bcf568f095924527';
+
+const SESSION_HMAC_SECRET =
+  process.env.ADMIN_SESSION_SECRET ||
+  'istafa-wedding-production-hmac-secret-key-2026-v3';
+const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+const revokedTokenHashes = new Set<string>();
+
+function computeSha256Hex(input: string): string {
+  return crypto.createHash('sha256').update(input).digest('hex');
+}
+
+function safeTimingEqualHex(hexA: string, hexB: string): boolean {
+  try {
+    const bufA = Buffer.from(hexA, 'hex');
+    const bufB = Buffer.from(hexB, 'hex');
+    if (bufA.length !== bufB.length) return false;
+    return crypto.timingSafeEqual(bufA, bufB);
+  } catch {
+    return false;
+  }
+}
+
+function verifyAdminCredentialsServer(usernameInput: string, passwordInput: string): boolean {
+  const cleanUser = (usernameInput || '').trim();
+  const cleanPass = passwordInput || '';
+  if (!cleanUser || !cleanPass) return false;
+
+  const envUser = (process.env.ADMIN_USERNAME || '').trim();
+  const envPass = process.env.ADMIN_PASSWORD || '';
+
+  if (envUser && envPass) {
+    const userMatch = safeTimingEqualHex(
+      computeSha256Hex(cleanUser.toLowerCase()),
+      computeSha256Hex(envUser.toLowerCase())
+    );
+    const passMatch = safeTimingEqualHex(
+      computeSha256Hex(cleanPass),
+      computeSha256Hex(envPass)
+    );
+    if (userMatch && passMatch) return true;
+  }
+
+  // Verify against salted scrypt digest (so no plaintext password exists in source code)
+  const derivedUserHex = crypto
+    .scryptSync(cleanUser, AUTH_SCRYPT_SALT, 32)
+    .toString('hex');
+  const derivedPassHex = crypto
+    .scryptSync(cleanPass, AUTH_SCRYPT_SALT, 32)
+    .toString('hex');
+
+  return (
+    safeTimingEqualHex(derivedUserHex, DEFAULT_USER_SCRYPT_HEX) &&
+    safeTimingEqualHex(derivedPassHex, DEFAULT_PASS_SCRYPT_HEX)
+  );
+}
+
+function createSignedAdminToken(username: string): {
+  token: string;
+  tokenHash: string;
+  expiresAt: number;
+} {
+  const expiresAt = Date.now() + SESSION_TTL_MS;
+  const payloadObj = {
+    u: username,
+    iat: Date.now(),
+    exp: expiresAt,
+    n: crypto.randomBytes(12).toString('hex'),
+  };
+  const payloadB64 = Buffer.from(JSON.stringify(payloadObj)).toString('base64url');
+  const sigB64 = crypto
+    .createHmac('sha256', SESSION_HMAC_SECRET)
+    .update(payloadB64)
+    .digest('base64url');
+  const token = `${payloadB64}.${sigB64}`;
+  const tokenHash = computeSha256Hex(token);
+  return { token, tokenHash, expiresAt };
+}
+
+function verifySignedAdminToken(
+  token: string | undefined
+): { valid: boolean; username?: string; tokenHash?: string; expiresAt?: number } {
+  if (!token || typeof token !== 'string' || !token.includes('.')) {
+    return { valid: false };
+  }
+  const tokenHash = computeSha256Hex(token);
+  if (revokedTokenHashes.has(tokenHash)) {
+    return { valid: false };
+  }
+  const parts = token.split('.');
+  if (parts.length !== 2) return { valid: false };
+  const [payloadB64, sigB64] = parts;
+  const expectedSigB64 = crypto
+    .createHmac('sha256', SESSION_HMAC_SECRET)
+    .update(payloadB64)
+    .digest('base64url');
+
+  if (
+    !safeTimingEqualHex(
+      computeSha256Hex(sigB64),
+      computeSha256Hex(expectedSigB64)
+    )
+  ) {
+    return { valid: false };
+  }
+
+  try {
+    const parsed = JSON.parse(
+      Buffer.from(payloadB64, 'base64url').toString('utf-8')
+    ) as { u?: string; exp?: number };
+    if (!parsed || !parsed.u || !parsed.exp || Date.now() > parsed.exp) {
+      return { valid: false };
+    }
+    return {
+      valid: true,
+      username: parsed.u,
+      tokenHash,
+      expiresAt: parsed.exp,
+    };
+  } catch {
+    return { valid: false };
+  }
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -251,7 +384,72 @@ async function startServer() {
   // Ensure DB is loaded at startup
   loadDatabase();
 
-  app.use(express.json({ limit: '25mb' }));
+  app.use(express.json({ limit: '50mb' }));
+
+  // ===========================================================================
+  // ADMIN AUTHENTICATION API ENDPOINTS (/api/auth/*)
+  // ===========================================================================
+  app.post('/api/auth/login', (req, res) => {
+    const { username, password } = req.body as {
+      username?: string;
+      password?: string;
+    };
+    const cleanUsername = (username || '').trim();
+    const cleanPassword = password || '';
+
+    if (verifyAdminCredentialsServer(cleanUsername, cleanPassword)) {
+      const { token, tokenHash, expiresAt } = createSignedAdminToken(cleanUsername);
+      res.json({
+        ok: true,
+        token,
+        tokenHash,
+        username: cleanUsername,
+        expiresAt,
+      });
+    } else {
+      res.status(401).json({
+        ok: false,
+        error: 'Username atau password salah. Silakan coba lagi.',
+      });
+    }
+  });
+
+  app.get('/api/auth/verify', (req, res) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ')
+      ? authHeader.slice(7).trim()
+      : (req.query.token as string | undefined);
+    const result = verifySignedAdminToken(token);
+    if (result.valid) {
+      res.json({
+        valid: true,
+        username: result.username,
+        tokenHash: result.tokenHash,
+        expiresAt: result.expiresAt,
+      });
+    } else {
+      res.status(401).json({ valid: false });
+    }
+  });
+
+  app.post('/api/auth/logout', (req, res) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ')
+      ? authHeader.slice(7).trim()
+      : (req.body?.token as string | undefined);
+    if (token) {
+      revokedTokenHashes.add(computeSha256Hex(token));
+    }
+    res.json({ ok: true });
+  });
+
+  app.get('/api/health', (_req, res) => {
+    res.json({
+      status: 'ok',
+      storage: 'firebase-firestore-cloud',
+      timestamp: new Date().toISOString(),
+    });
+  });
 
   // ===========================================================================
   // Persistent Database REST API (/api/db/*)

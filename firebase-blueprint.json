@@ -583,6 +583,57 @@
         "createdAt",
         "updatedAt"
       ]
+    },
+    "ProductImageDoc": {
+      "title": "ProductImageDoc",
+      "description": "Persistent product image record linking Product -> Product Images -> Persistent Storage -> Public Image URL.",
+      "type": "object",
+      "properties": {
+        "image_id": { "type": "string", "maxLength": 128 },
+        "product_id": { "type": "string", "maxLength": 128 },
+        "image_url": { "type": "string", "maxLength": 800000 },
+        "storage_path": { "type": "string", "maxLength": 400 },
+        "is_primary": { "type": "boolean" },
+        "sort_order": { "type": "number" },
+        "caption": { "type": "string", "maxLength": 300 },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "created_at": { "type": "string", "maxLength": 60 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "image_id",
+        "product_id",
+        "image_url",
+        "storage_path",
+        "is_primary",
+        "sort_order",
+        "visibility",
+        "authorUid",
+        "created_at",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminSessionDoc": {
+      "title": "AdminSessionDoc",
+      "description": "Server-verified administrator session gate record.",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string", "maxLength": 128 },
+        "gateKey": { "type": "string", "maxLength": 64 },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "sessionId",
+        "gateKey",
+        "visibility",
+        "createdAt",
+        "updatedAt"
+      ]
     }
   },
   "firestore": {
@@ -597,6 +648,14 @@
     "/products/{productId}": {
       "schema": { "$ref": "#/entities/Product" },
       "description": "Public wedding products."
+    },
+    "/product_images/{imageId}": {
+      "schema": { "$ref": "#/entities/ProductImageDoc" },
+      "description": "Persistent product image records linked to products."
+    },
+    "/adminSessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/AdminSessionDoc" },
+      "description": "Server-verified administrator session gate."
     },
     "/packages/{packageId}": {
       "schema": { "$ref": "#/entities/WeddingPackage" },
