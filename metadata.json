@@ -1,0 +1,6 @@
+{
+  "name": "Aurelia Wedding Atelier — Katalog & Konsultasi Pernikahan",
+  "description": "Galeri inspirasi pernikahan, katalog dekorasi, tenda, undangan, souvenir, mahar, dan paket pernikahan eksklusif dengan konsultasi WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

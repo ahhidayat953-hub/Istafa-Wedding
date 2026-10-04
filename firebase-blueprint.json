@@ -1,0 +1,477 @@
+{
+  "entities": {
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Global configuration for the ISTAFA Wedding platform.",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string", "maxLength": 120 },
+        "tagline": { "type": "string", "maxLength": 250 },
+        "whatsappNumber": { "type": "string", "maxLength": 25, "pattern": "^[0-9+]+$" },
+        "email": { "type": "string", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 300 },
+        "instagram": { "type": "string", "maxLength": 100 },
+        "tiktok": { "type": "string", "maxLength": 100 },
+        "heroTitle": { "type": "string", "maxLength": 200 },
+        "heroSubtitle": { "type": "string", "maxLength": 400 },
+        "heroImageUrl": { "type": "string", "maxLength": 800000 },
+        "logoText": { "type": "string", "maxLength": 60 },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "businessName",
+        "tagline",
+        "whatsappNumber",
+        "email",
+        "address",
+        "instagram",
+        "heroTitle",
+        "heroSubtitle",
+        "heroImageUrl",
+        "logoText",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Wedding product and service category.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 80 },
+        "slug": { "type": "string", "maxLength": 80, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "description": { "type": "string", "maxLength": 300 },
+        "iconName": { "type": "string", "maxLength": 40 },
+        "coverImageUrl": { "type": "string", "maxLength": 800000 },
+        "sortOrder": { "type": "number" },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "name",
+        "slug",
+        "description",
+        "iconName",
+        "coverImageUrl",
+        "sortOrder",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Wedding catalog product supporting multiple photos, variants, sizes, promo pricing, and stock status.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 80 },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "priceLabel": { "type": "string", "maxLength": 80 },
+        "shortDescription": { "type": "string", "maxLength": 300 },
+        "description": { "type": "string", "maxLength": 4000 },
+        "images": { "type": "array" },
+        "variants": { "type": "array" },
+        "sizes": { "type": "array" },
+        "inclusions": { "type": "array" },
+        "unit": { "type": "string", "maxLength": 40 },
+        "stockStatus": { "type": "string", "maxLength": 60 },
+        "promoLabel": { "type": "string", "maxLength": 80 },
+        "isPromo": { "type": "boolean" },
+        "isAvailable": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "isNew": { "type": "boolean" },
+        "isActive": { "type": "boolean" },
+        "popularityScore": { "type": "number" },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "name",
+        "category",
+        "price",
+        "priceLabel",
+        "shortDescription",
+        "description",
+        "images",
+        "variants",
+        "inclusions",
+        "isAvailable",
+        "isFeatured",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "WeddingPackage": {
+      "title": "WeddingPackage",
+      "description": "Bundled wedding package with multi-photo gallery, guest capacity, and inclusions.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "tier": { "type": "string", "maxLength": 60 },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "guestCapacity": { "type": "string", "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "inclusions": { "type": "array" },
+        "images": { "type": "array" },
+        "isPopular": { "type": "boolean" },
+        "isPromo": { "type": "boolean" },
+        "promoLabel": { "type": "string", "maxLength": 80 },
+        "isActive": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "name",
+        "tier",
+        "price",
+        "guestCapacity",
+        "description",
+        "inclusions",
+        "images",
+        "isPopular",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "GalleryItem": {
+      "title": "GalleryItem",
+      "description": "Wedding portfolio gallery item supporting multiple event photos, location, and theme.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 80 },
+        "imageUrl": { "type": "string", "maxLength": 800000 },
+        "caption": { "type": "string", "maxLength": 400 },
+        "location": { "type": "string", "maxLength": 120 },
+        "theme": { "type": "string", "maxLength": 120 },
+        "images": { "type": "array" },
+        "aspectType": { "type": "string", "enum": ["landscape", "portrait", "square"] },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "title",
+        "category",
+        "imageUrl",
+        "caption",
+        "aspectType",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Verified client wedding review and multi-photo documentation.",
+      "type": "object",
+      "properties": {
+        "coupleName": { "type": "string", "maxLength": 120 },
+        "eventDate": { "type": "string", "maxLength": 80 },
+        "venue": { "type": "string", "maxLength": 150 },
+        "packageTaken": { "type": "string", "maxLength": 150 },
+        "rating": { "type": "number" },
+        "review": { "type": "string", "maxLength": 1500 },
+        "images": { "type": "array" },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "coupleName",
+        "eventDate",
+        "venue",
+        "packageTaken",
+        "rating",
+        "review",
+        "images",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Promo": {
+      "title": "Promo",
+      "description": "Promotional offer with start/end dates and active flag.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "promoPrice": { "type": "number" },
+        "normalPrice": { "type": "number" },
+        "imageUrl": { "type": "string", "maxLength": 800000 },
+        "startDate": { "type": "string", "maxLength": 30 },
+        "endDate": { "type": "string", "maxLength": 30 },
+        "badgeText": { "type": "string", "maxLength": 60 },
+        "isActive": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "title",
+        "description",
+        "promoPrice",
+        "normalPrice",
+        "imageUrl",
+        "startDate",
+        "endDate",
+        "isActive",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "InspirationArticle": {
+      "title": "InspirationArticle",
+      "description": "Wedding planning tips, checklists, and inspiration articles.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 180 },
+        "category": { "type": "string", "maxLength": 80 },
+        "excerpt": { "type": "string", "maxLength": 400 },
+        "content": { "type": "string", "maxLength": 8000 },
+        "imageUrl": { "type": "string", "maxLength": 800000 },
+        "readTime": { "type": "string", "maxLength": 40 },
+        "publishedDate": { "type": "string", "maxLength": 60 },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "title",
+        "category",
+        "excerpt",
+        "content",
+        "imageUrl",
+        "readTime",
+        "publishedDate",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CalendarPublicEntry": {
+      "title": "CalendarPublicEntry",
+      "description": "Public wedding date availability status without any customer PII.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "maxLength": 20, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "status": { "type": "string", "enum": ["available", "reserved", "unavailable"] },
+        "publicNote": { "type": "string", "maxLength": 200 },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "date",
+        "status",
+        "publicNote",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CalendarPrivateEntry": {
+      "title": "CalendarPrivateEntry",
+      "description": "Admin-only booking note and client name for a calendar date (PII isolated).",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "maxLength": 20, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "clientName": { "type": "string", "maxLength": 150 },
+        "privateNote": { "type": "string", "maxLength": 500 },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "date",
+        "clientName",
+        "privateNote",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ServiceArea": {
+      "title": "ServiceArea",
+      "description": "Geographic city/region covered by ISTAFA Wedding.",
+      "type": "object",
+      "properties": {
+        "city": { "type": "string", "maxLength": 100 },
+        "province": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 300 },
+        "isPrimary": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public"] },
+        "authorUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "city",
+        "province",
+        "description",
+        "isPrimary",
+        "visibility",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted administrator registry document.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "UserWorkspace": {
+      "title": "UserWorkspace",
+      "description": "Isolated per-user wedding planning workspace (cart, wishlist, wedding plan, budget calculator) strictly owned by userId.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "coupleName": { "type": "string", "maxLength": 150 },
+        "weddingLocation": { "type": "string", "maxLength": 250 },
+        "cartWeddingDate": { "type": "string", "maxLength": 30 },
+        "cartGuestCount": { "type": "number" },
+        "cartItemsJson": { "type": "string", "maxLength": 200000 },
+        "wishlistIds": { "type": "array" },
+        "weddingPlanJson": { "type": "string", "maxLength": 100000 },
+        "budgetAllocationJson": { "type": "string", "maxLength": 50000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId",
+        "coupleName",
+        "weddingLocation",
+        "cartWeddingDate",
+        "cartGuestCount",
+        "cartItemsJson",
+        "wishlistIds",
+        "weddingPlanJson",
+        "budgetAllocationJson",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ConsultationInquiryDoc": {
+      "title": "ConsultationInquiryDoc",
+      "description": "User consultation and wedding inquiry record.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "coupleName": { "type": "string", "maxLength": 150 },
+        "weddingLocation": { "type": "string", "maxLength": 250 },
+        "type": { "type": "string", "enum": ["cart", "budget", "planner", "product", "date"] },
+        "customerDate": { "type": "string", "maxLength": 60 },
+        "guestCount": { "type": "number" },
+        "itemsSummary": { "type": "array" },
+        "totalEstimate": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId",
+        "type",
+        "customerDate",
+        "guestCount",
+        "itemsSummary",
+        "totalEstimate",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/StoreSettings" },
+      "description": "Global website settings."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Public catalog categories."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Public wedding products."
+    },
+    "/packages/{packageId}": {
+      "schema": { "$ref": "#/entities/WeddingPackage" },
+      "description": "Public wedding packages."
+    },
+    "/gallery/{galleryId}": {
+      "schema": { "$ref": "#/entities/GalleryItem" },
+      "description": "Public wedding gallery projects."
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": { "$ref": "#/entities/Testimonial" },
+      "description": "Public client wedding testimonials."
+    },
+    "/promos/{promoId}": {
+      "schema": { "$ref": "#/entities/Promo" },
+      "description": "Public wedding promotional offers."
+    },
+    "/articles/{articleId}": {
+      "schema": { "$ref": "#/entities/InspirationArticle" },
+      "description": "Public wedding inspiration articles."
+    },
+    "/calendar/{dateId}": {
+      "schema": { "$ref": "#/entities/CalendarPublicEntry" },
+      "description": "Public wedding date availability status."
+    },
+    "/calendarPrivate/{dateId}": {
+      "schema": { "$ref": "#/entities/CalendarPrivateEntry" },
+      "description": "Admin-only private booking notes and client names."
+    },
+    "/serviceAreas/{areaId}": {
+      "schema": { "$ref": "#/entities/ServiceArea" },
+      "description": "Public service coverage areas."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Admin role lookup records."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserWorkspace" },
+      "description": "Private per-user cart, wishlist, wedding plan, and budget calculator."
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/ConsultationInquiryDoc" },
+      "description": "Consultation inquiry records."
+    }
+  }
+}
