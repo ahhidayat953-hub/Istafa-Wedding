@@ -23,13 +23,13 @@ export const ClientTestimonialsSection: React.FC = () => {
   if (!testimonials || testimonials.length === 0) return null;
 
   return (
-    <section className="py-14 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Section Header */}
       <div className="max-w-2xl mx-auto text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-[#9E762C] font-medium">
           Cerita Bahagia & Bukti Nyata
         </p>
-        <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-serif-display font-semibold text-[#26211D] text-balance">
+        <h2 className="mt-2 heading-section-fluid font-serif-display font-semibold text-[#26211D] text-balance">
           Testimoni & Dokumentasi Pernikahan Klien
         </h2>
         <p className="mt-3 text-sm sm:text-base text-[#5C5147] leading-relaxed">
@@ -37,9 +37,9 @@ export const ClientTestimonialsSection: React.FC = () => {
         </p>
 
         {/* Quantitative Social Proof Summary */}
-        <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-[#4A4036]">
+        <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs sm:text-sm text-[#4A4036]">
           <span className="inline-flex items-center gap-1 font-semibold text-[#26211D] font-tabular">
-            <Star className="w-4 h-4 fill-[#C8A25A] text-[#C8A25A]" />
+            <Star className="w-4 h-4 fill-[#C8A25A] text-[#C8A25A] shrink-0" />
             <span>5.0 / 5.0 Rating Kepuasan</span>
           </span>
           <span aria-hidden="true">·</span>
@@ -52,7 +52,7 @@ export const ClientTestimonialsSection: React.FC = () => {
       </div>
 
       {/* Testimonials & Documentation Cards Grid */}
-      <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {testimonials.map((item) => (
           <TestimonialCard
             key={item.id}
@@ -69,13 +69,13 @@ export const ClientTestimonialsSection: React.FC = () => {
       {/* Fullscreen Documentation Lightbox Modal */}
       {activeLightboxTesti && (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 sm:p-8">
-          <div className="flex items-center justify-between text-white">
-            <div>
-              <p className="text-xs text-[#D9C7A3] font-tabular">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-white">
+            <div className="min-w-0">
+              <p className="text-xs text-[#D9C7A3] font-tabular truncate">
                 Dokumentasi Pernikahan {activeLightboxTesti.coupleName} · Foto{' '}
                 {lightboxPhotoIdx + 1} / {activeLightboxTesti.images.length}
               </p>
-              <h4 className="font-serif-display text-lg sm:text-2xl">
+              <h4 className="font-serif-display text-base sm:text-2xl truncate">
                 {activeLightboxTesti.images[lightboxPhotoIdx]?.caption ||
                   activeLightboxTesti.packageTaken}
               </h4>
@@ -83,9 +83,9 @@ export const ClientTestimonialsSection: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveLightboxTesti(null)}
-              className="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 sm:px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 shrink-0" />
               <span>Tutup Dokumentasi</span>
             </button>
           </div>

@@ -164,7 +164,14 @@ export interface ServiceArea {
 }
 
 export interface ConsultationCartItem {
+  userId?: string;
   productId: string;
+  productName?: string;
+  priceAtSelection?: number;
+  photoUrl?: string;
+  subtotal?: number;
+  createdAt?: string;
+  updatedAt?: string;
   product: Product;
   quantity: number;
   selectedVariant?: string;
@@ -199,6 +206,8 @@ export interface WeddingPlanData {
   weddingLocation?: string;
   weddingDate: string;
   guestCount: number;
+  targetBudget?: number;
+  estimatedCost?: number;
   themes: string[];
   selectedDecorId: string;
   selectedInvitationId: string;
@@ -207,21 +216,205 @@ export interface WeddingPlanData {
   souvenirQty: number;
   selectedMaharId: string;
   additionalServiceIds: string[];
+  selectedProductIds?: string[];
   customNotes: string;
+}
+
+export interface ConsultationRecommendationItem {
+  productId: string;
+  reason: string;
+  suggestedQuantity?: number;
+}
+
+export interface ConsultationBudgetLineItem {
+  categoryLabel: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  subtotal: number;
+}
+
+export interface ConsultationBudgetBreakdown {
+  targetBudget: number;
+  guestCount: number;
+  dekorasi: number;
+  undangan: number;
+  souvenir: number;
+  dokumentasi: number;
+  makeup: number;
+  layananLainnya: number;
+  totalEstimate: number;
+  isOverBudget: boolean;
+  overBudgetAmount: number;
+  items: ConsultationBudgetLineItem[];
+  alternativeItems?: ConsultationBudgetLineItem[];
+  alternativeTotal?: number;
+}
+
+export interface ConsultationExtractedContext {
+  customerName?: string;
+  partnerName?: string;
+  coupleName?: string;
+  whatsapp?: string;
+  email?: string;
+  weddingDate?: string;
+  weddingLocation?: string;
+  eventType?: string;
+  guestCount?: number;
+  targetBudget?: number;
+  weddingTheme?: string;
+  desiredColors?: string;
+  requestedCategories?: string[];
+  needs?: string[];
+  notes?: string;
+}
+
+export interface ConsultationMessage {
+  id: string;
+  consultationId: string;
+  userId: string;
+  sender: 'user' | 'consultant';
+  message: string;
+  recommendations: ConsultationRecommendationItem[];
+  budgetBreakdown?: ConsultationBudgetBreakdown;
+  extractedContext?: ConsultationExtractedContext;
+  isUnavailableNotice?: boolean;
+  quickReplies?: string[];
+  createdAt: string;
+}
+
+export type ConsultationStatus =
+  | 'active'
+  | 'recommended'
+  | 'interested'
+  | 'completed';
+
+export interface ConsultationSession {
+  id: string;
+  userId: string;
+  title: string;
+  customerName?: string;
+  partnerName?: string;
+  coupleName: string;
+  whatsapp?: string;
+  email?: string;
+  weddingDate: string;
+  weddingLocation: string;
+  eventType?: string;
+  guestCount: number;
+  targetBudget: number;
+  weddingTheme: string;
+  desiredColors: string;
+  needs?: string[];
+  notes?: string;
+  interestedProductIds?: string[];
+  viewedProductIds?: string[];
+  recommendedPackageIds?: string[];
+  status?: ConsultationStatus;
+  summaryResult?: string;
+  leadId?: string;
+  messages: ConsultationMessage[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type LeadStatus =
+  | 'New'
+  | 'Consultation'
+  | 'Interested'
+  | 'Follow Up'
+  | 'Booking'
+  | 'Completed'
+  | 'Cancelled';
+
+export interface LeadRecord {
+  id: string;
+  userId: string;
+  consultationId?: string;
+  customerName: string;
+  partnerName: string;
+  coupleName: string;
+  whatsapp: string;
+  email: string;
+  weddingDate: string;
+  weddingLocation: string;
+  eventType: string;
+  guestCount: number;
+  budget: number;
+  needs: string[];
+  interestedProductIds: string[];
+  interestedProductNames: string[];
+  recommendedPackageNames: string[];
+  consultationSummary: string;
+  notes: string;
+  status: LeadStatus;
+  source: 'consultation' | 'planner' | 'cart' | 'catalog';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type OrderStatus =
+  | 'Pending'
+  | 'Confirmed'
+  | 'DP Paid'
+  | 'In Progress'
+  | 'Completed'
+  | 'Cancelled';
+
+export interface WeddingOrderItem {
+  productId: string;
+  productName: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  subtotal: number;
+  selectedVariant?: string;
+  selectedSize?: string;
+  photoUrl?: string;
+}
+
+export interface WeddingOrder {
+  id: string;
+  orderNumber: string;
+  userId: string;
+  leadId?: string;
+  consultationId?: string;
+  customerName: string;
+  partnerName: string;
+  whatsapp: string;
+  email: string;
+  weddingDate: string;
+  weddingLocation: string;
+  eventType: string;
+  guestCount: number;
+  items: WeddingOrderItem[];
+  totalAmount: number;
+  status: OrderStatus;
+  notes: string;
+  paymentProofUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ConsultationInquiry {
   id: string;
   userId?: string;
   coupleName?: string;
+  customerName?: string;
+  partnerName?: string;
+  whatsapp?: string;
+  email?: string;
   weddingLocation?: string;
   weddingDate?: string;
   weddingTheme?: string;
   guestScale?: string;
   estimatedTotal?: number;
   customNotes?: string;
-  status?: string;
-  type: 'cart' | 'budget' | 'planner' | 'product' | 'date';
+  status?: LeadStatus | string;
+  type: 'cart' | 'budget' | 'planner' | 'product' | 'date' | 'consultation';
   customerDate: string;
   guestCount: number;
   itemsSummary: string[];
@@ -264,6 +457,7 @@ export interface StoreSettings {
 
 export type ActivePage =
   | 'home'
+  | 'consultation'
   | 'services'
   | 'catalog'
   | 'packages'

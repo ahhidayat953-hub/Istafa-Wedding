@@ -152,7 +152,7 @@ service cloud.firestore {
         ]) &&
         data.keys().hasOnly([
           'name', 'tier', 'price', 'originalPrice', 'guestCapacity', 'description',
-          'inclusions', 'images', 'isPopular', 'isPromo', 'promoLabel',
+          'inclusions', 'images', 'isPopular', 'isPromo', 'promoLabel', 'isActive',
           'visibility', 'authorUid', 'createdAt', 'updatedAt'
         ]) &&
         data.name is string && data.name.size() >= 1 && data.name.size() <= 150 &&
@@ -168,6 +168,7 @@ service cloud.firestore {
         data.isPopular is bool &&
         (!('isPromo' in data) || data.isPromo is bool) &&
         (!('promoLabel' in data) || (data.promoLabel is string && data.promoLabel.size() <= 80)) &&
+        (!('isActive' in data) || data.isActive is bool) &&
         data.visibility == 'public' &&
         data.authorUid is string && data.authorUid.size() >= 1 && data.authorUid.size() <= 128 &&
         data.createdAt is timestamp &&
@@ -333,6 +334,97 @@ service cloud.firestore {
         data.createdAt is timestamp;
     }
 
+    function isValidUserWorkspace(data, userId) {
+      return data.keys().hasAll([
+          'userId', 'coupleName', 'weddingLocation', 'cartWeddingDate',
+          'cartGuestCount', 'cartItemsJson', 'wishlistIds',
+          'weddingPlanJson', 'budgetAllocationJson', 'createdAt', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'userId', 'coupleName', 'weddingLocation', 'cartWeddingDate',
+          'cartGuestCount', 'cartItemsJson', 'wishlistIds',
+          'weddingPlanJson', 'budgetAllocationJson', 'createdAt', 'updatedAt'
+        ]) &&
+        data.userId is string && data.userId == userId && data.userId.size() <= 128 &&
+        data.coupleName is string && data.coupleName.size() <= 150 &&
+        data.weddingLocation is string && data.weddingLocation.size() <= 250 &&
+        data.cartWeddingDate is string && data.cartWeddingDate.size() <= 30 &&
+        data.cartGuestCount is number && data.cartGuestCount >= 0 && data.cartGuestCount <= 50000 &&
+        data.cartItemsJson is string && data.cartItemsJson.size() <= 200000 &&
+        data.wishlistIds is list && data.wishlistIds.size() <= 200 &&
+        data.weddingPlanJson is string && data.weddingPlanJson.size() <= 100000 &&
+        data.budgetAllocationJson is string && data.budgetAllocationJson.size() <= 50000 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidInquiryDoc(data) {
+      return data.keys().hasAll([
+          'userId', 'type', 'customerDate', 'guestCount',
+          'itemsSummary', 'totalEstimate', 'createdAt'
+        ]) &&
+        data.keys().hasOnly([
+          'userId', 'coupleName', 'weddingLocation', 'type',
+          'customerDate', 'guestCount', 'itemsSummary', 'totalEstimate', 'createdAt'
+        ]) &&
+        data.userId is string && data.userId == request.auth.uid && data.userId.size() <= 128 &&
+        (!('coupleName' in data) || (data.coupleName is string && data.coupleName.size() <= 150)) &&
+        (!('weddingLocation' in data) || (data.weddingLocation is string && data.weddingLocation.size() <= 250)) &&
+        data.type in ['cart', 'budget', 'planner', 'product', 'date', 'consultation'] &&
+        data.customerDate is string && data.customerDate.size() <= 60 &&
+        data.guestCount is number && data.guestCount >= 0 && data.guestCount <= 50000 &&
+        data.itemsSummary is list && data.itemsSummary.size() <= 100 &&
+        (data.itemsSummary.size() == 0 || (data.itemsSummary[0] is string && data.itemsSummary[0].size() <= 250)) &&
+        data.totalEstimate is number && data.totalEstimate >= 0 && data.totalEstimate <= 100000000000 &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidConsultationSession(data, userId, consultationId) {
+      return data.keys().hasAll([
+          'consultationId', 'userId', 'title', 'coupleName', 'weddingDate',
+          'weddingLocation', 'guestCount', 'targetBudget', 'weddingTheme',
+          'desiredColors', 'createdAt', 'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'consultationId', 'userId', 'title', 'coupleName', 'weddingDate',
+          'weddingLocation', 'guestCount', 'targetBudget', 'weddingTheme',
+          'desiredColors', 'createdAt', 'updatedAt'
+        ]) &&
+        data.consultationId is string && data.consultationId == consultationId && data.consultationId.size() <= 128 &&
+        data.userId is string && data.userId == userId && data.userId == request.auth.uid && data.userId.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 160 &&
+        data.coupleName is string && data.coupleName.size() <= 150 &&
+        data.weddingDate is string && data.weddingDate.size() <= 30 &&
+        data.weddingLocation is string && data.weddingLocation.size() <= 250 &&
+        data.guestCount is number && data.guestCount >= 0 && data.guestCount <= 50000 &&
+        data.targetBudget is number && data.targetBudget >= 0 && data.targetBudget <= 100000000000 &&
+        data.weddingTheme is string && data.weddingTheme.size() <= 150 &&
+        data.desiredColors is string && data.desiredColors.size() <= 150 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidConsultationMessage(data, userId, consultationId, messageId) {
+      return data.keys().hasAll([
+          'messageId', 'consultationId', 'userId', 'sender', 'message',
+          'recommendedProductIds', 'recommendationsJson', 'budgetBreakdownJson', 'createdAt'
+        ]) &&
+        data.keys().hasOnly([
+          'messageId', 'consultationId', 'userId', 'sender', 'message',
+          'recommendedProductIds', 'recommendationsJson', 'budgetBreakdownJson', 'createdAt'
+        ]) &&
+        data.messageId is string && data.messageId == messageId && data.messageId.size() <= 128 &&
+        data.consultationId is string && data.consultationId == consultationId && data.consultationId.size() <= 128 &&
+        data.userId is string && data.userId == userId && data.userId == request.auth.uid && data.userId.size() <= 128 &&
+        data.sender in ['user', 'consultant'] &&
+        data.message is string && data.message.size() >= 1 && data.message.size() <= 6000 &&
+        data.recommendedProductIds is list && data.recommendedProductIds.size() <= 10 &&
+        (data.recommendedProductIds.size() == 0 || (data.recommendedProductIds[0] is string && data.recommendedProductIds[0].size() <= 128)) &&
+        data.recommendationsJson is string && data.recommendationsJson.size() <= 20000 &&
+        data.budgetBreakdownJson is string && data.budgetBreakdownJson.size() <= 30000 &&
+        data.createdAt is timestamp;
+    }
+
     // =========================================================================
     // Collection Match Blocks
     // =========================================================================
@@ -437,7 +529,7 @@ service cloud.firestore {
         incoming().diff(existing()).affectedKeys().hasOnly([
           'name', 'tier', 'price', 'originalPrice', 'guestCapacity',
           'description', 'inclusions', 'images', 'isPopular', 'isPromo',
-          'promoLabel', 'visibility', 'updatedAt'
+          'promoLabel', 'isActive', 'visibility', 'updatedAt'
         ]);
       allow delete: if isSignedIn() && isValidId(packageId) && isAdmin();
     }
@@ -617,6 +709,116 @@ service cloud.firestore {
         isAdmin();
       allow update: if false;
       allow delete: if isSignedIn() && isValidId(adminId) && isAdmin();
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && (request.auth.uid == userId || isAdmin());
+      allow list: if isSignedIn() && isAdmin();
+      allow create: if isSignedIn() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        isValidUserWorkspace(incoming(), userId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isSignedIn() &&
+        isValidId(userId) &&
+        request.auth.uid == userId &&
+        isValidUserWorkspace(incoming(), userId) &&
+        incoming().userId == existing().userId &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'coupleName', 'weddingLocation', 'cartWeddingDate', 'cartGuestCount',
+          'cartItemsJson', 'wishlistIds', 'weddingPlanJson',
+          'budgetAllocationJson', 'createdAt', 'updatedAt'
+        ]);
+      allow delete: if isSignedIn() && isValidId(userId) && (request.auth.uid == userId || isAdmin());
+    }
+
+    match /users/{userId}/consultations/{consultationId} {
+      allow get: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        (request.auth.uid == userId || isAdmin()) &&
+        (resource == null || existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        request.auth.uid == userId &&
+        isValidConsultationSession(incoming(), userId, consultationId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(userId)) &&
+        get(/databases/$(database)/documents/users/$(userId)).data.userId == request.auth.uid;
+      allow update: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        request.auth.uid == userId &&
+        isValidConsultationSession(incoming(), userId, consultationId) &&
+        incoming().consultationId == existing().consultationId &&
+        incoming().userId == existing().userId &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'coupleName', 'weddingDate', 'weddingLocation',
+          'guestCount', 'targetBudget', 'weddingTheme', 'desiredColors', 'createdAt', 'updatedAt'
+        ]) &&
+        get(/databases/$(database)/documents/users/$(userId)).data.userId == request.auth.uid;
+      allow delete: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        (request.auth.uid == userId || isAdmin());
+    }
+
+    match /users/{userId}/consultations/{consultationId}/messages/{messageId} {
+      allow get: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        isValidId(messageId) &&
+        (request.auth.uid == userId || isAdmin()) &&
+        (resource == null || existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        isValidId(messageId) &&
+        request.auth.uid == userId &&
+        isValidConsultationMessage(incoming(), userId, consultationId, messageId) &&
+        incoming().createdAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(userId)/consultations/$(consultationId)) &&
+        get(/databases/$(database)/documents/users/$(userId)/consultations/$(consultationId)).data.userId == request.auth.uid;
+      allow update: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        isValidId(messageId) &&
+        request.auth.uid == userId &&
+        isValidConsultationMessage(incoming(), userId, consultationId, messageId) &&
+        incoming().messageId == existing().messageId &&
+        incoming().consultationId == existing().consultationId &&
+        incoming().userId == existing().userId &&
+        (incoming().createdAt == existing().createdAt || incoming().createdAt == request.time) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'sender', 'message', 'recommendedProductIds', 'recommendationsJson',
+          'budgetBreakdownJson', 'createdAt'
+        ]) &&
+        get(/databases/$(database)/documents/users/$(userId)/consultations/$(consultationId)).data.userId == request.auth.uid;
+      allow delete: if isSignedIn() &&
+        isValidId(userId) &&
+        isValidId(consultationId) &&
+        isValidId(messageId) &&
+        (request.auth.uid == userId || isAdmin());
+    }
+
+    match /inquiries/{inquiryId} {
+      allow get: if isSignedIn() && isValidId(inquiryId) && (existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && isAdmin();
+      allow create: if isSignedIn() &&
+        isValidId(inquiryId) &&
+        isValidInquiryDoc(incoming()) &&
+        incoming().createdAt == request.time;
+      allow update: if false;
+      allow delete: if isSignedIn() && isValidId(inquiryId) && isAdmin();
     }
   }
 }

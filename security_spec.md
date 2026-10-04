@@ -22,4 +22,5 @@
 9. **Unauthorized Public List Scraping**: Listing `/products` without `where('visibility', '==', 'public')` as a non-admin. Rejected by `allow list: if existing().visibility == 'public' || isAdmin()`.
 10. **PII Leak on Calendar Private Notes**: Non-admin user attempting `get` or `list` on `/calendarPrivate/2026-10-10`. Rejected because `/calendarPrivate` only allows `isAdmin()`.
 11. **Privilege Escalation on `/admins`**: Non-admin authenticated user attempting to create `/admins/{theirUid}`. Rejected by `isAdmin()`.
-12. **Blanket Delete Attack**: Authenticated non-admin attempting to delete `/categories/cat-dekorasi`. Rejected by `isAdmin()`.
+12. **Cross-User Consultation History Access**: User A attempting to read, list, or write to `/users/userB/consultations/{consultationId}` or `/messages/{messageId}`. Rejected by `request.auth.uid == userId`, `existing().userId == request.auth.uid`, and Master Gate parent `get()` verification.
+

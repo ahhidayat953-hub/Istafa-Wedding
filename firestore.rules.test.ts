@@ -112,11 +112,11 @@ export const dirtyDozenTests: DirtyDozenTestCase[] = [
   },
   {
     id: 12,
-    name: 'Self-Assigned Admin Escalation',
-    collectionPath: '/admins/attacker-uid',
+    name: 'Cross-User Consultation Session Read/Write Spoof',
+    collectionPath: '/users/user-b/consultations/cons-1',
     operation: 'create',
-    auth: { uid: 'attacker-uid', email: 'attacker@example.com', email_verified: true },
-    payload: { uid: 'attacker-uid', role: 'admin' },
+    auth: { uid: 'user-a', email: 'usera@example.com', email_verified: true },
+    payload: { consultationId: 'cons-1', userId: 'user-b', title: 'Rencana' },
     expectedResult: 'PERMISSION_DENIED',
   },
 ];

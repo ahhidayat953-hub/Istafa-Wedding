@@ -116,14 +116,14 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
   return (
     <section
       id="layanan-wedding"
-      className="py-14 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto"
+      className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
     >
       {/* Editorial Section Header */}
       <div className="max-w-3xl mx-auto text-center">
-        <p className="text-xs uppercase tracking-[0.22em] text-[#9E762C] font-semibold">
+        <p className="text-xs uppercase tracking-[0.2em] text-[#9E762C] font-semibold">
           Layanan Profesional Hari Bahagia
         </p>
-        <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-serif-display font-semibold text-[#26211D] text-balance">
+        <h2 className="mt-2 heading-section-fluid font-serif-display font-semibold text-[#26211D] text-balance">
           Layanan Wedding Eksklusif ISTAFA Wedding
         </h2>
         <p className="mt-3 text-sm sm:text-base text-[#5C5147] leading-relaxed">
@@ -138,7 +138,7 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
       </div>
 
       {/* Interactive Service Category Filter Tabs */}
-      <div className="mt-8 flex items-center justify-start sm:justify-center gap-2 overflow-x-auto no-scrollbar pb-2">
+      <div className="mt-7 sm:mt-8 flex items-center justify-start sm:justify-center gap-2 overflow-x-auto no-scrollbar pb-2">
         {[
           { label: 'Semua Layanan', value: 'Semua' },
           { label: 'MUA — Make Up Artist', value: 'mua' },
@@ -156,7 +156,7 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
               key={tab.value}
               type="button"
               onClick={() => setSelectedServiceFilter(tab.value)}
-              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all shrink-0 cursor-pointer ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all shrink-0 cursor-pointer ${
                 active
                   ? 'bg-[#26211D] text-[#FBF9F5] shadow-xs'
                   : 'bg-[#F4EFE4] text-[#5C4E3E] hover:bg-[#E8DEC8] hover:text-[#26211D] border border-[#E2D6C1]'
@@ -169,7 +169,7 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
       </div>
 
       {/* 2-Column Detailed Service Cards */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {filteredServices.map((service) => (
           <WeddingServiceCard
             key={service.id}
@@ -181,7 +181,7 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
 
       {/* Quick Integration Banner: Planner & Budget */}
       {(onOpenPlanner || onOpenBudget) && (
-        <div className="mt-10 rounded-2xl border border-[#DFD3BE] bg-[#F6F1E6] p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-8 sm:mt-10 rounded-2xl border border-[#DFD3BE] bg-[#F6F1E6] p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
             <p className="text-sm sm:text-base font-serif-display font-semibold text-[#26211D]">
               Semua Layanan Terintegrasi Otomatis dengan Perencanaan Anda
@@ -191,14 +191,14 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
               Rencana Pernikahan maupun Kalkulator Budget.
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-2.5 w-full sm:w-auto shrink-0">
             {onOpenPlanner && (
               <button
                 type="button"
                 onClick={onOpenPlanner}
-                className="px-4 py-2.5 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#D9C7A3]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#D9C7A3] shrink-0" />
                 <span>Pilih di Rencana Pernikahan</span>
               </button>
             )}
@@ -206,9 +206,9 @@ export const WeddingServicesSection: React.FC<WeddingServicesSectionProps> = ({
               <button
                 type="button"
                 onClick={onOpenBudget}
-                className="px-4 py-2.5 rounded-xl border border-[#C8B282] bg-white hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl border border-[#C8B282] bg-white hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center gap-1.5 cursor-pointer"
               >
-                <Calculator className="w-3.5 h-3.5 text-[#9E762C]" />
+                <Calculator className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
                 <span>Hitung di Kalkulator Budget</span>
               </button>
             )}
@@ -369,7 +369,7 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
 
         {/* Multi-Photo Thumbnail Strip */}
         {images.length > 1 && (
-          <div className="px-6 pt-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="px-4 sm:px-6 pt-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {images.map((img, idx) => (
               <button
                 key={img.id || idx}
@@ -392,11 +392,11 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
         )}
 
         {/* Service Details Body */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4">
           {/* Category Subtitle & Price */}
-          <div className="flex flex-wrap items-start justify-between gap-3 pb-3.5 border-b border-[#EAE0CE]">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs text-[#8C7A65]">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-3 pb-3.5 border-b border-[#EAE0CE]">
+            <div className="space-y-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#8C7A65]">
                 <span>{getServiceBadgeRole(service.category)}</span>
                 <span aria-hidden="true">·</span>
                 <span
@@ -412,7 +412,7 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
               </div>
               <h3
                 onClick={onOpenDetail}
-                className="text-2xl font-serif-display font-semibold text-[#26211D] hover:text-[#9E762C] transition-colors cursor-pointer"
+                className="text-xl sm:text-2xl font-serif-display font-semibold text-[#26211D] hover:text-[#9E762C] transition-colors cursor-pointer leading-snug"
               >
                 {service.name}
               </h3>
@@ -428,7 +428,7 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
                     {formatRupiah(service.originalPrice!)}
                   </span>
                 )}
-                <span className="text-2xl font-serif-display font-bold text-[#9E762C] font-tabular">
+                <span className="text-xl sm:text-2xl font-serif-display font-bold text-[#9E762C] font-tabular">
                   {formatRupiah(service.price)}
                 </span>
               </div>
@@ -508,32 +508,32 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
       </div>
 
       {/* Action Buttons Footer: Detail, Cart/Plan, Budget & WhatsApp */}
-      <div className="px-6 pb-6 pt-3 border-t border-[#EFE8D8] space-y-2.5">
-        <div className="grid grid-cols-3 gap-2">
+      <div className="px-4 sm:px-6 pb-5 sm:pb-6 pt-3 border-t border-[#EFE8D8] space-y-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <button
             type="button"
             onClick={onOpenDetail}
-            className="py-2.5 px-3 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="py-2.5 px-2.5 sm:px-3 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            <Eye className="w-3.5 h-3.5 text-[#9E762C]" />
+            <Eye className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
             <span>Detail & Galeri</span>
           </button>
 
           <button
             type="button"
             onClick={() => addToCart(service, 1)}
-            className="py-2.5 px-3 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="py-2.5 px-2.5 sm:px-3 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            <ShoppingBag className="w-3.5 h-3.5 text-[#D9C7A3]" />
+            <ShoppingBag className="w-3.5 h-3.5 text-[#D9C7A3] shrink-0" />
             <span>+ Daftar Pilihan</span>
           </button>
 
           <button
             type="button"
             onClick={() => applyProductToBudget(service, 1)}
-            className="py-2.5 px-3 rounded-xl border border-[#C8B282] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="col-span-2 sm:col-span-1 py-2.5 px-3 rounded-xl border border-[#C8B282] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            <Calculator className="w-3.5 h-3.5 text-[#9E762C]" />
+            <Calculator className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
             <span>+ Hitung Budget</span>
           </button>
         </div>
@@ -542,9 +542,9 @@ const WeddingServiceCard: React.FC<WeddingServiceCardProps> = ({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full py-3 px-4 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-2xs"
+          className="w-full py-3 px-4 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-2xs text-center leading-snug"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 shrink-0" />
           <span>Konsultasi {service.category} via WhatsApp</span>
         </a>
       </div>

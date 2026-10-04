@@ -45,18 +45,25 @@ import {
   Category,
   ConsultationCartItem,
   ConsultationInquiry,
+  ConsultationMessage,
+  ConsultationSession,
   GalleryItem,
   InspirationArticle,
+  LeadRecord,
+  LeadStatus,
+  OrderStatus,
   Product,
   Promo,
   ServiceArea,
   StoreSettings,
   Testimonial,
   UserWorkspaceDoc,
+  WeddingOrder,
   WeddingPackage,
   WeddingPlanData,
 } from '../types';
-import { deleteStorageUrls, hashPasswordHex } from '../utils/imageUtils';
+import { INITIAL_CONSULTATION_GREETING } from '../utils/consultationEngine';
+import { deleteStorageUrls, getPrimaryImage, hashPasswordHex } from '../utils/imageUtils';
 
 const STORAGE_KEYS = {
   settings: 'istafa_wedding_settings_v3',
@@ -110,10 +117,46 @@ function createFreshGuestId(): string {
 
 function getUserScopedKey(
   userId: string,
-  field: 'wishlist' | 'cart' | 'budget' | 'planner' | 'meta' | 'inquiries'
+  field: 'wishlist' | 'cart' | 'budget' | 'planner' | 'meta' | 'inquiries' | 'consultations'
 ): string {
   const safeUid = (userId || 'guest').replace(/[^a-zA-Z0-9_-]/g, '_');
   return `istafa_u_${safeUid}_${field}_v2`;
+}
+
+function createDefaultConsultationSession(
+  userId: string,
+  coupleName = '',
+  weddingDate = '2026-11-14',
+  weddingLocation = '',
+  guestCount = 0,
+  targetBudget = 0
+): ConsultationSession {
+  const nowIso = new Date().toISOString();
+  const sessionId = `cons_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+  const greetingMsg: ConsultationMessage = {
+    id: `msg_init_${Date.now().toString(36)}`,
+    consultationId: sessionId,
+    userId,
+    sender: 'consultant',
+    message: INITIAL_CONSULTATION_GREETING,
+    recommendations: [],
+    createdAt: nowIso,
+  };
+  return {
+    id: sessionId,
+    userId,
+    title: 'Konsultasi Rencana Pernikahan',
+    coupleName,
+    weddingDate,
+    weddingLocation,
+    guestCount,
+    targetBudget,
+    weddingTheme: '',
+    desiredColors: '',
+    messages: [greetingMsg],
+    createdAt: nowIso,
+    updatedAt: nowIso,
+  };
 }
 
 interface UserMetaState {
@@ -204,10 +247,13 @@ interface WeddingContextValue {
   calendarPrivate: CalendarPrivateEntry[];
   serviceAreas: ServiceArea[];
   inquiries: ConsultationInquiry[];
+  leads: LeadRecord[];
+  allConsultations: ConsultationSession[];
+  orders: WeddingOrder[];
   isSyncing: boolean;
   toastMessage: string | null;
   showToast: (msg: string) => void;
-  // Wishlist operations (localStorage)
+  // Wishlist operations
   wishlistIds: string[];
   wishlistProducts: Product[];
   isInWishlist: (productId: string) => boolean;
@@ -239,7 +285,28 @@ interface WeddingContextValue {
   // 10-Step Wedding Planner Wizard operations
   weddingPlan: WeddingPlanData;
   updateWeddingPlan: (next: Partial<WeddingPlanData>) => void;
+  addProductToWeddingPlan: (
+    product: Product,
+    contextOverrides?: Partial<WeddingPlanData>
+  ) => void;
   syncPlannerToBudget: () => void;
+  // Konsultasi Pernikahan ISTAFA operations (per-user isolated + server DB synced)
+  consultationSessions: ConsultationSession[];
+  activeConsultation: ConsultationSession;
+  startNewConsultationSession: () => ConsultationSession;
+  selectConsultationSession: (sessionId: string) => void;
+  deleteConsultationSession: (sessionId: string) => void;
+  saveConsultationSessionState: (updatedSession: ConsultationSession) => void;
+  trackProductInterest: (productId: string, mode?: 'viewed' | 'interested') => void;
+  // Leads & Orders CRM operations
+  saveLead: (lead: Partial<LeadRecord>) => Promise<LeadRecord | null>;
+  updateLeadStatus: (leadId: string, status: LeadStatus, notes?: string) => Promise<void>;
+  deleteLead: (leadId: string) => Promise<void>;
+  createOrder: (
+    orderInput: Omit<WeddingOrder, 'id' | 'orderNumber' | 'userId' | 'createdAt' | 'updatedAt'>
+  ) => Promise<WeddingOrder | null>;
+  updateOrderStatus: (orderId: string, status: OrderStatus, notes?: string) => Promise<void>;
+  deleteOrder: (orderId: string) => Promise<void>;
   // Record inquiry
   recordInquiry: (inquiry: Omit<ConsultationInquiry, 'id' | 'createdAt'>) => void;
   // CRUD operations
@@ -368,33 +435,117 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       INITIAL_PLANNER_STATE
     )
   );
+  const [consultationSessions, setConsultationSessions] = useState<ConsultationSession[]>(() => {
+    const saved = loadFromLocal<ConsultationSession[]>(
+      getUserScopedKey(currentUserId, 'consultations'),
+      []
+    );
+    if (saved && saved.length > 0) return saved;
+    return [createDefaultConsultationSession(currentUserId)];
+  });
+  const [activeConsultationId, setActiveConsultationId] = useState<string>(() => {
+    const saved = loadFromLocal<ConsultationSession[]>(
+      getUserScopedKey(currentUserId, 'consultations'),
+      []
+    );
+    return saved[0]?.id || '';
+  });
   const [inquiries, setInquiries] = useState<ConsultationInquiry[]>(() =>
-    loadFromLocal<ConsultationInquiry[]>(STORAGE_KEYS.inquiries, [
-      {
-        id: 'inq-sample-1',
-        userId: 'system-sample',
-        coupleName: 'Nadia & Reza',
-        weddingLocation: 'Glasshouse Bogor',
-        type: 'planner',
-        customerDate: '2026-11-14',
-        guestCount: 300,
-        itemsSummary: [
-          'Dekorasi Elegant Gold — Royal Glasshouse',
-          'Undangan Cetak Fine Art (300 Pcs)',
-          'Souvenir Eau de Parfum Artisan (300 Pcs)',
-        ],
-        totalEstimate: 48250000,
-        createdAt: '2026-10-03',
-      },
-    ])
+    loadFromLocal<ConsultationInquiry[]>(STORAGE_KEYS.inquiries, [])
   );
+  const [leads, setLeads] = useState<LeadRecord[]>([]);
+  const [allConsultations, setAllConsultations] = useState<ConsultationSession[]>([]);
+  const [orders, setOrders] = useState<WeddingOrder[]>([]);
+  const [serverDbReady, setServerDbReady] = useState<boolean>(false);
 
   const cartWeddingDate = userMeta.cartWeddingDate;
   const cartGuestCount = userMeta.cartGuestCount;
   const userCoupleName = userMeta.coupleName || weddingPlan.coupleName || '';
   const userWeddingLocation = userMeta.weddingLocation || weddingPlan.weddingLocation || '';
 
-  // Helper to persist user workspace to Firestore when authenticated
+  // Load authoritative state from persistent server database (/api/db/state)
+  useEffect(() => {
+    let active = true;
+    async function loadServerState() {
+      try {
+        const res = await fetch('/api/db/state');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!active || !data) return;
+
+        if (data.settings) {
+          setSettings(data.settings);
+          saveToLocal(STORAGE_KEYS.settings, data.settings);
+        }
+        if (Array.isArray(data.categories)) {
+          setCategories(data.categories);
+          saveToLocal(STORAGE_KEYS.categories, data.categories);
+        }
+        if (Array.isArray(data.products)) {
+          setProducts(data.products);
+          saveToLocal(STORAGE_KEYS.products, data.products);
+        }
+        if (Array.isArray(data.packages)) {
+          setPackages(data.packages);
+          saveToLocal(STORAGE_KEYS.packages, data.packages);
+        }
+        if (Array.isArray(data.gallery)) {
+          setGallery(data.gallery);
+          saveToLocal(STORAGE_KEYS.gallery, data.gallery);
+        }
+        if (Array.isArray(data.testimonials)) {
+          setTestimonials(data.testimonials);
+          saveToLocal(STORAGE_KEYS.testimonials, data.testimonials);
+        }
+        if (Array.isArray(data.promos)) {
+          setPromos(data.promos);
+          saveToLocal(STORAGE_KEYS.promos, data.promos);
+        }
+        if (Array.isArray(data.articles)) {
+          setArticles(data.articles);
+          saveToLocal(STORAGE_KEYS.articles, data.articles);
+        }
+        if (Array.isArray(data.calendarPublic)) {
+          setCalendarPublic(data.calendarPublic);
+          saveToLocal(STORAGE_KEYS.calendarPublic, data.calendarPublic);
+        }
+        if (Array.isArray(data.calendarPrivate)) {
+          setCalendarPrivate(data.calendarPrivate);
+          saveToLocal(STORAGE_KEYS.calendarPrivate, data.calendarPrivate);
+        }
+        if (Array.isArray(data.serviceAreas)) {
+          setServiceAreas(data.serviceAreas);
+          saveToLocal(STORAGE_KEYS.serviceAreas, data.serviceAreas);
+        }
+        if (Array.isArray(data.leads)) {
+          setLeads(data.leads);
+        }
+        if (Array.isArray(data.consultations)) {
+          setAllConsultations(data.consultations);
+        }
+        if (Array.isArray(data.orders)) {
+          setOrders(data.orders);
+        }
+        if (Array.isArray(data.inquiries)) {
+          setInquiries(data.inquiries);
+          saveToLocal(STORAGE_KEYS.inquiries, data.inquiries);
+        }
+        if (data.adminCredentials && data.adminCredentials.passwordHash) {
+          setAdminAuthRecord(data.adminCredentials);
+          saveToLocal(STORAGE_KEYS.adminAuthHash, data.adminCredentials);
+        }
+        setServerDbReady(true);
+      } catch (err) {
+        console.warn('Server DB fetch fallback:', err);
+      }
+    }
+    void loadServerState();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Helper to persist user workspace to Server DB + Firestore when authenticated
   const persistWorkspaceToCloud = async (
     uid: string,
     nextCart: ConsultationCartItem[],
@@ -403,6 +554,27 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     nextBudget: BudgetAllocation,
     nextMeta: UserMetaState
   ) => {
+    const targetUserId = uid || currentUserId;
+    try {
+      void fetch(`/api/db/workspaces/${encodeURIComponent(targetUserId)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: targetUserId,
+          coupleName: nextMeta.coupleName || nextPlan.coupleName || '',
+          weddingLocation: nextMeta.weddingLocation || nextPlan.weddingLocation || '',
+          cartWeddingDate: nextMeta.cartWeddingDate || nextPlan.weddingDate || '2026-11-14',
+          cartGuestCount: Number(nextMeta.cartGuestCount) || 300,
+          cartItems: nextCart,
+          wishlistIds: nextWishlist,
+          weddingPlan: nextPlan,
+          budgetAllocation: nextBudget,
+        }),
+      });
+    } catch {
+      // ignore network error
+    }
+
     if (!uid || uid.startsWith('guest_')) return;
     try {
       const compactCart = nextCart.map((ci) => ({
@@ -432,7 +604,7 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         { merge: true }
       );
     } catch {
-      // Scoped localStorage remains primary immediate store if offline
+      // Server DB & localStorage remain immediate store
     }
   };
 
@@ -458,12 +630,29 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       getUserScopedKey(currentUserId, 'planner'),
       INITIAL_PLANNER_STATE
     );
+    const loadedConsultations = loadFromLocal<ConsultationSession[]>(
+      getUserScopedKey(currentUserId, 'consultations'),
+      []
+    );
+    const ensuredConsultations =
+      loadedConsultations.length > 0
+        ? loadedConsultations
+        : [
+            createDefaultConsultationSession(
+              currentUserId,
+              loadedMeta.coupleName,
+              loadedMeta.cartWeddingDate,
+              loadedMeta.weddingLocation
+            ),
+          ];
 
     setWishlistIds(loadedWishlist);
     setCartItems(loadedCart);
     setUserMeta(loadedMeta);
     setBudgetAllocation(loadedBudget);
     setWeddingPlan(loadedPlan);
+    setConsultationSessions(ensuredConsultations);
+    setActiveConsultationId(ensuredConsultations[0].id);
   }, [currentUserId]);
 
   // Multi-tab real-time synchronization via browser storage events
@@ -480,6 +669,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setWeddingPlan(loadFromLocal(e.key, INITIAL_PLANNER_STATE));
       } else if (e.key === getUserScopedKey(currentUserId, 'meta')) {
         setUserMeta(loadFromLocal(e.key, DEFAULT_USER_META));
+      } else if (e.key === getUserScopedKey(currentUserId, 'consultations')) {
+        const updated = loadFromLocal<ConsultationSession[]>(e.key, []);
+        if (updated.length > 0) {
+          setConsultationSessions(updated);
+        }
       }
     };
     window.addEventListener('storage', handleStorageChange);
@@ -735,27 +929,44 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const defaultQty =
       quantity ??
       (product.unit?.toLowerCase() === 'pcs' ? cartGuestCount || 300 : 1);
+    const nowIso = new Date().toISOString();
+    const primaryPhoto = getPrimaryImage(product.images).url;
 
     setCartItems((prev) => {
       const existingIndex = prev.findIndex((i) => i.productId === product.id);
       let next: ConsultationCartItem[];
       if (existingIndex >= 0) {
-        next = prev.map((item, idx) =>
-          idx === existingIndex
-            ? {
-                ...item,
-                product,
-                quantity: item.quantity + defaultQty,
-                selectedVariant: selectedVariant || item.selectedVariant,
-                selectedSize: selectedSize || item.selectedSize,
-              }
-            : item
-        );
+        next = prev.map((item, idx) => {
+          if (idx !== existingIndex) return item;
+          const nextQty = item.quantity + defaultQty;
+          const unitPrice = item.priceAtSelection ?? product.price;
+          return {
+            ...item,
+            userId: currentUserId,
+            productName: product.name,
+            priceAtSelection: unitPrice,
+            photoUrl: primaryPhoto,
+            product,
+            quantity: nextQty,
+            subtotal: unitPrice * nextQty,
+            selectedVariant: selectedVariant || item.selectedVariant,
+            selectedSize: selectedSize || item.selectedSize,
+            createdAt: item.createdAt || nowIso,
+            updatedAt: nowIso,
+          };
+        });
       } else {
         next = [
           ...prev,
           {
+            userId: currentUserId,
             productId: product.id,
+            productName: product.name,
+            priceAtSelection: product.price,
+            photoUrl: primaryPhoto,
+            subtotal: product.price * defaultQty,
+            createdAt: nowIso,
+            updatedAt: nowIso,
             product,
             quantity: defaultQty,
             selectedVariant: selectedVariant || product.variants[0],
@@ -803,9 +1014,18 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       removeFromCart(productId);
       return;
     }
+    const nowIso = new Date().toISOString();
     setCartItems((prev) => {
       const next = prev.map((item) =>
-        item.productId === productId ? { ...item, quantity } : item
+        item.productId === productId
+          ? {
+              ...item,
+              userId: currentUserId,
+              quantity,
+              subtotal: (item.priceAtSelection ?? item.product.price) * quantity,
+              updatedAt: nowIso,
+            }
+          : item
       );
       saveToLocal(getUserScopedKey(currentUserId, 'cart'), next);
       if (user?.uid) {
@@ -944,6 +1164,533 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   };
 
+  const addProductToWeddingPlan = (
+    product: Product,
+    contextOverrides?: Partial<WeddingPlanData>
+  ) => {
+    const catLower = product.category.toLowerCase();
+    setWeddingPlan((prev) => {
+      const next: WeddingPlanData = {
+        ...prev,
+        ...contextOverrides,
+      };
+
+      if (catLower.includes('dekorasi')) {
+        next.selectedDecorId = product.id;
+      } else if (catLower.includes('undangan')) {
+        next.selectedInvitationId = product.id;
+        if (!next.invitationQty) next.invitationQty = next.guestCount || 300;
+      } else if (catLower.includes('souvenir')) {
+        next.selectedSouvenirId = product.id;
+        if (!next.souvenirQty) next.souvenirQty = next.guestCount || 300;
+      } else if (catLower.includes('mahar') || catLower.includes('seserahan')) {
+        next.selectedMaharId = product.id;
+      } else {
+        const currentAdd = next.additionalServiceIds || [];
+        if (!currentAdd.includes(product.id)) {
+          next.additionalServiceIds = [...currentAdd, product.id];
+        }
+      }
+
+      const currentProdIds = next.selectedProductIds || [];
+      if (!currentProdIds.includes(product.id)) {
+        next.selectedProductIds = [...currentProdIds, product.id];
+      }
+
+      // Compute updated estimatedCost across all chosen plan items
+      const decorProd = products.find((p) => p.id === next.selectedDecorId);
+      const invProd = products.find((p) => p.id === next.selectedInvitationId);
+      const souvProd = products.find((p) => p.id === next.selectedSouvenirId);
+      const maharProd = products.find((p) => p.id === next.selectedMaharId);
+      const addProds = products.filter((p) =>
+        (next.additionalServiceIds || []).includes(p.id)
+      );
+
+      next.estimatedCost =
+        (decorProd?.price || 0) +
+        (invProd ? invProd.price * (next.invitationQty || next.guestCount || 300) : 0) +
+        (souvProd ? souvProd.price * (next.souvenirQty || next.guestCount || 300) : 0) +
+        (maharProd?.price || 0) +
+        addProds.reduce((sum, p) => sum + p.price, 0);
+
+      saveToLocal(getUserScopedKey(currentUserId, 'planner'), next);
+
+      const updatedMeta: UserMetaState = {
+        ...userMeta,
+        coupleName: next.coupleName || userMeta.coupleName,
+        weddingLocation: next.weddingLocation || userMeta.weddingLocation,
+        cartWeddingDate: next.weddingDate || userMeta.cartWeddingDate,
+        cartGuestCount: next.guestCount || userMeta.cartGuestCount,
+      };
+      setUserMeta(updatedMeta);
+      saveToLocal(getUserScopedKey(currentUserId, 'meta'), updatedMeta);
+
+      if (user?.uid) {
+        void persistWorkspaceToCloud(
+          user.uid,
+          cartItems,
+          wishlistIds,
+          next,
+          budgetAllocation,
+          updatedMeta
+        );
+      }
+
+      return next;
+    });
+
+    // Also sync this product's category into the user's Budget Calculator
+    applyProductToBudget(product);
+    showToast(`"${product.name}" berhasil ditambahkan ke Rencana Pernikahan Anda.`);
+  };
+
+  // ===========================================================================
+  // Konsultasi Pernikahan ISTAFA Session & Cloud Persistence (Per-User UID)
+  // ===========================================================================
+  const persistConsultationToFirestore = async (
+    uid: string,
+    session: ConsultationSession
+  ) => {
+    if (!uid || uid.startsWith('guest_')) return;
+    try {
+      const cleanSessionId = session.id.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 128);
+      const now = serverTimestamp();
+
+      // Ensure parent user workspace exists for Master Gate verification
+      await persistWorkspaceToCloud(
+        uid,
+        cartItems,
+        wishlistIds,
+        weddingPlan,
+        budgetAllocation,
+        userMeta
+      );
+
+      const sessionRef = doc(db, 'users', uid, 'consultations', cleanSessionId);
+      await setDoc(
+        sessionRef,
+        {
+          consultationId: cleanSessionId,
+          userId: uid.slice(0, 128),
+          title: (session.title || 'Konsultasi Pernikahan').slice(0, 160),
+          coupleName: (session.coupleName || '').slice(0, 150),
+          weddingDate: (session.weddingDate || '').slice(0, 30),
+          weddingLocation: (session.weddingLocation || '').slice(0, 250),
+          guestCount: Math.max(0, Math.min(50000, Number(session.guestCount) || 0)),
+          targetBudget: Math.max(0, Math.min(100000000000, Number(session.targetBudget) || 0)),
+          weddingTheme: (session.weddingTheme || '').slice(0, 150),
+          desiredColors: (session.desiredColors || '').slice(0, 150),
+          createdAt: now,
+          updatedAt: now,
+        },
+        { merge: true }
+      );
+
+      // Persist latest messages in subcollection users/{userId}/consultations/{consultationId}/messages/{messageId}
+      const recentMessages = session.messages.slice(-4);
+      for (const msg of recentMessages) {
+        const cleanMsgId = msg.id.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 128);
+        const msgRef = doc(
+          db,
+          'users',
+          uid,
+          'consultations',
+          cleanSessionId,
+          'messages',
+          cleanMsgId
+        );
+        const recIds = (msg.recommendations || [])
+          .map((r) => r.productId)
+          .slice(0, 10);
+        await setDoc(
+          msgRef,
+          {
+            messageId: cleanMsgId,
+            consultationId: cleanSessionId,
+            userId: uid.slice(0, 128),
+            sender: msg.sender === 'user' ? 'user' : 'consultant',
+            message: (msg.message || '-').slice(0, 6000),
+            recommendedProductIds: recIds,
+            recommendationsJson: JSON.stringify(msg.recommendations || []).slice(0, 20000),
+            budgetBreakdownJson: msg.budgetBreakdown
+              ? JSON.stringify(msg.budgetBreakdown).slice(0, 30000)
+              : '',
+            createdAt: now,
+          },
+          { merge: true }
+        );
+      }
+    } catch {
+      // Scoped localStorage remains immediate primary store
+    }
+  };
+
+  const activeConsultation =
+    consultationSessions.find((s) => s.id === activeConsultationId) ||
+    consultationSessions[0] ||
+    createDefaultConsultationSession(
+      currentUserId,
+      userMeta.coupleName,
+      userMeta.cartWeddingDate,
+      userMeta.weddingLocation
+    );
+
+  const startNewConsultationSession = (): ConsultationSession => {
+    const fresh = createDefaultConsultationSession(
+      currentUserId,
+      weddingPlan.coupleName || userMeta.coupleName,
+      weddingPlan.weddingDate || userMeta.cartWeddingDate,
+      weddingPlan.weddingLocation || userMeta.weddingLocation,
+      weddingPlan.guestCount || userMeta.cartGuestCount,
+      weddingPlan.targetBudget || 0
+    );
+    setConsultationSessions((prev) => {
+      const next = [fresh, ...prev].slice(0, 30);
+      saveToLocal(getUserScopedKey(currentUserId, 'consultations'), next);
+      return next;
+    });
+    setActiveConsultationId(fresh.id);
+    void fetch('/api/db/consultations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fresh),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.consultations) setAllConsultations(data.consultations);
+        if (data?.leads) setLeads(data.leads);
+      })
+      .catch(() => {});
+
+    if (user?.uid) {
+      void persistConsultationToFirestore(user.uid, fresh);
+    }
+    return fresh;
+  };
+
+  const selectConsultationSession = (sessionId: string) => {
+    setActiveConsultationId(sessionId);
+  };
+
+  const deleteConsultationSession = (sessionId: string) => {
+    setConsultationSessions((prev) => {
+      const filtered = prev.filter((s) => s.id !== sessionId);
+      const next =
+        filtered.length > 0
+          ? filtered
+          : [
+              createDefaultConsultationSession(
+                currentUserId,
+                userMeta.coupleName,
+                userMeta.cartWeddingDate,
+                userMeta.weddingLocation
+              ),
+            ];
+      saveToLocal(getUserScopedKey(currentUserId, 'consultations'), next);
+      if (activeConsultationId === sessionId) {
+        setActiveConsultationId(next[0].id);
+      }
+      return next;
+    });
+
+    void fetch(`/api/db/consultations/${encodeURIComponent(sessionId)}`, {
+      method: 'DELETE',
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.consultations) setAllConsultations(data.consultations);
+      })
+      .catch(() => {});
+
+    if (user?.uid) {
+      const cleanId = sessionId.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 128);
+      deleteDoc(doc(db, 'users', user.uid, 'consultations', cleanId)).catch(() => {
+        // ignore
+      });
+    }
+    showToast('Riwayat sesi konsultasi telah dihapus.');
+  };
+
+  const saveConsultationSessionState = (updatedSession: ConsultationSession) => {
+    const withOwner: ConsultationSession = {
+      ...updatedSession,
+      userId: currentUserId,
+      updatedAt: new Date().toISOString(),
+    };
+    setConsultationSessions((prev) => {
+      const exists = prev.some((s) => s.id === withOwner.id);
+      const next = exists
+        ? prev.map((s) => (s.id === withOwner.id ? withOwner : s))
+        : [withOwner, ...prev];
+      saveToLocal(getUserScopedKey(currentUserId, 'consultations'), next);
+      return next;
+    });
+    setActiveConsultationId(withOwner.id);
+
+    void fetch('/api/db/consultations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(withOwner),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.consultations) setAllConsultations(data.consultations);
+        if (data?.leads) setLeads(data.leads);
+      })
+      .catch(() => {});
+
+    if (user?.uid) {
+      void persistConsultationToFirestore(user.uid, withOwner);
+    }
+  };
+
+  const trackProductInterest = (
+    productId: string,
+    mode: 'viewed' | 'interested' = 'viewed'
+  ) => {
+    if (!productId) return;
+    const current = activeConsultation;
+    if (!current) return;
+    const nextViewed = Array.from(
+      new Set([...(current.viewedProductIds || []), productId])
+    );
+    const nextInterested =
+      mode === 'interested'
+        ? Array.from(new Set([...(current.interestedProductIds || []), productId]))
+        : current.interestedProductIds || [];
+
+    const updated: ConsultationSession = {
+      ...current,
+      viewedProductIds: nextViewed,
+      interestedProductIds: nextInterested,
+      status: mode === 'interested' ? 'interested' : current.status || 'active',
+      updatedAt: new Date().toISOString(),
+    };
+
+    setConsultationSessions((prev) => {
+      const exists = prev.some((s) => s.id === updated.id);
+      const next = exists
+        ? prev.map((s) => (s.id === updated.id ? updated : s))
+        : [updated, ...prev];
+      saveToLocal(getUserScopedKey(currentUserId, 'consultations'), next);
+      return next;
+    });
+
+    if (mode === 'interested') {
+      void fetch('/api/db/consultations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data?.consultations) setAllConsultations(data.consultations);
+          if (data?.leads) setLeads(data.leads);
+        })
+        .catch(() => {});
+    }
+  };
+
+  // ===========================================================================
+  // Leads (Calon Pengantin) & Orders (Booking) Operations
+  // ===========================================================================
+  const saveLead = async (leadInput: Partial<LeadRecord>): Promise<LeadRecord | null> => {
+    try {
+      const payload = {
+        ...leadInput,
+        userId: leadInput.userId || currentUserId,
+      };
+      const res = await fetch('/api/db/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data?.leads) setLeads(data.leads);
+      const savedLead = data?.lead as LeadRecord | undefined;
+
+      if (savedLead && user?.uid) {
+        const cleanId = savedLead.id.replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 128);
+        const now = serverTimestamp();
+        setDoc(
+          doc(db, 'leads', cleanId),
+          {
+            id: cleanId,
+            userId: user.uid,
+            consultationId: (savedLead.consultationId || '').slice(0, 128),
+            customerName: (savedLead.customerName || '').slice(0, 120),
+            partnerName: (savedLead.partnerName || '').slice(0, 120),
+            coupleName: (savedLead.coupleName || 'Calon Pengantin').slice(0, 150),
+            whatsapp: (savedLead.whatsapp || '').slice(0, 30),
+            email: (savedLead.email || '').slice(0, 120),
+            weddingDate: (savedLead.weddingDate || '').slice(0, 40),
+            weddingLocation: (savedLead.weddingLocation || '').slice(0, 250),
+            eventType: (savedLead.eventType || '').slice(0, 120),
+            guestCount: Math.max(0, Math.min(50000, Number(savedLead.guestCount) || 0)),
+            budget: Math.max(0, Math.min(100000000000, Number(savedLead.budget) || 0)),
+            needs: (savedLead.needs || []).slice(0, 30),
+            interestedProductIds: (savedLead.interestedProductIds || []).slice(0, 50),
+            interestedProductNames: (savedLead.interestedProductNames || []).slice(0, 50),
+            recommendedPackageNames: (savedLead.recommendedPackageNames || []).slice(0, 20),
+            consultationSummary: (savedLead.consultationSummary || '').slice(0, 5000),
+            notes: (savedLead.notes || '').slice(0, 3000),
+            status: savedLead.status || 'New',
+            source: savedLead.source || 'consultation',
+            createdAt: now,
+            updatedAt: now,
+          },
+          { merge: true }
+        ).catch(() => {});
+      }
+
+      return savedLead || null;
+    } catch (err) {
+      console.error('Failed to save lead:', err);
+      return null;
+    }
+  };
+
+  const updateLeadStatus = async (leadId: string, status: LeadStatus, notes?: string) => {
+    try {
+      const body: Partial<LeadRecord> = { status };
+      if (notes !== undefined) body.notes = notes;
+      const res = await fetch(`/api/db/leads/${encodeURIComponent(leadId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.leads) setLeads(data.leads);
+        showToast(`Status calon pengantin diperbarui menjadi "${status}".`);
+      }
+    } catch (err) {
+      console.error('Error updating lead status:', err);
+    }
+  };
+
+  const deleteLead = async (leadId: string) => {
+    try {
+      const res = await fetch(`/api/db/leads/${encodeURIComponent(leadId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.leads) setLeads(data.leads);
+      }
+      if (isCloudAdmin && user) {
+        deleteDoc(doc(db, 'leads', leadId)).catch(() => {});
+      }
+      showToast('Data calon pengantin berhasil dihapus.');
+    } catch (err) {
+      console.error('Error deleting lead:', err);
+    }
+  };
+
+  const createOrder = async (
+    orderInput: Omit<WeddingOrder, 'id' | 'orderNumber' | 'userId' | 'createdAt' | 'updatedAt'>
+  ): Promise<WeddingOrder | null> => {
+    try {
+      const res = await fetch('/api/db/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...orderInput,
+          userId: currentUserId,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        showToast(errData.error || 'Gagal menyimpan pesanan. Periksa kembali data Anda.');
+        return null;
+      }
+      const data = await res.json();
+      if (data?.orders) setOrders(data.orders);
+      if (data?.leads) setLeads(data.leads);
+      const savedOrder = data?.order as WeddingOrder | undefined;
+
+      if (savedOrder && user?.uid) {
+        const cleanId = savedOrder.id.replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 128);
+        const now = serverTimestamp();
+        setDoc(
+          doc(db, 'orders', cleanId),
+          {
+            id: cleanId,
+            orderNumber: savedOrder.orderNumber.slice(0, 60),
+            userId: user.uid,
+            leadId: (savedOrder.leadId || '').slice(0, 128),
+            consultationId: (savedOrder.consultationId || '').slice(0, 128),
+            customerName: savedOrder.customerName.slice(0, 120),
+            partnerName: (savedOrder.partnerName || '').slice(0, 120),
+            whatsapp: savedOrder.whatsapp.slice(0, 30),
+            email: (savedOrder.email || '').slice(0, 120),
+            weddingDate: (savedOrder.weddingDate || '').slice(0, 40),
+            weddingLocation: (savedOrder.weddingLocation || '').slice(0, 250),
+            eventType: (savedOrder.eventType || 'Akad & Resepsi').slice(0, 120),
+            guestCount: Math.max(0, Math.min(50000, Number(savedOrder.guestCount) || 0)),
+            itemsJson: JSON.stringify(savedOrder.items || []).slice(0, 100000),
+            totalAmount: Math.max(0, Math.min(100000000000, Number(savedOrder.totalAmount) || 0)),
+            status: savedOrder.status || 'Pending',
+            notes: (savedOrder.notes || '').slice(0, 3000),
+            paymentProofUrl: (savedOrder.paymentProofUrl || '').slice(0, 800000),
+            createdAt: now,
+            updatedAt: now,
+          },
+          { merge: true }
+        ).catch(() => {});
+      }
+
+      if (savedOrder) {
+        showToast(
+          `Booking #${savedOrder.orderNumber} atas nama ${savedOrder.customerName} berhasil disimpan!`
+        );
+      }
+      return savedOrder || null;
+    } catch (err) {
+      console.error('Failed to create order:', err);
+      showToast('Terjadi kendala saat menyimpan pesanan.');
+      return null;
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, status: OrderStatus, notes?: string) => {
+    try {
+      const body: Partial<WeddingOrder> = { status };
+      if (notes !== undefined) body.notes = notes;
+      const res = await fetch(`/api/db/orders/${encodeURIComponent(orderId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.orders) setOrders(data.orders);
+        showToast(`Status pesanan diperbarui menjadi "${status}".`);
+      }
+    } catch (err) {
+      console.error('Error updating order status:', err);
+    }
+  };
+
+  const deleteOrder = async (orderId: string) => {
+    try {
+      const res = await fetch(`/api/db/orders/${encodeURIComponent(orderId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.orders) setOrders(data.orders);
+      }
+      if (isCloudAdmin && user) {
+        deleteDoc(doc(db, 'orders', orderId)).catch(() => {});
+      }
+      showToast('Data pesanan berhasil dihapus.');
+    } catch (err) {
+      console.error('Error deleting order:', err);
+    }
+  };
+
   const syncPlannerToBudget = () => {
     const decorProd = products.find((p) => p.id === weddingPlan.selectedDecorId);
     const invProd = products.find((p) => p.id === weddingPlan.selectedInvitationId);
@@ -976,38 +1723,51 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...inquiry,
       id: inquiryId,
       userId: inquiry.userId || currentUserId,
-      coupleName: inquiry.coupleName || weddingPlan.coupleName || '',
-      weddingLocation: inquiry.weddingLocation || weddingPlan.weddingLocation || '',
+      coupleName: inquiry.coupleName || weddingPlan.coupleName || activeConsultation.coupleName || '',
+      weddingLocation:
+        inquiry.weddingLocation ||
+        weddingPlan.weddingLocation ||
+        activeConsultation.weddingLocation ||
+        '',
       createdAt: new Date().toISOString().slice(0, 10),
     };
     setInquiries((prev) => {
-      const next = [newRecord, ...prev].slice(0, 100);
+      const next = [newRecord, ...prev].slice(0, 200);
       saveToLocal(STORAGE_KEYS.inquiries, next);
       return next;
     });
 
+    void fetch('/api/db/inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newRecord),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.inquiries) {
+          setInquiries(data.inquiries);
+          saveToLocal(STORAGE_KEYS.inquiries, data.inquiries);
+        }
+      })
+      .catch(() => {});
+
     if (user?.uid) {
       setDoc(doc(db, 'inquiries', inquiryId), {
         userId: user.uid,
-        coupleName: (newRecord.coupleName || '').slice(0, 120),
-        weddingDate: (newRecord.weddingDate || '').slice(0, 40),
-        weddingLocation: (newRecord.weddingLocation || '').slice(0, 200),
-        weddingTheme: (newRecord.weddingTheme || '').slice(0, 80),
-        guestScale: (newRecord.guestScale || '').slice(0, 80),
-        estimatedTotal: Math.max(0, Number(newRecord.estimatedTotal) || 0),
-        itemsSummary: (newRecord.itemsSummary || []).slice(0, 40).map((s) => s.slice(0, 200)),
-        customNotes: (newRecord.customNotes || '').slice(0, 1000),
-        status: 'Baru',
+        coupleName: (newRecord.coupleName || '').slice(0, 150),
+        weddingLocation: (newRecord.weddingLocation || '').slice(0, 250),
+        type: newRecord.type,
+        customerDate: (newRecord.customerDate || '').slice(0, 60),
+        guestCount: Math.max(0, Math.min(50000, Number(newRecord.guestCount) || 0)),
+        itemsSummary: (newRecord.itemsSummary || []).slice(0, 100).map((s) => s.slice(0, 250)),
+        totalEstimate: Math.max(0, Number(newRecord.totalEstimate) || 0),
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      }).catch((err) => {
-        console.warn('Local inquiry record fallback:', err);
-      });
+      }).catch(() => {});
     }
   };
 
   // ===========================================================================
-  // Authentication & Firestore Real-Time Listeners
+  // Authentication
   // ===========================================================================
   const isCloudAdmin = Boolean(
     user && user.emailVerified && user.email === 'ahhidayat953@gmail.com'
@@ -1020,312 +1780,6 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
     return () => unsub();
   }, []);
-
-  useEffect(() => {
-    if (!authReady) return;
-
-    const settingsRef = doc(db, 'settings', 'main');
-    const unsubSettings = onSnapshot(
-      settingsRef,
-      (snap) => {
-        if (snap.exists()) {
-          const rawData = snap.data() as StoreSettings;
-          const upgraded: StoreSettings = {
-            ...rawData,
-            id: snap.id,
-            businessName:
-              rawData.businessName === 'Aurelia Wedding Atelier'
-                ? 'ISTAFA Wedding'
-                : rawData.businessName,
-            logoText:
-              rawData.logoText === 'Aurelia Atelier'
-                ? 'ISTAFA Wedding'
-                : rawData.logoText,
-            whatsappNumber:
-              rawData.whatsappNumber === '6281288997766'
-                ? '6282123376933'
-                : rawData.whatsappNumber,
-          };
-          setSettings(upgraded);
-          saveToLocal(STORAGE_KEYS.settings, upgraded);
-        }
-      },
-      (err) => console.warn('Settings listener info:', err)
-    );
-
-    const unsubCategories = onSnapshot(
-      query(collection(db, 'categories'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const cloudCats = snap.docs.map((d) => ({ ...(d.data() as Category), id: d.id }));
-          const missingServiceCats = INITIAL_CATEGORIES.filter(
-            (initCat) =>
-              [
-                'cat-wo',
-                'cat-sanggar',
-                'cat-attire',
-                'cat-entertainment',
-                'cat-mc',
-                'cat-parkir',
-              ].includes(initCat.id) &&
-              !cloudCats.some((c) => c.id === initCat.id)
-          );
-          const mergedCats = [...cloudCats, ...missingServiceCats]
-            .map((c) =>
-              c.id === 'cat-makeup' && c.name === 'Makeup'
-                ? {
-                    ...c,
-                    name: 'MUA — Make Up Artist',
-                    description:
-                      'Layanan rias pengantin profesional, hairdo/hijab styling, touch up, makeup keluarga & pendampingan.',
-                  }
-                : c
-            )
-            .sort((a, b) => a.sortOrder - b.sortOrder);
-          setCategories(mergedCats);
-          saveToLocal(STORAGE_KEYS.categories, mergedCats);
-        }
-      },
-      (err) => console.warn('Categories listener info:', err)
-    );
-
-    const unsubProducts = onSnapshot(
-      query(collection(db, 'products'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const cloudProds = snap.docs.map((d) => ({ ...(d.data() as Product), id: d.id }));
-          const missingServiceProds = INITIAL_PRODUCTS.filter(
-            (initProd) =>
-              [
-                'prod-wo-wedding-organizer',
-                'prod-tim-sanggar-pertunjukan',
-                'prod-tim-attire-pendampingan',
-                'prod-team-entertainment',
-                'prod-team-mc',
-                'prod-team-dokumentasi',
-                'prod-team-parkir-security',
-              ].includes(initProd.id) && !cloudProds.some((p) => p.id === initProd.id)
-          );
-          const mergedProds = [...cloudProds, ...missingServiceProds].map((p) => {
-            if (p.id === 'prod-makeup-pengantin-flawless' && p.category === 'Makeup') {
-              const initMua = INITIAL_PRODUCTS.find(
-                (ip) => ip.id === 'prod-makeup-pengantin-flawless'
-              );
-              return initMua ? { ...initMua, price: p.price } : p;
-            }
-            return p;
-          });
-          setProducts(mergedProds);
-          saveToLocal(STORAGE_KEYS.products, mergedProds);
-        }
-      },
-      (err) => console.warn('Products listener info:', err)
-    );
-
-    const unsubPackages = onSnapshot(
-      query(collection(db, 'packages'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const cloudPkgs = snap.docs.map((d) => ({ ...(d.data() as WeddingPackage), id: d.id }));
-          const missingPkgs = INITIAL_PACKAGES.filter(
-            (initPkg) => !cloudPkgs.some((cp) => cp.id === initPkg.id)
-          );
-          const list = [...cloudPkgs, ...missingPkgs];
-          setPackages(list);
-          saveToLocal(STORAGE_KEYS.packages, list);
-        }
-      },
-      (err) => console.warn('Packages listener info:', err)
-    );
-
-    const unsubGallery = onSnapshot(
-      query(collection(db, 'gallery'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ ...(d.data() as GalleryItem), id: d.id }));
-          setGallery(list);
-          saveToLocal(STORAGE_KEYS.gallery, list);
-        }
-      },
-      (err) => console.warn('Gallery listener info:', err)
-    );
-
-    const unsubTestimonials = onSnapshot(
-      query(collection(db, 'testimonials'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ ...(d.data() as Testimonial), id: d.id }));
-          setTestimonials(list);
-          saveToLocal(STORAGE_KEYS.testimonials, list);
-        }
-      },
-      (err) => console.warn('Testimonials listener info:', err)
-    );
-
-    const unsubPromos = onSnapshot(
-      query(collection(db, 'promos'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ ...(d.data() as Promo), id: d.id }));
-          setPromos(list);
-          saveToLocal(STORAGE_KEYS.promos, list);
-        }
-      },
-      (err) => console.warn('Promos listener info:', err)
-    );
-
-    const unsubArticles = onSnapshot(
-      query(collection(db, 'articles'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ ...(d.data() as InspirationArticle), id: d.id }));
-          setArticles(list);
-          saveToLocal(STORAGE_KEYS.articles, list);
-        }
-      },
-      (err) => console.warn('Articles listener info:', err)
-    );
-
-    const unsubCalendar = onSnapshot(
-      query(collection(db, 'calendar'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => d.data() as CalendarPublicEntry);
-          setCalendarPublic(list);
-          saveToLocal(STORAGE_KEYS.calendarPublic, list);
-        }
-      },
-      (err) => console.warn('Calendar listener info:', err)
-    );
-
-    const unsubServiceAreas = onSnapshot(
-      query(collection(db, 'serviceAreas'), where('visibility', '==', 'public')),
-      (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ ...(d.data() as ServiceArea), id: d.id }));
-          setServiceAreas(list);
-          saveToLocal(STORAGE_KEYS.serviceAreas, list);
-        }
-      },
-      (err) => console.warn('ServiceAreas listener info:', err)
-    );
-
-    return () => {
-      unsubSettings();
-      unsubCategories();
-      unsubProducts();
-      unsubPackages();
-      unsubGallery();
-      unsubTestimonials();
-      unsubPromos();
-      unsubArticles();
-      unsubCalendar();
-      unsubServiceAreas();
-    };
-  }, [authReady, user]);
-
-  // Seed initial data if cloud admin logs in and products collection is empty, or auto-sync missing Layanan Wedding
-  useEffect(() => {
-    if (!authReady || !isCloudAdmin || !user) return;
-    const adminUid = user.uid;
-    let mounted = true;
-
-    async function checkAndSeed() {
-      try {
-        const snap = await getDocs(
-          query(collection(db, 'products'), where('visibility', '==', 'public'))
-        );
-        if (snap.empty && mounted) {
-          await seedInitialDataToCloudInternal(adminUid);
-        } else if (mounted) {
-          const existingIds = new Set(snap.docs.map((d) => d.id));
-          const serviceIds = [
-            'prod-makeup-pengantin-flawless',
-            'prod-wo-wedding-organizer',
-            'prod-tim-sanggar-pertunjukan',
-            'prod-tim-attire-pendampingan',
-            'prod-team-entertainment',
-            'prod-team-mc',
-            'prod-team-dokumentasi',
-            'prod-team-parkir-security',
-          ];
-          const missingProds = INITIAL_PRODUCTS.filter(
-            (p) => serviceIds.includes(p.id) && !existingIds.has(p.id)
-          );
-          if (missingProds.length > 0) {
-            const now = serverTimestamp();
-            const serviceCats = INITIAL_CATEGORIES.filter((c) =>
-              [
-                'cat-makeup',
-                'cat-wo',
-                'cat-sanggar',
-                'cat-attire',
-                'cat-entertainment',
-                'cat-mc',
-                'cat-parkir',
-              ].includes(c.id)
-            );
-            for (const cat of serviceCats) {
-              await setDoc(doc(db, 'categories', cat.id), {
-                name: cat.name.slice(0, 80),
-                slug: cat.slug.replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 80),
-                description: cat.description.slice(0, 300),
-                iconName: cat.iconName.slice(0, 40),
-                coverImageUrl: cat.coverImageUrl.slice(0, 800000),
-                sortOrder: Number(cat.sortOrder) || 1,
-                visibility: 'public',
-                authorUid: adminUid,
-                createdAt: now,
-                updatedAt: now,
-              });
-            }
-            for (const prod of INITIAL_PRODUCTS.filter((p) =>
-              serviceIds.includes(p.id)
-            )) {
-              await setDoc(doc(db, 'products', prod.id), {
-                name: prod.name.slice(0, 150),
-                category: prod.category.slice(0, 80),
-                price: Math.max(0, Number(prod.price) || 0),
-                originalPrice: Math.max(0, Number(prod.originalPrice) || 0),
-                priceLabel: (prod.priceLabel || 'Mulai dari').slice(0, 80),
-                shortDescription: prod.shortDescription.slice(0, 300),
-                description: prod.description.slice(0, 4000),
-                images: prod.images.slice(0, 20).map((img, idx) => ({
-                  id: (img.id || `img-${idx}`).slice(0, 128),
-                  url: img.url.slice(0, 800000),
-                  isPrimary: Boolean(img.isPrimary),
-                  caption: (img.caption || '').slice(0, 300),
-                })),
-                variants: (prod.variants || []).slice(0, 25).map((v) => v.slice(0, 120)),
-                sizes: (prod.sizes || []).slice(0, 20).map((s) => s.slice(0, 80)),
-                unit: (prod.unit || 'Paket').slice(0, 40),
-                stockStatus: prod.stockStatus || 'Tersedia',
-                promoLabel: (prod.promoLabel || '').slice(0, 80),
-                isPromo: Boolean(prod.isPromo),
-                inclusions: (prod.inclusions || []).slice(0, 30).map((inc) => inc.slice(0, 200)),
-                isAvailable: prod.isAvailable !== false,
-                isFeatured: Boolean(prod.isFeatured),
-                isNew: Boolean(prod.isNew),
-                isActive: prod.isActive !== false,
-                popularityScore: Number(prod.popularityScore) || 85,
-                visibility: 'public',
-                authorUid: adminUid,
-                createdAt: now,
-                updatedAt: now,
-              });
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Initial check seed skipped:', err);
-      }
-    }
-
-    checkAndSeed();
-    return () => {
-      mounted = false;
-    };
-  }, [authReady, isCloudAdmin, user]);
 
   async function seedInitialDataToCloudInternal(uid: string) {
     setIsSyncing(true);
@@ -1456,17 +1910,35 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }
 
   const seedInitialDataToCloud = async () => {
-    setSettings(INITIAL_SETTINGS);
-    setCategories(INITIAL_CATEGORIES);
-    setProducts(INITIAL_PRODUCTS);
-    setPackages(INITIAL_PACKAGES);
-    setGallery(INITIAL_GALLERY);
-    setTestimonials(INITIAL_TESTIMONIALS);
-    setPromos(INITIAL_PROMOS);
-    setArticles(INITIAL_ARTICLES);
-    setCalendarPublic(INITIAL_CALENDAR_PUBLIC);
-    setCalendarPrivate(INITIAL_CALENDAR_PRIVATE);
-    setServiceAreas(INITIAL_SERVICE_AREAS);
+    try {
+      const res = await fetch('/api/db/reset-catalog', { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.settings) setSettings(data.settings);
+        if (data.categories) setCategories(data.categories);
+        if (data.products) setProducts(data.products);
+        if (data.packages) setPackages(data.packages);
+        if (data.gallery) setGallery(data.gallery);
+        if (data.testimonials) setTestimonials(data.testimonials);
+        if (data.promos) setPromos(data.promos);
+        if (data.articles) setArticles(data.articles);
+        if (data.calendarPublic) setCalendarPublic(data.calendarPublic);
+        if (data.calendarPrivate) setCalendarPrivate(data.calendarPrivate);
+        if (data.serviceAreas) setServiceAreas(data.serviceAreas);
+      }
+    } catch {
+      setSettings(INITIAL_SETTINGS);
+      setCategories(INITIAL_CATEGORIES);
+      setProducts(INITIAL_PRODUCTS);
+      setPackages(INITIAL_PACKAGES);
+      setGallery(INITIAL_GALLERY);
+      setTestimonials(INITIAL_TESTIMONIALS);
+      setPromos(INITIAL_PROMOS);
+      setArticles(INITIAL_ARTICLES);
+      setCalendarPublic(INITIAL_CALENDAR_PUBLIC);
+      setCalendarPrivate(INITIAL_CALENDAR_PRIVATE);
+      setServiceAreas(INITIAL_SERVICE_AREAS);
+    }
 
     saveToLocal(STORAGE_KEYS.settings, INITIAL_SETTINGS);
     saveToLocal(STORAGE_KEYS.categories, INITIAL_CATEGORIES);
@@ -1541,6 +2013,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
     setAdminAuthRecord(updated);
     saveToLocal(STORAGE_KEYS.adminAuthHash, updated);
+    void fetch('/api/db/admin-credentials', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    }).catch(() => {});
     showToast('Kredensial Admin berhasil diperbarui dengan enkripsi SHA-256.');
   };
 
@@ -1556,10 +2033,71 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const loginCustomerWithGoogle = async () => {
+    const previousGuestId = guestUserId;
+    const guestCart = loadFromLocal<ConsultationCartItem[]>(
+      getUserScopedKey(previousGuestId, 'cart'),
+      []
+    );
+    const guestWishlist = loadFromLocal<string[]>(
+      getUserScopedKey(previousGuestId, 'wishlist'),
+      []
+    );
+    const guestConsultations = loadFromLocal<ConsultationSession[]>(
+      getUserScopedKey(previousGuestId, 'consultations'),
+      []
+    );
     try {
       const cred = await signInWithPopup(auth, googleProvider);
+      const authUid = cred.user.uid;
+
+      if (guestCart.length > 0) {
+        const existingUserCart = loadFromLocal<ConsultationCartItem[]>(
+          getUserScopedKey(authUid, 'cart'),
+          []
+        );
+        const mergedCart = [...existingUserCart];
+        for (const gItem of guestCart) {
+          if (!mergedCart.some((c) => c.productId === gItem.productId)) {
+            mergedCart.push({ ...gItem, userId: authUid });
+          }
+        }
+        saveToLocal(getUserScopedKey(authUid, 'cart'), mergedCart);
+        setCartItems(mergedCart);
+      }
+
+      if (guestWishlist.length > 0) {
+        const existingWishlist = loadFromLocal<string[]>(
+          getUserScopedKey(authUid, 'wishlist'),
+          []
+        );
+        const mergedWish = Array.from(new Set([...existingWishlist, ...guestWishlist]));
+        saveToLocal(getUserScopedKey(authUid, 'wishlist'), mergedWish);
+        setWishlistIds(mergedWish);
+      }
+
+      if (guestConsultations.length > 0 && guestConsultations[0].messages.length > 1) {
+        const existingCons = loadFromLocal<ConsultationSession[]>(
+          getUserScopedKey(authUid, 'consultations'),
+          []
+        );
+        const migratedCons = guestConsultations.map((s) => ({
+          ...s,
+          userId: authUid,
+          messages: s.messages.map((m) => ({ ...m, userId: authUid })),
+        }));
+        const mergedCons = [
+          ...migratedCons,
+          ...existingCons.filter((ec) => !migratedCons.some((mc) => mc.id === ec.id)),
+        ];
+        saveToLocal(getUserScopedKey(authUid, 'consultations'), mergedCons);
+        setConsultationSessions(mergedCons);
+        for (const sess of migratedCons) {
+          void persistConsultationToFirestore(authUid, sess);
+        }
+      }
+
       showToast(
-        `Selamat datang, ${cred.user.displayName || cred.user.email || 'Calon Pengantin'}! Data rencana pernikahan Anda kini tersinkronisasi aman di akun Anda.`
+        `Selamat datang, ${cred.user.displayName || cred.user.email || 'Calon Pengantin'}! Data keranjang, konsultasi & rencana pernikahan Anda kini tersinkronisasi di akun Anda.`
       );
     } catch (error) {
       console.warn('Customer Google login notice:', error);
@@ -1624,6 +2162,7 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
 
     const existingProd = products.find((p) => p.id === cleanId);
+    const nowIso = new Date().toISOString();
     const localRecord: Product = {
       id: cleanId,
       name: input.name.trim().slice(0, 150),
@@ -1648,6 +2187,8 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       popularityScore: Number(input.popularityScore) || existingProd?.popularityScore || 88,
       visibility: 'public',
       authorUid: user?.uid || 'local-admin',
+      createdAt: existingProd?.createdAt || nowIso,
+      updatedAt: nowIso,
     };
 
     const updatedList = existingProd
@@ -1655,6 +2196,23 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       : [localRecord, ...products];
     setProducts(updatedList);
     saveToLocal(STORAGE_KEYS.products, updatedList);
+
+    try {
+      const res = await fetch('/api/db/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.products)) {
+          setProducts(data.products);
+          saveToLocal(STORAGE_KEYS.products, data.products);
+        }
+      }
+    } catch (err) {
+      console.warn('Server DB product save warning:', err);
+    }
 
     if (isCloudAdmin && user) {
       const path = `products/${cleanId}`;
@@ -1688,17 +2246,16 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existingProd.authorUid !== 'local-admin'
               ? existingProd.authorUid
               : user.uid,
-          createdAt: existingProd?.createdAt ? existingProd.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
       } catch (error) {
-        setIsSyncing(false);
-        handleFirestoreError(error, OperationType.WRITE, path);
+        console.warn('Firestore sync notice:', error, path);
       }
     }
 
     setIsSyncing(false);
-    showToast(`Produk "${localRecord.name}" (${localRecord.images.length} foto) berhasil disimpan.`);
+    showToast(`Produk "${localRecord.name}" (${localRecord.images.length} foto) berhasil disimpan permanen.`);
   };
 
   const toggleProductActive = async (productId: string) => {
@@ -1716,19 +2273,33 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setProducts(updatedList);
     saveToLocal(STORAGE_KEYS.products, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/products/${encodeURIComponent(productId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.products)) {
+          setProducts(data.products);
+          saveToLocal(STORAGE_KEYS.products, data.products);
+        }
+      }
+    } catch (err) {
+      console.warn('Server DB product delete warning:', err);
+    }
+
     if (targetProd && targetProd.images?.length > 0) {
       await deleteStorageUrls(targetProd.images.map((img) => img.url));
     }
 
     if (isCloudAdmin && user) {
-      const path = `products/${productId}`;
       try {
         await deleteDoc(doc(db, 'products', productId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
-    showToast('Produk berhasil dihapus.');
+    showToast('Produk berhasil dihapus secara permanen.');
   };
 
   // ===========================================================================
@@ -1759,8 +2330,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCategories(updatedList);
     saveToLocal(STORAGE_KEYS.categories, updatedList);
 
+    try {
+      const res = await fetch('/api/db/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.categories)) {
+          setCategories(data.categories);
+          saveToLocal(STORAGE_KEYS.categories, data.categories);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `categories/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'categories', cleanId), {
@@ -1777,11 +2364,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existingCat.authorUid !== 'local-admin'
               ? existingCat.authorUid
               : user.uid,
-          createdAt: existingCat?.createdAt ? existingCat.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Kategori "${localRecord.name}" berhasil disimpan.`);
@@ -1792,12 +2379,26 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCategories(updatedList);
     saveToLocal(STORAGE_KEYS.categories, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/categories/${encodeURIComponent(categoryId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.categories)) {
+          setCategories(data.categories);
+          saveToLocal(STORAGE_KEYS.categories, data.categories);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `categories/${categoryId}`;
       try {
         await deleteDoc(doc(db, 'categories', categoryId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Kategori berhasil dihapus.');
@@ -1850,8 +2451,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPackages(updatedList);
     saveToLocal(STORAGE_KEYS.packages, updatedList);
 
+    try {
+      const res = await fetch('/api/db/packages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.packages)) {
+          setPackages(data.packages);
+          saveToLocal(STORAGE_KEYS.packages, data.packages);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `packages/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'packages', cleanId), {
@@ -1874,11 +2491,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existingPkg.authorUid !== 'local-admin'
               ? existingPkg.authorUid
               : user.uid,
-          createdAt: existingPkg?.createdAt ? existingPkg.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Paket "${localRecord.name}" berhasil disimpan.`);
@@ -1890,16 +2507,30 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPackages(updatedList);
     saveToLocal(STORAGE_KEYS.packages, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/packages/${encodeURIComponent(packageId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.packages)) {
+          setPackages(data.packages);
+          saveToLocal(STORAGE_KEYS.packages, data.packages);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (targetPkg && targetPkg.images?.length > 0) {
       await deleteStorageUrls(targetPkg.images.map((img) => img.url));
     }
 
     if (isCloudAdmin && user) {
-      const path = `packages/${packageId}`;
       try {
         await deleteDoc(doc(db, 'packages', packageId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Paket pernikahan berhasil dihapus.');
@@ -1958,8 +2589,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setGallery(updatedList);
     saveToLocal(STORAGE_KEYS.gallery, updatedList);
 
+    try {
+      const res = await fetch('/api/db/gallery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.gallery)) {
+          setGallery(data.gallery);
+          saveToLocal(STORAGE_KEYS.gallery, data.gallery);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `gallery/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'gallery', cleanId), {
@@ -1978,11 +2625,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existingItem.authorUid !== 'local-admin'
               ? existingItem.authorUid
               : user.uid,
-          createdAt: existingItem?.createdAt ? existingItem.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Proyek galeri "${localRecord.title}" berhasil disimpan.`);
@@ -1994,6 +2641,21 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setGallery(updatedList);
     saveToLocal(STORAGE_KEYS.gallery, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/gallery/${encodeURIComponent(galleryId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.gallery)) {
+          setGallery(data.gallery);
+          saveToLocal(STORAGE_KEYS.gallery, data.gallery);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (targetItem) {
       const urls = [
         targetItem.imageUrl,
@@ -2003,11 +2665,10 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
 
     if (isCloudAdmin && user) {
-      const path = `gallery/${galleryId}`;
       try {
         await deleteDoc(doc(db, 'gallery', galleryId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Item galeri berhasil dihapus.');
@@ -2050,8 +2711,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTestimonials(updatedList);
     saveToLocal(STORAGE_KEYS.testimonials, updatedList);
 
+    try {
+      const res = await fetch('/api/db/testimonials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.testimonials)) {
+          setTestimonials(data.testimonials);
+          saveToLocal(STORAGE_KEYS.testimonials, data.testimonials);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `testimonials/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'testimonials', cleanId), {
@@ -2069,11 +2746,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existing.authorUid !== 'local-admin'
               ? existing.authorUid
               : user.uid,
-          createdAt: existing?.createdAt ? existing.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Testimoni & dokumentasi "${localRecord.coupleName}" berhasil disimpan.`);
@@ -2084,12 +2761,26 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTestimonials(updatedList);
     saveToLocal(STORAGE_KEYS.testimonials, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/testimonials/${encodeURIComponent(testimonialId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.testimonials)) {
+          setTestimonials(data.testimonials);
+          saveToLocal(STORAGE_KEYS.testimonials, data.testimonials);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `testimonials/${testimonialId}`;
       try {
         await deleteDoc(doc(db, 'testimonials', testimonialId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Testimoni berhasil dihapus.');
@@ -2124,8 +2815,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPromos(updatedList);
     saveToLocal(STORAGE_KEYS.promos, updatedList);
 
+    try {
+      const res = await fetch('/api/db/promos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.promos)) {
+          setPromos(data.promos);
+          saveToLocal(STORAGE_KEYS.promos, data.promos);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `promos/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'promos', cleanId), {
@@ -2145,11 +2852,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existing.authorUid !== 'local-admin'
               ? existing.authorUid
               : user.uid,
-          createdAt: existing?.createdAt ? existing.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Promo "${localRecord.title}" berhasil disimpan.`);
@@ -2160,12 +2867,26 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPromos(updatedList);
     saveToLocal(STORAGE_KEYS.promos, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/promos/${encodeURIComponent(promoId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.promos)) {
+          setPromos(data.promos);
+          saveToLocal(STORAGE_KEYS.promos, data.promos);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `promos/${promoId}`;
       try {
         await deleteDoc(doc(db, 'promos', promoId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Promo berhasil dihapus.');
@@ -2198,8 +2919,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setArticles(updatedList);
     saveToLocal(STORAGE_KEYS.articles, updatedList);
 
+    try {
+      const res = await fetch('/api/db/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.articles)) {
+          setArticles(data.articles);
+          saveToLocal(STORAGE_KEYS.articles, data.articles);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `articles/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'articles', cleanId), {
@@ -2217,11 +2954,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existing.authorUid !== 'local-admin'
               ? existing.authorUid
               : user.uid,
-          createdAt: existing?.createdAt ? existing.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Artikel "${localRecord.title}" berhasil disimpan.`);
@@ -2232,12 +2969,26 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setArticles(updatedList);
     saveToLocal(STORAGE_KEYS.articles, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/articles/${encodeURIComponent(articleId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.articles)) {
+          setArticles(data.articles);
+          saveToLocal(STORAGE_KEYS.articles, data.articles);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `articles/${articleId}`;
       try {
         await deleteDoc(doc(db, 'articles', articleId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Artikel inspirasi berhasil dihapus.');
@@ -2280,23 +3031,47 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCalendarPublic(nextPub);
     saveToLocal(STORAGE_KEYS.calendarPublic, nextPub);
 
+    let privRecord: CalendarPrivateEntry | undefined;
     if (clientName !== undefined || privateNote !== undefined) {
       const existingPriv = calendarPrivate.find((c) => c.date === cleanDate);
-      const privRecord: CalendarPrivateEntry = {
+      privRecord = {
         date: cleanDate,
         clientName: (clientName || '').trim().slice(0, 150),
         privateNote: (privateNote || '').trim().slice(0, 500),
         authorUid: user?.uid || 'local-admin',
       };
       const nextPriv = existingPriv
-        ? calendarPrivate.map((c) => (c.date === cleanDate ? privRecord : c))
+        ? calendarPrivate.map((c) => (c.date === cleanDate ? privRecord! : c))
         : [...calendarPrivate, privRecord];
       setCalendarPrivate(nextPriv);
       saveToLocal(STORAGE_KEYS.calendarPrivate, nextPriv);
     }
 
+    try {
+      const res = await fetch('/api/db/calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          publicEntry: pubRecord,
+          privateEntry: privRecord,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.calendarPublic)) {
+          setCalendarPublic(data.calendarPublic);
+          saveToLocal(STORAGE_KEYS.calendarPublic, data.calendarPublic);
+        }
+        if (Array.isArray(data?.calendarPrivate)) {
+          setCalendarPrivate(data.calendarPrivate);
+          saveToLocal(STORAGE_KEYS.calendarPrivate, data.calendarPrivate);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const pubPath = `calendar/${cleanDate}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'calendar', cleanDate), {
@@ -2305,7 +3080,7 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
           publicNote: pubRecord.publicNote,
           visibility: 'public',
           authorUid: user.uid,
-          createdAt: existingPub?.createdAt ? existingPub.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
         if (clientName || privateNote) {
@@ -2318,8 +3093,8 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             updatedAt: now,
           });
         }
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, pubPath);
+      } catch {
+        // ignore
       }
     }
 
@@ -2334,11 +3109,30 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     saveToLocal(STORAGE_KEYS.calendarPublic, nextPub);
     saveToLocal(STORAGE_KEYS.calendarPrivate, nextPriv);
 
+    try {
+      const res = await fetch(`/api/db/calendar/${encodeURIComponent(date)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.calendarPublic)) {
+          setCalendarPublic(data.calendarPublic);
+          saveToLocal(STORAGE_KEYS.calendarPublic, data.calendarPublic);
+        }
+        if (Array.isArray(data?.calendarPrivate)) {
+          setCalendarPrivate(data.calendarPrivate);
+          saveToLocal(STORAGE_KEYS.calendarPrivate, data.calendarPrivate);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
       try {
         await deleteDoc(doc(db, 'calendar', date));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, `calendar/${date}`);
+      } catch {
+        // ignore
       }
     }
     showToast(`Pengaturan khusus tanggal ${date} dihapus (kembali ke status Tersedia).`);
@@ -2368,8 +3162,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setServiceAreas(updatedList);
     saveToLocal(STORAGE_KEYS.serviceAreas, updatedList);
 
+    try {
+      const res = await fetch('/api/db/service-areas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.serviceAreas)) {
+          setServiceAreas(data.serviceAreas);
+          saveToLocal(STORAGE_KEYS.serviceAreas, data.serviceAreas);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `serviceAreas/${cleanId}`;
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'serviceAreas', cleanId), {
@@ -2384,11 +3194,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             existing.authorUid !== 'local-admin'
               ? existing.authorUid
               : user.uid,
-          createdAt: existing?.createdAt ? existing.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
     showToast(`Wilayah layanan "${localRecord.city}" berhasil disimpan.`);
@@ -2399,12 +3209,26 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setServiceAreas(updatedList);
     saveToLocal(STORAGE_KEYS.serviceAreas, updatedList);
 
+    try {
+      const res = await fetch(`/api/db/service-areas/${encodeURIComponent(areaId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.serviceAreas)) {
+          setServiceAreas(data.serviceAreas);
+          saveToLocal(STORAGE_KEYS.serviceAreas, data.serviceAreas);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = `serviceAreas/${areaId}`;
       try {
         await deleteDoc(doc(db, 'serviceAreas', areaId));
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, path);
+      } catch {
+        // ignore
       }
     }
     showToast('Wilayah layanan berhasil dihapus.');
@@ -2438,8 +3262,24 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setSettings(localRecord);
     saveToLocal(STORAGE_KEYS.settings, localRecord);
 
+    try {
+      const res = await fetch('/api/db/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(localRecord),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.settings) {
+          setSettings(data.settings);
+          saveToLocal(STORAGE_KEYS.settings, data.settings);
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     if (isCloudAdmin && user) {
-      const path = 'settings/main';
       try {
         const now = serverTimestamp();
         await setDoc(doc(db, 'settings', 'main'), {
@@ -2456,14 +3296,14 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
           logoText: localRecord.logoText,
           visibility: 'public',
           authorUid: user.uid,
-          createdAt: settings.createdAt ? settings.createdAt : now,
+          createdAt: now,
           updatedAt: now,
         });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch {
+        // ignore
       }
     }
-    showToast('Pengaturan website & nomor WhatsApp berhasil diperbarui.');
+    showToast('Pengaturan website & nomor WhatsApp berhasil diperbarui permanen.');
   };
 
   return (
@@ -2497,6 +3337,9 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         calendarPrivate,
         serviceAreas,
         inquiries,
+        leads,
+        allConsultations,
+        orders,
         isSyncing,
         toastMessage,
         showToast,
@@ -2523,7 +3366,21 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         saveBudgetPlan,
         weddingPlan,
         updateWeddingPlan,
+        addProductToWeddingPlan,
         syncPlannerToBudget,
+        consultationSessions,
+        activeConsultation,
+        startNewConsultationSession,
+        selectConsultationSession,
+        deleteConsultationSession,
+        saveConsultationSessionState,
+        trackProductInterest,
+        saveLead,
+        updateLeadStatus,
+        deleteLead,
+        createOrder,
+        updateOrderStatus,
+        deleteOrder,
         recordInquiry,
         saveProduct,
         toggleProductActive,

@@ -7,20 +7,70 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     font-family: var(--font-sans);
     background-color: #FBF9F5;
     color: #26211D;
-    overflow-x: hidden;
+    overflow-wrap: break-word;
   }
 
-  h1, h2, h3, h4, .font-serif-display {
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-serif-display {
     font-family: var(--font-serif);
+    overflow-wrap: break-word;
   }
 
   .font-tabular {
     font-variant-numeric: tabular-nums;
   }
+}
+
+/* Fluid Responsive Typography Helpers */
+.heading-hero-fluid {
+  font-size: clamp(1.95rem, 4.2vw + 0.5rem, 3.75rem);
+  line-height: 1.1;
+}
+
+.heading-section-fluid {
+  font-size: clamp(1.65rem, 3vw + 0.4rem, 3rem);
+  line-height: 1.15;
+}
+
+.heading-card-fluid {
+  font-size: clamp(1.2rem, 1.8vw + 0.3rem, 1.65rem);
+  line-height: 1.25;
 }
 
 @keyframes floatSlow {

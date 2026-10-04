@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
+  AlertTriangle,
   ArrowLeft,
   BookOpen,
   Calendar,
   Camera,
   Check,
+  Copy,
   Edit3,
   Eye,
   EyeOff,
+  FileCheck,
   FolderKanban,
-  Image as ImageIcon,
   KeyRound,
   LayoutDashboard,
   Layers,
@@ -18,18 +20,22 @@ import {
   LogIn,
   LogOut,
   MapPin,
+  MessageCircle,
   MessageSquareQuote,
   Package,
+  Phone,
   Plus,
   RotateCcw,
   Save,
   Settings,
   ShieldCheck,
+  ShoppingBag,
   Sparkles,
   Star,
   Tag,
   Trash2,
   UserCheck,
+  Users,
   X,
 } from 'lucide-react';
 import { useWedding } from '../context/WeddingContext';
@@ -37,16 +43,21 @@ import { GALLERY_CATEGORIES, PRESET_GALLERY_CHOICES } from '../data/initialData'
 import {
   CalendarDateStatus,
   Category,
+  ConsultationSession,
   GalleryItem,
   InspirationArticle,
+  LeadRecord,
+  LeadStatus,
+  OrderStatus,
   Product,
   ProductImage,
   Promo,
   ServiceArea,
   Testimonial,
+  WeddingOrder,
   WeddingPackage,
 } from '../types';
-import { compressImageFile, formatRupiah, getPrimaryImage } from '../utils/imageUtils';
+import { buildWhatsAppUrl, compressImageFile, formatRupiah, getPrimaryImage } from '../utils/imageUtils';
 import { MultiPhotoUploader } from './MultiPhotoUploader';
 import { SafeWeddingImage } from './SafeWeddingImage';
 
@@ -57,6 +68,8 @@ interface AdminDashboardProps {
 type AdminTab =
   | 'overview'
   | 'products'
+  | 'leads_consultations'
+  | 'orders'
   | 'categories'
   | 'packages'
   | 'promos'
@@ -80,6 +93,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     calendarPrivate,
     serviceAreas,
     inquiries,
+    leads,
+    allConsultations,
+    orders,
     settings,
     isCloudAdmin,
     isPreviewAdminUnlocked,
@@ -106,6 +122,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     deleteCalendarDate,
     saveServiceArea,
     deleteServiceArea,
+    saveLead,
+    updateLeadStatus,
+    deleteLead,
+    createOrder,
+    updateOrderStatus,
+    deleteOrder,
     updateStoreSettings,
     seedInitialDataToCloud,
   } = useWedding();
@@ -116,6 +138,42 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [saveBanner, setSaveBanner] = useState<string | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    title: string;
+    message: string;
+    confirmLabel?: string;
+    onConfirm: () => Promise<void> | void;
+  } | null>(null);
+
+  // Leads & Consultations State
+  const [leadFilterStatus, setLeadFilterStatus] = useState<LeadStatus | 'All'>('All');
+  const [leadSearchQuery, setLeadSearchQuery] = useState('');
+  const [selectedConsultationDetail, setSelectedConsultationDetail] =
+    useState<ConsultationSession | null>(null);
+  const [showAddLeadForm, setShowAddLeadForm] = useState(false);
+  const [newLeadName, setNewLeadName] = useState('');
+  const [newLeadPartner, setNewLeadPartner] = useState('');
+  const [newLeadWa, setNewLeadWa] = useState('');
+  const [newLeadEmail, setNewLeadEmail] = useState('');
+  const [newLeadDate, setNewLeadDate] = useState('');
+  const [newLeadLocation, setNewLeadLocation] = useState('');
+  const [newLeadGuests, setNewLeadGuests] = useState<number>(300);
+  const [newLeadBudget, setNewLeadBudget] = useState<number>(15000000);
+  const [newLeadNeeds, setNewLeadNeeds] = useState('Dekorasi, Undangan, Souvenir');
+  const [newLeadNotes, setNewLeadNotes] = useState('');
+
+  // Orders & Bookings State
+  const [orderFilterStatus, setOrderFilterStatus] = useState<OrderStatus | 'All'>('All');
+  const [showAddOrderForm, setShowAddOrderForm] = useState(false);
+  const [newOrderCustomer, setNewOrderCustomer] = useState('');
+  const [newOrderPartner, setNewOrderPartner] = useState('');
+  const [newOrderWa, setNewOrderWa] = useState('');
+  const [newOrderDate, setNewOrderDate] = useState('');
+  const [newOrderLocation, setNewOrderLocation] = useState('');
+  const [newOrderProductId, setNewOrderProductId] = useState('');
+  const [newOrderQty, setNewOrderQty] = useState<number>(1);
+  const [newOrderStatus, setNewOrderStatus] = useState<OrderStatus>('Confirmed');
+  const [newOrderNotes, setNewOrderNotes] = useState('');
 
   // Admin Login Form State
   const [usernameInput, setUsernameInput] = useState('');
@@ -242,6 +300,113 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTimeout(() => {
       setSaveBanner(null);
     }, 3400);
+  };
+
+  // Duplicate an existing product with all its photos & specs (Requirement 7)
+  const handleDuplicateProduct = async (product: Product) => {
+    const duplicatedImages: ProductImage[] = (product.images || []).map((img, idx) => ({
+      ...img,
+      id: `img-dup-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 5)}`,
+    }));
+    await saveProduct({
+      name: `${product.name} (Salinan)`,
+      category: product.category,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      priceLabel: product.priceLabel,
+      shortDescription: product.shortDescription,
+      description: product.description,
+      inclusions: product.inclusions || [],
+      variants: product.variants || [],
+      sizes: product.sizes || [],
+      unit: product.unit || 'Paket',
+      stockStatus: product.stockStatus || 'Tersedia',
+      promoLabel: product.promoLabel,
+      isPromo: Boolean(product.isPromo),
+      isAvailable: product.isAvailable !== false,
+      isFeatured: product.isFeatured,
+      isNew: true,
+      isActive: product.isActive !== false,
+      images: duplicatedImages,
+    });
+    showSuccessBanner(`Produk "${product.name}" berhasil diduplikasi secara permanen.`);
+  };
+
+  const handleCreateManualLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLeadName.trim()) return;
+    await saveLead({
+      customerName: newLeadName.trim(),
+      partnerName: newLeadPartner.trim(),
+      coupleName: newLeadPartner.trim()
+        ? `${newLeadName.trim()} & ${newLeadPartner.trim()}`
+        : newLeadName.trim(),
+      whatsapp: newLeadWa.trim(),
+      email: newLeadEmail.trim(),
+      weddingDate: newLeadDate,
+      weddingLocation: newLeadLocation.trim(),
+      guestCount: Number(newLeadGuests) || 300,
+      budget: Number(newLeadBudget) || 0,
+      needs: newLeadNeeds
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+      notes: newLeadNotes.trim(),
+      status: 'New',
+      source: 'manual',
+    });
+    setNewLeadName('');
+    setNewLeadPartner('');
+    setNewLeadWa('');
+    setNewLeadEmail('');
+    setNewLeadDate('');
+    setNewLeadLocation('');
+    setNewLeadNotes('');
+    setShowAddLeadForm(false);
+    showSuccessBanner('Lead calon pengantin baru berhasil ditambahkan ke database.');
+  };
+
+  const handleCreateManualOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newOrderCustomer.trim() || !newOrderWa.trim()) return;
+    const selectedProd =
+      products.find((p) => p.id === newOrderProductId) || products[0];
+    if (!selectedProd) return;
+    const qty = Math.max(1, Number(newOrderQty) || 1);
+    const primaryImg = getPrimaryImage(selectedProd.images);
+
+    await createOrder({
+      customerName: newOrderCustomer.trim(),
+      partnerName: newOrderPartner.trim(),
+      whatsapp: newOrderWa.trim(),
+      weddingDate: newOrderDate || 'Belum ditentukan',
+      weddingLocation: newOrderLocation.trim() || '-',
+      eventType: 'Akad & Resepsi',
+      guestCount: 300,
+      items: [
+        {
+          productId: selectedProd.id,
+          productName: selectedProd.name,
+          category: selectedProd.category,
+          quantity: qty,
+          unit: selectedProd.unit || 'Paket',
+          unitPrice: selectedProd.price,
+          subtotal: selectedProd.price * qty,
+          photoUrl: primaryImg?.url || '',
+        },
+      ],
+      totalAmount: selectedProd.price * qty,
+      status: newOrderStatus,
+      notes: newOrderNotes.trim(),
+    });
+    setNewOrderCustomer('');
+    setNewOrderPartner('');
+    setNewOrderWa('');
+    setNewOrderDate('');
+    setNewOrderLocation('');
+    setNewOrderNotes('');
+    setShowAddOrderForm(false);
+    showSuccessBanner('Order / Booking berhasil dibuat dan disimpan ke database.');
   };
 
   // Start Adding New Product
@@ -983,7 +1148,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* TAB 0: OVERVIEW & STATISTICS */}
         {activeTab === 'overview' && (
           <div className="mt-6 space-y-6">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="rounded-2xl border border-[#DFD3BE] bg-white p-5">
                 <span className="text-xs uppercase tracking-wider text-[#7C6A56]">
                   Total Produk

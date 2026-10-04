@@ -49,13 +49,13 @@ export const WeddingPackagesView: React.FC<WeddingPackagesViewProps> = ({
   };
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section className="py-10 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="max-w-2xl mx-auto text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#9E762C] font-medium">
+        <p className="text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#9E762C] font-medium">
           Paket Hemat · Paket Elegant · Paket Premium · Paket Custom
         </p>
-        <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-serif-display font-semibold text-[#26211D] text-balance">
+        <h2 className="mt-2 heading-section-fluid font-serif-display font-semibold text-[#26211D] text-balance">
           Paket Pernikahan Lengkap
         </h2>
         <p className="mt-3 text-sm sm:text-base text-[#5C5147] leading-relaxed">
@@ -71,7 +71,7 @@ export const WeddingPackagesView: React.FC<WeddingPackagesViewProps> = ({
       )}
 
       {/* Packages Grid */}
-      <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {activePackages.map((pkg) => (
           <PackageCardItem
             key={pkg.id}
@@ -90,13 +90,13 @@ export const WeddingPackagesView: React.FC<WeddingPackagesViewProps> = ({
       {/* Lightbox Modal for Package Multi-Photo Gallery */}
       {selectedPkgForGallery && (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 sm:p-8">
-          <div className="flex items-center justify-between text-white">
-            <div>
-              <p className="text-xs text-[#D9C7A3] font-tabular">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-white">
+            <div className="min-w-0">
+              <p className="text-xs text-[#D9C7A3] font-tabular truncate">
                 {selectedPkgForGallery.name} · Foto {galleryPhotoIdx + 1} /{' '}
                 {selectedPkgForGallery.images.length}
               </p>
-              <h4 className="font-serif-display text-lg sm:text-xl">
+              <h4 className="font-serif-display text-base sm:text-xl truncate">
                 {selectedPkgForGallery.images[galleryPhotoIdx]?.caption ||
                   selectedPkgForGallery.name}
               </h4>
@@ -104,9 +104,9 @@ export const WeddingPackagesView: React.FC<WeddingPackagesViewProps> = ({
             <button
               type="button"
               onClick={() => setSelectedPkgForGallery(null)}
-              className="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 sm:px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 shrink-0" />
               <span>Tutup Galeri Paket</span>
             </button>
           </div>
@@ -224,21 +224,21 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
             className="w-full h-full object-cover cursor-zoom-in transition-transform duration-500 group-hover:scale-105"
           />
 
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-4 flex items-end justify-between text-white">
-            <div>
-              <p className="text-xs text-[#E8D8B9] font-tabular">
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-3.5 sm:p-4 flex items-end justify-between gap-2 text-white">
+            <div className="min-w-0">
+              <p className="text-xs text-[#E8D8B9] font-tabular truncate">
                 {pkg.tier} · Foto {activePhotoIdx + 1} dari {images.length}
               </p>
-              <p className="text-sm font-serif-display italic">
+              <p className="text-xs sm:text-sm font-serif-display italic truncate">
                 {currentImg.caption || pkg.name}
               </p>
             </div>
             <button
               type="button"
               onClick={() => onOpenLightbox(activePhotoIdx)}
-              className="px-2.5 py-1 rounded-md bg-white/90 text-[#26211D] text-xs font-medium flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-white/90 text-[#26211D] text-xs font-medium flex items-center gap-1 cursor-pointer shrink-0"
             >
-              <Expand className="w-3 h-3" />
+              <Expand className="w-3 h-3 shrink-0" />
               <span>Perbesar</span>
             </button>
           </div>
@@ -267,7 +267,7 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
 
         {/* Thumbnail strip for package photos */}
         {images.length > 1 && (
-          <div className="px-5 pt-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="px-4 sm:px-6 pt-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {images.map((img, i) => (
               <button
                 key={img.id || i}
@@ -290,7 +290,7 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
         )}
 
         {/* Package Content */}
-        <div className="p-6 sm:p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
           <div className="flex flex-wrap items-center gap-2 text-xs text-[#6E6359]">
             <span className="uppercase tracking-widest font-semibold text-[#9E762C]">
               {pkg.tier}
@@ -311,24 +311,24 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
             )}
           </div>
 
-          <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4 pb-4 border-b border-[#EAE0CE]">
-            <h3 className="text-2xl sm:text-3xl font-serif-display font-semibold text-[#26211D]">
+          <div className="mt-2 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-4 pb-4 border-b border-[#EAE0CE]">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif-display font-semibold text-[#26211D]">
               {pkg.name}
             </h3>
-            <div className="text-right">
+            <div className="text-left sm:text-right shrink-0">
               <span className="text-xs text-[#6E6359] block">Investasi Paket Lengkap</span>
               {pkg.originalPrice && pkg.originalPrice > pkg.price && (
                 <span className="text-xs text-[#8E8071] line-through font-tabular mr-2">
                   {formatRupiah(pkg.originalPrice)}
                 </span>
               )}
-              <span className="text-2xl sm:text-3xl font-serif-display font-semibold text-[#9E762C] font-tabular">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-serif-display font-semibold text-[#9E762C] font-tabular">
                 {formatRupiah(pkg.price)}
               </span>
             </div>
           </div>
 
-          <p className="mt-4 text-sm text-[#4A4036] leading-relaxed">{pkg.description}</p>
+          <p className="mt-4 text-xs sm:text-sm text-[#4A4036] leading-relaxed">{pkg.description}</p>
 
           {/* Inclusions */}
           <div className="mt-5 space-y-2">
@@ -348,14 +348,14 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
       </div>
 
       {/* Footer CTA */}
-      <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-2 space-y-2.5">
+      <div className="px-4 sm:px-6 lg:px-8 pb-5 sm:pb-8 pt-2 space-y-2.5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button
             type="button"
             onClick={onApplyToBudget}
             className="py-2.5 px-3.5 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            <Calculator className="w-3.5 h-3.5 text-[#9E762C]" />
+            <Calculator className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
             <span>Simulasikan di Budget</span>
           </button>
           {onOpenPlanner && (
@@ -364,7 +364,7 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
               onClick={onOpenPlanner}
               className="py-2.5 px-3.5 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#9E762C]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
               <span>Kustomisasi di Planner</span>
             </button>
           )}
@@ -373,9 +373,9 @@ const PackageCardItem: React.FC<PackageCardItemProps> = ({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full py-3.5 px-5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-xs whitespace-nowrap"
+          className="w-full py-3.5 px-4 sm:px-5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-xs text-center leading-snug"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 shrink-0" />
           <span>Pesan / Konsultasi {pkg.name} via WhatsApp</span>
         </a>
       </div>

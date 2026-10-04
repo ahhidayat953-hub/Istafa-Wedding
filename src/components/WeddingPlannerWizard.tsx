@@ -268,7 +268,7 @@ export const WeddingPlannerWizard: React.FC = () => {
     selectedId: string,
     onSelect: (id: string) => void
   ) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {list.map((prod) => {
         const isSelected = prod.id === selectedId;
         const primary = getPrimaryImage(prod.images);
@@ -323,13 +323,13 @@ export const WeddingPlannerWizard: React.FC = () => {
   return (
     <section
       id="rencanakan-pernikahan"
-      className="py-14 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto"
+      className="py-10 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
     >
       <div className="max-w-3xl mx-auto text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-[#9E762C] font-medium">
           Interactive Wedding Planner & Cek Tanggal
         </p>
-        <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-serif-display font-semibold text-[#26211D] text-balance">
+        <h2 className="mt-2 heading-section-fluid font-serif-display font-semibold text-[#26211D] text-balance">
           Rencanakan Pernikahan Saya & Cek Ketersediaan Tanggal
         </h2>
         <p className="mt-3 text-sm sm:text-base text-[#5C5147]">
@@ -339,7 +339,7 @@ export const WeddingPlannerWizard: React.FC = () => {
       </div>
 
       {/* Stepper Progress Pills */}
-      <div className="mt-10 flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+      <div className="mt-8 sm:mt-10 flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
         {STEP_LABELS.map((item) => {
           const isCurrent = currentStep === item.step;
           const isCompleted = currentStep > item.step;
@@ -348,7 +348,7 @@ export const WeddingPlannerWizard: React.FC = () => {
               key={item.step}
               type="button"
               onClick={() => setCurrentStep(item.step)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-2 shrink-0 transition-all cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-2 shrink-0 transition-all cursor-pointer whitespace-nowrap ${
                 isCurrent
                   ? 'bg-[#26211D] text-[#FBF9F5] shadow-sm'
                   : isCompleted
@@ -357,7 +357,7 @@ export const WeddingPlannerWizard: React.FC = () => {
               }`}
             >
               <span
-                className={`w-5 h-5 rounded-full text-[11px] flex items-center justify-center font-tabular ${
+                className={`w-5 h-5 rounded-full text-[11px] flex items-center justify-center font-tabular shrink-0 ${
                   isCurrent
                     ? 'bg-[#C8A25A] text-[#1D1814] font-bold'
                     : isCompleted
@@ -374,7 +374,7 @@ export const WeddingPlannerWizard: React.FC = () => {
       </div>
 
       {/* Wizard Container Card */}
-      <div className="mt-6 rounded-3xl border border-[#DFD3BE] bg-[#FCFBF8] p-5 sm:p-8 shadow-sm space-y-8">
+      <div className="mt-5 sm:mt-6 rounded-3xl border border-[#DFD3BE] bg-[#FCFBF8] p-4 sm:p-6 lg:p-8 shadow-sm space-y-6 sm:space-y-8">
         <div key={`planner-step-${currentStep}`} className="animate-section-fade">
         {/* ===================================================================
             STEP 1: TANGGAL PERNIKAHAN & KALENDER KETERSEDIAAN (Req 9 & 10)
@@ -486,8 +486,8 @@ export const WeddingPlannerWizard: React.FC = () => {
             </div>
 
             {/* Interactive Monthly Calendar Grid */}
-            <div className="lg:col-span-7 rounded-2xl border border-[#E4DAC7] bg-white p-5 space-y-4">
-              <div className="flex items-center justify-between">
+            <div className="lg:col-span-7 rounded-2xl border border-[#E4DAC7] bg-white p-3.5 sm:p-5 space-y-4 min-w-0">
+              <div className="flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => {
@@ -498,13 +498,13 @@ export const WeddingPlannerWizard: React.FC = () => {
                       setCalMonth((m) => m - 1);
                     }
                   }}
-                  className="p-2 rounded-xl border border-[#E2D6C1] hover:bg-[#F4EFE4] cursor-pointer"
+                  className="p-2 rounded-xl border border-[#E2D6C1] hover:bg-[#F4EFE4] cursor-pointer shrink-0"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
 
-                <div className="text-center">
-                  <h4 className="font-serif-display font-semibold text-xl text-[#26211D]">
+                <div className="text-center min-w-0">
+                  <h4 className="font-serif-display font-semibold text-lg sm:text-xl text-[#26211D]">
                     {INDONESIAN_MONTHS[calMonth]} {calYear}
                   </h4>
                   <p className="text-[11px] text-[#7A6E63]">
@@ -522,13 +522,13 @@ export const WeddingPlannerWizard: React.FC = () => {
                       setCalMonth((m) => m + 1);
                     }
                   }}
-                  className="p-2 rounded-xl border border-[#E2D6C1] hover:bg-[#F4EFE4] cursor-pointer"
+                  className="p-2 rounded-xl border border-[#E2D6C1] hover:bg-[#F4EFE4] cursor-pointer shrink-0"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-7 gap-1.5 text-center text-[11px] font-semibold text-[#8C7A65] pb-1 border-b border-[#EFE8D8]">
+              <div className="grid grid-cols-7 gap-1 sm:gap-1.5 text-center text-[10px] sm:text-[11px] font-semibold text-[#8C7A65] pb-1 border-b border-[#EFE8D8]">
                 <span>Min</span>
                 <span>Sen</span>
                 <span>Sel</span>
@@ -538,9 +538,9 @@ export const WeddingPlannerWizard: React.FC = () => {
                 <span>Sab</span>
               </div>
 
-              <div className="grid grid-cols-7 gap-1.5">
+              <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
                 {Array.from({ length: firstDayOfWeek }).map((_, idx) => (
-                  <div key={`empty-${idx}`} className="h-11" />
+                  <div key={`empty-${idx}`} className="h-11 sm:h-12" />
                 ))}
                 {Array.from({ length: daysInMonth }).map((_, idx) => {
                   const dayNum = idx + 1;
@@ -557,7 +557,7 @@ export const WeddingPlannerWizard: React.FC = () => {
                       key={dateStr}
                       type="button"
                       onClick={() => updateWeddingPlan({ weddingDate: dateStr })}
-                      className={`h-12 rounded-xl border text-xs font-tabular flex flex-col items-center justify-center transition-all cursor-pointer ${
+                      className={`h-11 sm:h-12 rounded-xl border text-[11px] sm:text-xs font-tabular flex flex-col items-center justify-center transition-all cursor-pointer ${
                         isSelected
                           ? 'border-[#26211D] bg-[#26211D] text-white font-bold shadow-xs'
                           : status === 'unavailable'
@@ -568,7 +568,7 @@ export const WeddingPlannerWizard: React.FC = () => {
                       }`}
                     >
                       <span>{dayNum}</span>
-                      <span className="text-[9px] leading-none mt-0.5">
+                      <span className="text-[8px] sm:text-[9px] leading-none mt-0.5">
                         {status === 'available'
                           ? '🟢'
                           : status === 'reserved'
@@ -788,7 +788,7 @@ export const WeddingPlannerWizard: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {additionalProducts.map((prod) => {
                 const isSelected = weddingPlan.additionalServiceIds.includes(prod.id);
                 const primary = getPrimaryImage(prod.images);
@@ -869,36 +869,36 @@ export const WeddingPlannerWizard: React.FC = () => {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#E4DAC7] bg-white p-5 space-y-3 text-xs sm:text-sm">
-              <div className="flex justify-between py-2 border-b border-[#F2ECE1]">
-                <span className="text-[#6E6359]">Nama Pengantin & Lokasi</span>
-                <span className="font-semibold text-[#26211D]">
+            <div className="rounded-2xl border border-[#E4DAC7] bg-white p-4 sm:p-5 space-y-2.5 text-xs sm:text-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 py-2 border-b border-[#F2ECE1]">
+                <span className="text-[#6E6359] shrink-0">Nama Pengantin & Lokasi</span>
+                <span className="font-semibold text-[#26211D] sm:text-right break-words">
                   {weddingPlan.coupleName || 'Calon Pengantin'} ·{' '}
                   {weddingPlan.weddingLocation || 'Lokasi Menyesuaikan'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-[#F2ECE1]">
-                <span className="text-[#6E6359]">Tanggal & Jumlah Tamu</span>
-                <span className="font-semibold text-[#26211D] font-tabular">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 py-2 border-b border-[#F2ECE1]">
+                <span className="text-[#6E6359] shrink-0">Tanggal & Jumlah Tamu</span>
+                <span className="font-semibold text-[#26211D] font-tabular sm:text-right">
                   {weddingPlan.weddingDate} · {weddingPlan.guestCount} Tamu
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-[#F2ECE1]">
-                <span className="text-[#6E6359]">Dekorasi Pilihan</span>
-                <span className="font-semibold text-[#26211D]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 py-2 border-b border-[#F2ECE1]">
+                <span className="text-[#6E6359] shrink-0">Dekorasi Pilihan</span>
+                <span className="font-semibold text-[#26211D] sm:text-right break-words">
                   {selectedDecor ? selectedDecor.name : 'Belum dipilih'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-[#F2ECE1]">
-                <span className="text-[#6E6359]">Undangan & Souvenir</span>
-                <span className="font-semibold text-[#26211D]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 py-2 border-b border-[#F2ECE1]">
+                <span className="text-[#6E6359] shrink-0">Undangan & Souvenir</span>
+                <span className="font-semibold text-[#26211D] sm:text-right break-words">
                   {selectedInvitation ? `${selectedInvitation.name} (${weddingPlan.invitationQty})` : '-'} /{' '}
                   {selectedSouvenir ? `${selectedSouvenir.name} (${weddingPlan.souvenirQty})` : '-'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-[#F2ECE1]">
-                <span className="text-[#6E6359]">Mahar & Layanan Tambahan</span>
-                <span className="font-semibold text-[#26211D]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 py-2 border-b border-[#F2ECE1]">
+                <span className="text-[#6E6359] shrink-0">Mahar & Layanan Tambahan</span>
+                <span className="font-semibold text-[#26211D] sm:text-right break-words">
                   {[selectedMahar?.name, ...selectedAddons.map((a) => a.name)]
                     .filter(Boolean)
                     .join(', ') || '-'}
@@ -991,27 +991,27 @@ export const WeddingPlannerWizard: React.FC = () => {
             </div>
 
             {/* Detailed Items Breakdown */}
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-3 text-xs sm:text-sm">
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-4 sm:p-5 space-y-3 text-xs sm:text-sm">
               <h4 className="text-xs font-semibold uppercase tracking-widest text-[#D9C7A3]">
                 Rincian Komponen Pernikahan Terpilih
               </h4>
 
               {selectedDecor && (
-                <div className="flex justify-between items-center py-2 border-b border-white/10">
-                  <span>Dekorasi: {selectedDecor.name}</span>
-                  <span className="font-tabular font-semibold text-[#E6D3B3]">
+                <div className="flex justify-between items-start gap-3 py-2 border-b border-white/10">
+                  <span className="min-w-0 break-words">Dekorasi: {selectedDecor.name}</span>
+                  <span className="font-tabular font-semibold text-[#E6D3B3] shrink-0">
                     {formatRupiah(selectedDecor.price)}
                   </span>
                 </div>
               )}
 
               {selectedInvitation && (
-                <div className="flex justify-between items-center py-2 border-b border-white/10">
-                  <span>
+                <div className="flex justify-between items-start gap-3 py-2 border-b border-white/10">
+                  <span className="min-w-0 break-words">
                     Undangan: {selectedInvitation.name} ({weddingPlan.invitationQty}{' '}
                     {selectedInvitation.unit || 'pcs'})
                   </span>
-                  <span className="font-tabular font-semibold text-[#E6D3B3]">
+                  <span className="font-tabular font-semibold text-[#E6D3B3] shrink-0">
                     {formatRupiah(
                       selectedInvitation.price *
                         (selectedInvitation.unit?.toLowerCase() === 'pcs'
@@ -1023,12 +1023,12 @@ export const WeddingPlannerWizard: React.FC = () => {
               )}
 
               {selectedSouvenir && (
-                <div className="flex justify-between items-center py-2 border-b border-white/10">
-                  <span>
+                <div className="flex justify-between items-start gap-3 py-2 border-b border-white/10">
+                  <span className="min-w-0 break-words">
                     Souvenir: {selectedSouvenir.name} ({weddingPlan.souvenirQty}{' '}
                     {selectedSouvenir.unit || 'pcs'})
                   </span>
-                  <span className="font-tabular font-semibold text-[#E6D3B3]">
+                  <span className="font-tabular font-semibold text-[#E6D3B3] shrink-0">
                     {formatRupiah(
                       selectedSouvenir.price *
                         (selectedSouvenir.unit?.toLowerCase() === 'pcs'
@@ -1040,9 +1040,9 @@ export const WeddingPlannerWizard: React.FC = () => {
               )}
 
               {selectedMahar && (
-                <div className="flex justify-between items-center py-2 border-b border-white/10">
-                  <span>Mahar / Seserahan: {selectedMahar.name}</span>
-                  <span className="font-tabular font-semibold text-[#E6D3B3]">
+                <div className="flex justify-between items-start gap-3 py-2 border-b border-white/10">
+                  <span className="min-w-0 break-words">Mahar / Seserahan: {selectedMahar.name}</span>
+                  <span className="font-tabular font-semibold text-[#E6D3B3] shrink-0">
                     {formatRupiah(selectedMahar.price)}
                   </span>
                 </div>
@@ -1051,12 +1051,12 @@ export const WeddingPlannerWizard: React.FC = () => {
               {selectedAddons.map((addon) => (
                 <div
                   key={addon.id}
-                  className="flex justify-between items-center py-2 border-b border-white/10"
+                  className="flex justify-between items-start gap-3 py-2 border-b border-white/10"
                 >
-                  <span>
+                  <span className="min-w-0 break-words">
                     {addon.category}: {addon.name}
                   </span>
-                  <span className="font-tabular font-semibold text-[#E6D3B3]">
+                  <span className="font-tabular font-semibold text-[#E6D3B3] shrink-0">
                     {formatRupiah(addon.price)}
                   </span>
                 </div>
@@ -1107,41 +1107,48 @@ export const WeddingPlannerWizard: React.FC = () => {
         </div>
 
         {/* Wizard Bottom Navigation Bar */}
-        <div className="pt-6 border-t border-[#EAE0CE] flex items-center justify-between gap-4">
-          <button
-            type="button"
-            disabled={currentStep === 1}
-            onClick={() => setCurrentStep((s) => Math.max(1, s - 1))}
-            className="px-4 py-2.5 rounded-xl border border-[#D8C8AE] bg-white hover:bg-[#F4EFE4] disabled:opacity-40 text-xs sm:text-sm font-medium text-[#26211D] flex items-center gap-2 cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Langkah Sebelumnya</span>
-          </button>
-
-          <div className="text-xs text-[#7A6E63] font-tabular hidden sm:block">
+        <div className="pt-5 sm:pt-6 border-t border-[#EAE0CE] space-y-3">
+          <div className="sm:hidden text-center text-xs text-[#7A6E63] font-tabular">
             Langkah {currentStep} dari 9 · Estimasi Sementara:{' '}
             <strong className="text-[#9E762C]">{formatRupiah(totalEstimatedPlan)}</strong>
           </div>
 
-          {currentStep < 9 ? (
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             <button
               type="button"
-              onClick={() => setCurrentStep((s) => Math.min(9, s + 1))}
-              className="px-5 py-2.5 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs sm:text-sm font-medium flex items-center gap-2 cursor-pointer"
+              disabled={currentStep === 1}
+              onClick={() => setCurrentStep((s) => Math.max(1, s - 1))}
+              className="px-3.5 sm:px-4 py-2.5 rounded-xl border border-[#D8C8AE] bg-white hover:bg-[#F4EFE4] disabled:opacity-40 text-xs sm:text-sm font-medium text-[#26211D] flex items-center gap-1.5 sm:gap-2 cursor-pointer"
             >
-              <span>Langkah Selanjutnya</span>
-              <ArrowRight className="w-4 h-4 text-[#D9C7A3]" />
+              <ArrowLeft className="w-4 h-4 shrink-0" />
+              <span>Sebelumnya</span>
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setCurrentStep(1)}
-              className="px-5 py-2.5 rounded-xl border border-[#9E762C] text-[#9E762C] text-xs sm:text-sm font-medium flex items-center gap-2 cursor-pointer"
-            >
-              <CalendarIcon className="w-4 h-4" />
-              <span>Ubah dari Langkah 1</span>
-            </button>
-          )}
+
+            <div className="text-xs text-[#7A6E63] font-tabular hidden sm:block">
+              Langkah {currentStep} dari 9 · Estimasi Sementara:{' '}
+              <strong className="text-[#9E762C]">{formatRupiah(totalEstimatedPlan)}</strong>
+            </div>
+
+            {currentStep < 9 ? (
+              <button
+                type="button"
+                onClick={() => setCurrentStep((s) => Math.min(9, s + 1))}
+                className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              >
+                <span>Selanjutnya</span>
+                <ArrowRight className="w-4 h-4 text-[#D9C7A3] shrink-0" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setCurrentStep(1)}
+                className="px-4 sm:px-5 py-2.5 rounded-xl border border-[#9E762C] text-[#9E762C] text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+              >
+                <CalendarIcon className="w-4 h-4 shrink-0" />
+                <span>Ubah dari Langkah 1</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </section>

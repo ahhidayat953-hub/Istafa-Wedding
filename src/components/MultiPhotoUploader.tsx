@@ -40,6 +40,7 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [customUrlInput, setCustomUrlInput] = useState('');
   const [showUrlHelper, setShowUrlHelper] = useState(false);
+  const [confirmDeleteIndex, setConfirmDeleteIndex] = useState<number | null>(null);
 
   // Handle selecting MULTIPLE photos at once from smartphone gallery or computer
   const handleFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -402,7 +403,7 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
       {/* Multi-Photo Grid Preview */}
       {images.length > 0 ? (
         <div className="mt-5">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {images.map((img, index) => {
               const isPrimary = img.isPrimary || (primaryIndex === -1 && index === 0);
               const isBeingDraggedOver = dragOverIndex === index;
@@ -450,14 +451,37 @@ export const MultiPhotoUploader: React.FC<MultiPhotoUploaderProps> = ({
                         >
                           <RefreshCw className="w-3.5 h-3.5" />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleRemovePhoto(index)}
-                          title="Hapus Foto Ini"
-                          className="p-1.5 rounded-md bg-[#9E3B3B]/90 text-white hover:bg-[#7D2828] transition-colors shadow-xs cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        {confirmDeleteIndex === index ? (
+                          <div className="flex items-center gap-1 bg-[#26211D]/95 px-2 py-1 rounded-md shadow-sm">
+                            <span className="text-[10px] text-white font-medium">Hapus?</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleRemovePhoto(index);
+                                setConfirmDeleteIndex(null);
+                              }}
+                              className="px-1.5 py-0.5 rounded bg-[#9E3B3B] text-white text-[10px] font-semibold hover:bg-[#7D2828] cursor-pointer"
+                            >
+                              Ya
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConfirmDeleteIndex(null)}
+                              className="px-1.5 py-0.5 rounded bg-white/20 text-white text-[10px] hover:bg-white/30 cursor-pointer"
+                            >
+                              Batal
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDeleteIndex(index)}
+                            title="Hapus Foto Ini"
+                            className="p-1.5 rounded-md bg-[#9E3B3B]/90 text-white hover:bg-[#7D2828] transition-colors shadow-xs cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     </div>
 

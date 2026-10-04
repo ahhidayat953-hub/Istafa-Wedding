@@ -25,7 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onOpenDetail,
 }) => {
-  const { settings, isInWishlist, toggleWishlist, addToCart } = useWedding();
+  const { settings, isInWishlist, toggleWishlist, addToCart, trackProductInterest } = useWedding();
   const liked = isInWishlist(product.id);
 
   const images =
@@ -62,6 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    trackProductInterest(product.id, 'interested');
     addToCart(product);
   };
 
@@ -75,7 +76,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <article
-      onClick={() => onOpenDetail(product)}
+      onClick={() => {
+        trackProductInterest(product.id, 'viewed');
+        onOpenDetail(product);
+      }}
       className="group bg-[#FCFBF8] rounded-2xl border border-[#E5DAC5] hover:border-[#C8B282] overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer"
     >
       <div>
@@ -121,11 +125,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </button>
 
           {/* Subtle gradient scrim at bottom for multi-photo counter */}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent px-4 py-2.5 flex items-center justify-between text-white">
-            <span className="text-[11px] font-medium tracking-wider uppercase text-[#F5EFE6]">
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent px-3.5 sm:px-4 py-2.5 flex items-center justify-between gap-2 text-white">
+            <span className="text-[11px] font-medium tracking-wider uppercase text-[#F5EFE6] truncate min-w-0">
               {product.category}
             </span>
-            <span className="text-[11px] text-white/90 font-tabular">
+            <span className="text-[11px] text-white/90 font-tabular shrink-0">
               {previewIdx + 1}/{images.length} Foto
             </span>
           </div>
@@ -154,11 +158,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Product Body Copy */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between gap-2 text-[11px] text-[#7A6E63]">
-            <span>{product.priceLabel || 'Mulai dari'}</span>
+            <span className="truncate">{product.priceLabel || 'Mulai dari'}</span>
             <span
-              className={`font-medium ${
+              className={`font-medium shrink-0 ${
                 product.isAvailable ? 'text-[#4E6752]' : 'text-[#9E3B3B]'
               }`}
             >
@@ -167,7 +171,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           <div className="mt-0.5 flex items-baseline gap-2 flex-wrap">
-            <p className="text-lg font-semibold text-[#9E762C] font-tabular">
+            <p className="text-base sm:text-lg font-semibold text-[#9E762C] font-tabular">
               {formatRupiah(product.price)}
               {product.unit ? (
                 <span className="text-xs font-normal text-[#7A6E63]">
@@ -183,7 +187,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
 
-          <h3 className="mt-1.5 text-xl font-serif-display font-semibold text-[#26211D] leading-snug line-clamp-2 group-hover:text-[#8C6622] transition-colors">
+          <h3 className="mt-1.5 text-lg sm:text-xl font-serif-display font-semibold text-[#26211D] leading-snug line-clamp-2 group-hover:text-[#8C6622] transition-colors">
             {product.name}
           </h3>
 
@@ -239,16 +243,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Action Buttons Row */}
-      <div className="px-5 pb-5 pt-3 border-t border-[#EFE8D8] grid grid-cols-12 gap-2">
+      <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-3 border-t border-[#EFE8D8] grid grid-cols-12 gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onOpenDetail(product);
           }}
-          className="col-span-5 py-2.5 px-2.5 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
+          className="col-span-5 py-2.5 px-2 sm:px-2.5 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 sm:gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
         >
-          <Eye className="w-3.5 h-3.5 text-[#9E762C]" />
+          <Eye className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
           <span>Lihat Detail</span>
         </button>
 
@@ -256,9 +260,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           type="button"
           onClick={handleAddToCart}
           title="Tambahkan ke Keranjang Konsultasi & Kalkulator Budget"
-          className="col-span-5 py-2.5 px-2.5 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
+          className="col-span-5 py-2.5 px-2 sm:px-2.5 rounded-xl bg-[#26211D] hover:bg-[#3A322C] text-white text-[11px] sm:text-xs font-medium flex items-center justify-center gap-1 sm:gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
         >
-          <ShoppingBag className="w-3.5 h-3.5 text-[#D9C7A3]" />
+          <ShoppingBag className="w-3.5 h-3.5 text-[#D9C7A3] shrink-0" />
           <span>+ Keranjang</span>
         </button>
 
@@ -271,7 +275,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           aria-label="Konsultasi via WhatsApp"
           className="col-span-2 py-2.5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white flex items-center justify-center transition-colors"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 shrink-0" />
         </a>
       </div>
     </article>

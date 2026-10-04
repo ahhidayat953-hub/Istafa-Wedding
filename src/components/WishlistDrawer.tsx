@@ -75,9 +75,9 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
       <div className="flex-1" onClick={onClose} />
 
       {/* Slide-over Panel */}
-      <aside className="w-full max-w-md bg-[#FBF9F5] h-full border-l border-[#E4DAC7] shadow-2xl flex flex-col justify-between overflow-hidden">
+      <aside className="w-full max-w-md bg-[#FBF9F5] h-full max-h-[100dvh] border-l border-[#E4DAC7] shadow-2xl flex flex-col justify-between overflow-hidden">
         {/* Drawer Header */}
-        <div className="px-6 py-5 bg-[#FCFBF8] border-b border-[#EAE0CE] flex items-center justify-between gap-3">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 bg-[#FCFBF8] border-b border-[#EAE0CE] flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-[#F7EBEB] text-[#B85D5A] flex items-center justify-center">
               <Heart className="w-4 h-4 fill-current" />
@@ -103,15 +103,15 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
         </div>
 
         {/* Drawer Body: List of Saved Products */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
           {wishlistProducts.length > 0 ? (
             <>
-              <div className="flex items-center justify-between text-xs text-[#6E6359] pb-1">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#6E6359] pb-1">
                 <span>Tinjau kembali produk pilihan Anda sebelum konsultasi</span>
                 <button
                   type="button"
                   onClick={clearWishlist}
-                  className="text-[#9E3B3B] hover:underline whitespace-nowrap cursor-pointer"
+                  className="text-[#9E3B3B] hover:underline whitespace-nowrap cursor-pointer shrink-0"
                 >
                   Kosongkan Semua
                 </button>
@@ -266,8 +266,8 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
 
         {/* Drawer Footer: Subtotal & Combined WhatsApp Consultation CTA */}
         {wishlistProducts.length > 0 && (
-          <div className="p-5 bg-[#FCFBF8] border-t border-[#E6DEC8] space-y-2.5">
-            <div className="flex items-baseline justify-between">
+          <div className="p-4 sm:p-5 bg-[#FCFBF8] border-t border-[#E6DEC8] space-y-2.5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
               <span className="text-xs text-[#6E6359]">
                 Estimasi Total ({wishlistProducts.length} Produk)
               </span>
@@ -280,9 +280,9 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
               <button
                 type="button"
                 onClick={handleMoveAllToCart}
-                className="w-full py-2.5 px-4 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-xl border border-[#D8C8AE] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer text-center leading-snug"
               >
-                <ShoppingBag className="w-3.5 h-3.5 text-[#9E762C]" />
+                <ShoppingBag className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
                 <span>Pindahkan Semua ke Daftar Konsultasi (Atur Jumlah Item)</span>
               </button>
             )}
@@ -291,9 +291,9 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
               href={combinedWhatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3.5 px-5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-2 shadow-md transition-colors whitespace-nowrap"
+              className="w-full py-3.5 px-5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-2 shadow-md transition-colors text-center leading-snug"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 shrink-0" />
               <span>Kirim Daftar Wishlist ke WhatsApp</span>
             </a>
           </div>

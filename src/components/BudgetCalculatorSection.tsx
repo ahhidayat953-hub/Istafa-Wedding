@@ -175,12 +175,12 @@ export const BudgetCalculatorSection: React.FC = () => {
   };
 
   return (
-    <section id="kalkulator-budget" className="py-14 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section id="kalkulator-budget" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="max-w-2xl mx-auto text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-[#9E762C] font-medium">
           Perencanaan Anggaran Transparan
         </p>
-        <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-serif-display font-semibold text-[#26211D] text-balance">
+        <h2 className="mt-2 heading-section-fluid font-serif-display font-semibold text-[#26211D] text-balance">
           Hitung Estimasi Budget Pernikahan
         </h2>
         <p className="mt-3 text-sm sm:text-base text-[#5C5147]">
@@ -189,9 +189,9 @@ export const BudgetCalculatorSection: React.FC = () => {
         <FloralDivider className="mt-5" />
       </div>
 
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="mt-8 sm:mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
         {/* Left 7 Columns: Interactive Inputs & Catalog Product Selector */}
-        <div className="lg:col-span-7 rounded-3xl border border-[#E4DAC7] bg-[#FCFBF8] p-5 sm:p-8 shadow-xs space-y-6">
+        <div className="lg:col-span-7 rounded-3xl border border-[#E4DAC7] bg-[#FCFBF8] p-4 sm:p-6 lg:p-8 shadow-xs space-y-5 sm:space-y-6 min-w-0">
           {/* Guest Count Header Input */}
           <div className="p-4 sm:p-5 rounded-2xl bg-[#F4EFE4] border border-[#E2D6C1] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -280,7 +280,7 @@ export const BudgetCalculatorSection: React.FC = () => {
                     <select
                       defaultValue=""
                       onChange={(e) => handleCatalogQuickSelect(field.key, e.target.value)}
-                      className="w-full rounded-xl border border-[#E5DAC5] bg-[#FAF6EE] px-2.5 py-1.5 text-[11px] text-[#4A4036] focus:outline-none focus:border-[#9E762C]"
+                      className="w-full min-w-0 truncate rounded-xl border border-[#E5DAC5] bg-[#FAF6EE] px-2.5 py-1.5 text-[11px] text-[#4A4036] focus:outline-none focus:border-[#9E762C]"
                     >
                       <option value="">✨ Pilih dari Katalog (Opsional)...</option>
                       {matchingCatalogProducts.map((prod) => (
@@ -316,18 +316,18 @@ export const BudgetCalculatorSection: React.FC = () => {
         </div>
 
         {/* Right 5 Columns: Visual Breakdown & Total Estimation Card */}
-        <div className="lg:col-span-5 lg:sticky lg:top-24 rounded-3xl border border-[#D8C8AE] bg-[#221D19] text-[#FBF9F5] p-6 sm:p-8 shadow-xl space-y-6">
-          <div className="flex items-center justify-between border-b border-white/15 pb-4">
-            <div className="flex items-center gap-2.5">
-              <Calculator className="w-5 h-5 text-[#D9C7A3]" />
-              <span className="text-xs uppercase tracking-[0.2em] text-[#D9C7A3] font-semibold">
+        <div className="lg:col-span-5 lg:sticky lg:top-24 rounded-3xl border border-[#D8C8AE] bg-[#221D19] text-[#FBF9F5] p-5 sm:p-6 lg:p-8 shadow-xl space-y-5 sm:space-y-6 min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-4">
+            <div className="flex items-center gap-2">
+              <Calculator className="w-5 h-5 text-[#D9C7A3] shrink-0" />
+              <span className="text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#D9C7A3] font-semibold">
                 Ringkasan Anggaran
               </span>
             </div>
             <button
               type="button"
               onClick={() => updateBudgetAllocation(INITIAL_BUDGET_ALLOCATION)}
-              className="text-xs text-[#CBBFA8] hover:text-white inline-flex items-center gap-1 cursor-pointer"
+              className="text-xs text-[#CBBFA8] hover:text-white inline-flex items-center gap-1 cursor-pointer shrink-0"
             >
               <RefreshCw className="w-3 h-3" />
               <span>Reset Standar</span>
@@ -335,11 +335,11 @@ export const BudgetCalculatorSection: React.FC = () => {
           </div>
 
           {/* Big Total Estimate Display */}
-          <div className="p-5 rounded-2xl bg-white/5 border border-[#C8A25A]/40 space-y-1.5">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-[#C8A25A]/40 space-y-1.5">
             <p className="text-xs uppercase tracking-widest text-[#D9C7A3]">
               TOTAL ESTIMASI
             </p>
-            <p className="text-3xl sm:text-4xl font-serif-display font-bold text-[#FBF9F5] font-tabular">
+            <p className="text-2xl sm:text-3xl lg:text-4xl font-serif-display font-bold text-[#FBF9F5] font-tabular break-words">
               {formatRupiah(totalBudget)}
             </p>
             <p className="text-xs text-[#CBBFA8] font-tabular">
@@ -362,9 +362,9 @@ export const BudgetCalculatorSection: React.FC = () => {
               if (val <= 0) return null;
               return (
                 <div key={field.key} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#E6DEC8]">{field.label}</span>
-                    <span className="font-tabular text-[#D9C7A3] font-medium">
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="text-[#E6DEC8] truncate min-w-0">{field.label}</span>
+                    <span className="font-tabular text-[#D9C7A3] font-medium shrink-0">
                       {formatRupiah(val)} ({pct}%)
                     </span>
                   </div>

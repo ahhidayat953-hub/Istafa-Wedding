@@ -43,6 +43,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     toggleWishlist,
     addToCart,
     applyProductToBudget,
+    trackProductInterest,
   } = useWedding();
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<string>('');
@@ -129,39 +130,39 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       aria-modal="true"
     >
       {/* Main Detail Sheet */}
-      <div className="relative w-full max-w-6xl bg-[#FBF9F5] sm:rounded-3xl border border-[#DFD3BE] shadow-2xl overflow-hidden my-auto max-h-screen sm:max-h-[92vh] flex flex-col">
+      <div className="relative w-full max-w-6xl bg-[#FBF9F5] sm:rounded-3xl border border-[#DFD3BE] shadow-2xl overflow-hidden my-auto max-h-[100dvh] sm:max-h-[92vh] flex flex-col">
         {/* Top Sticky Header Bar */}
-        <div className="sticky top-0 z-20 flex items-center justify-between px-4 sm:px-8 py-4 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#EAE0CE]">
+        <div className="sticky top-0 z-20 flex items-center justify-between gap-2 px-4 sm:px-8 py-3.5 sm:py-4 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#EAE0CE]">
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#5C4E3E] hover:text-[#26211D] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-[#5C4E3E] hover:text-[#26211D] transition-colors cursor-pointer shrink-0"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 shrink-0" />
             <span>Kembali ke Katalog</span>
           </button>
 
-          <div className="flex items-center gap-2 text-xs text-[#8C7A65]">
-            <span>{product.category}</span>
-            <span>·</span>
-            <span className="font-tabular">{images.length} Foto Detail</span>
+          <div className="hidden min-[420px]:flex items-center gap-1.5 text-xs text-[#8C7A65] min-w-0 truncate">
+            <span className="truncate">{product.category}</span>
+            <span className="shrink-0">·</span>
+            <span className="font-tabular shrink-0">{images.length} Foto Detail</span>
           </div>
 
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup detail produk"
-            className="p-2 rounded-full hover:bg-[#EFE6D5] text-[#5C4E3E] transition-colors cursor-pointer"
+            className="p-2 rounded-full hover:bg-[#EFE6D5] text-[#5C4E3E] transition-colors cursor-pointer shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Scrollable Content Container */}
-        <div className="overflow-y-auto p-4 sm:p-8 space-y-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-8 sm:space-y-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
             {/* LEFT COLUMN: Multi-Photo Gallery & Horizontal Thumbnails */}
-            <div className="lg:col-span-7 space-y-3.5">
+            <div className="lg:col-span-7 space-y-3.5 min-w-0">
               <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-[#F0EAE1] border border-[#E5DAC5] group">
                 <SafeWeddingImage
                   src={currentImage.url}
@@ -171,17 +172,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 />
 
                 {/* Top Counter & Fullscreen Trigger */}
-                <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none">
-                  <span className="px-3 py-1 rounded-full bg-black/55 backdrop-blur-xs text-white text-xs font-medium font-tabular">
-                    Foto {activeIndex + 1} dari {images.length}
+                <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-2 pointer-events-none">
+                  <span className="px-2.5 sm:px-3 py-1 rounded-full bg-black/55 backdrop-blur-xs text-white text-[11px] sm:text-xs font-medium font-tabular">
+                    Foto {activeIndex + 1} / {images.length}
                   </span>
 
                   <button
                     type="button"
                     onClick={() => setIsFullscreenLightbox(true)}
-                    className="pointer-events-auto px-3 py-1.5 rounded-full bg-white/90 hover:bg-white text-[#26211D] text-xs font-medium flex items-center gap-1.5 shadow-sm transition-transform hover:scale-105 cursor-pointer"
+                    className="pointer-events-auto px-2.5 sm:px-3 py-1.5 rounded-full bg-white/90 hover:bg-white text-[#26211D] text-[11px] sm:text-xs font-medium flex items-center gap-1.5 shadow-sm transition-transform hover:scale-105 cursor-pointer"
                   >
-                    <Expand className="w-3.5 h-3.5 text-[#9E762C]" />
+                    <Expand className="w-3.5 h-3.5 text-[#9E762C] shrink-0" />
                     <span>Layar Penuh & Zoom</span>
                   </button>
                 </div>
@@ -370,8 +371,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               )}
 
               {/* Quantity Selector */}
-              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#F4EFE4] border border-[#E6DEC8]">
-                <div>
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#F4EFE4] border border-[#E6DEC8]">
+                <div className="min-w-0">
                   <span className="text-xs font-semibold text-[#26211D] block">
                     Jumlah ({product.unit || 'Paket'})
                   </span>
@@ -379,7 +380,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     Subtotal: {formatRupiah(product.price * quantity)}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - (product.unit?.toLowerCase() === 'pcs' ? 50 : 1)))}
@@ -430,9 +431,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <button
                     type="button"
-                    onClick={() =>
-                      addToCart(product, quantity, selectedVariant, selectedSize)
-                    }
+                    onClick={() => {
+                      trackProductInterest(product.id, 'interested');
+                      addToCart(product, quantity, selectedVariant, selectedSize);
+                    }}
                     className="py-3 px-4 rounded-2xl bg-[#26211D] hover:bg-[#3A322C] text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer"
                   >
                     <ShoppingBag className="w-4 h-4 text-[#D9C7A3]" />
@@ -441,7 +443,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => applyProductToBudget(product, quantity)}
+                    onClick={() => {
+                      trackProductInterest(product.id, 'interested');
+                      applyProductToBudget(product, quantity);
+                    }}
                     className="py-3 px-4 rounded-2xl border border-[#C8B282] bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#26211D] font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <Calculator className="w-4 h-4 text-[#9E762C]" />
@@ -486,10 +491,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* Related Products in the same category */}
           {relatedProducts.length > 0 && (
             <div className="pt-8 border-t border-[#EAE0CE] space-y-4">
-              <h3 className="text-xl font-serif-display font-semibold text-[#26211D]">
+              <h3 className="text-lg sm:text-xl font-serif-display font-semibold text-[#26211D]">
                 Koleksi Serupa dalam Kategori {product.category}
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                 {relatedProducts.map((rel) => {
                   const relImg =
                     rel.images.find((i) => i.isPrimary) || rel.images[0];
@@ -534,31 +539,31 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       {/* FULLSCREEN LIGHTBOX OVERLAY WITH ZOOM SUPPORT */}
       {isFullscreenLightbox && (
         <div className="fixed inset-0 z-60 bg-black/95 flex flex-col justify-between p-4 sm:p-8">
-          <div className="flex items-center justify-between text-white">
-            <div>
-              <p className="text-xs text-[#D9C7A3] font-tabular">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-white">
+            <div className="min-w-0">
+              <p className="text-xs text-[#D9C7A3] font-tabular truncate">
                 {product.name} — Foto {activeIndex + 1} / {images.length}
               </p>
               {currentImage.caption && (
-                <p className="text-sm font-serif-display italic text-white/90">
+                <p className="text-xs sm:text-sm font-serif-display italic text-white/90 truncate">
                   {currentImage.caption}
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsZoomed((z) => !z)}
-                className="px-3.5 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+                className="px-3 sm:px-3.5 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
               >
                 {isZoomed ? (
                   <>
-                    <ZoomOut className="w-4 h-4" />
+                    <ZoomOut className="w-4 h-4 shrink-0" />
                     <span>Perkecil (1x)</span>
                   </>
                 ) : (
                   <>
-                    <ZoomIn className="w-4 h-4" />
+                    <ZoomIn className="w-4 h-4 shrink-0" />
                     <span>Perbesar Zoom (2x)</span>
                   </>
                 )}
@@ -569,9 +574,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   setIsFullscreenLightbox(false);
                   setIsZoomed(false);
                 }}
-                className="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 sm:px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 shrink-0" />
                 <span>Tutup</span>
               </button>
             </div>

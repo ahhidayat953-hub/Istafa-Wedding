@@ -33,13 +33,13 @@ export const InspirationGalleryView: React.FC = () => {
       : null;
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="max-w-2xl mx-auto text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-[#9E762C] font-medium">
           Portofolio & Momen Abadi
         </p>
-        <h2 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-serif-display font-semibold text-[#26211D] text-balance">
+        <h2 className="mt-2 heading-section-fluid font-serif-display font-semibold text-[#26211D] text-balance">
           Inspirasi Pernikahan
         </h2>
         <p className="mt-3 text-sm sm:text-base text-[#5C5147] leading-relaxed">
@@ -130,21 +130,21 @@ export const InspirationGalleryView: React.FC = () => {
       {/* Fullscreen Lightbox Modal */}
       {currentItem && lightboxIndex !== null && (
         <div className="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 sm:p-8">
-          <div className="flex items-center justify-between text-white">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-[#D9C7A3]">
+          <div className="flex flex-wrap items-center justify-between gap-3 text-white">
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-widest text-[#D9C7A3] truncate">
                 {currentItem.category} · {lightboxIndex + 1} dari {filteredGallery.length}
               </p>
-              <h3 className="font-serif-display text-xl sm:text-2xl mt-0.5">
+              <h3 className="font-serif-display text-lg sm:text-2xl mt-0.5 truncate">
                 {currentItem.title}
               </h3>
             </div>
             <button
               type="button"
               onClick={closeLightbox}
-              className="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 sm:px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 shrink-0" />
               <span>Tutup</span>
             </button>
           </div>
@@ -186,7 +186,7 @@ export const InspirationGalleryView: React.FC = () => {
             )}
           </div>
 
-          <div className="max-w-2xl mx-auto w-full flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-white/15 text-white">
+          <div className="max-w-2xl mx-auto w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-2 border-t border-white/15 text-white">
             <p className="text-xs sm:text-sm text-white/80 text-center sm:text-left">
               {currentItem.caption}
             </p>
@@ -197,9 +197,9 @@ export const InspirationGalleryView: React.FC = () => {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs font-medium flex items-center gap-2 shrink-0 whitespace-nowrap"
+              className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-[#4E6752] hover:bg-[#3F5543] text-white text-xs font-medium flex items-center gap-2 shrink-0 whitespace-nowrap"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 shrink-0" />
               <span>Tanyakan Konsep Ini via WhatsApp</span>
             </a>
           </div>

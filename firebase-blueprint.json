@@ -398,7 +398,7 @@
         "userId": { "type": "string", "maxLength": 128 },
         "coupleName": { "type": "string", "maxLength": 150 },
         "weddingLocation": { "type": "string", "maxLength": 250 },
-        "type": { "type": "string", "enum": ["cart", "budget", "planner", "product", "date"] },
+        "type": { "type": "string", "enum": ["cart", "budget", "planner", "product", "date", "consultation"] },
         "customerDate": { "type": "string", "maxLength": 60 },
         "guestCount": { "type": "number" },
         "itemsSummary": { "type": "array" },
@@ -413,6 +413,175 @@
         "itemsSummary",
         "totalEstimate",
         "createdAt"
+      ]
+    },
+    "ConsultationSessionDoc": {
+      "title": "ConsultationSessionDoc",
+      "description": "Per-user wedding consultation session stored under users/{userId}/consultations/{consultationId}.",
+      "type": "object",
+      "properties": {
+        "consultationId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 160 },
+        "coupleName": { "type": "string", "maxLength": 150 },
+        "weddingDate": { "type": "string", "maxLength": 30 },
+        "weddingLocation": { "type": "string", "maxLength": 250 },
+        "guestCount": { "type": "number" },
+        "targetBudget": { "type": "number" },
+        "weddingTheme": { "type": "string", "maxLength": 150 },
+        "desiredColors": { "type": "string", "maxLength": 150 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "consultationId",
+        "userId",
+        "title",
+        "coupleName",
+        "weddingDate",
+        "weddingLocation",
+        "guestCount",
+        "targetBudget",
+        "weddingTheme",
+        "desiredColors",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ConsultationMessageDoc": {
+      "title": "ConsultationMessageDoc",
+      "description": "Per-user wedding consultation message stored under users/{userId}/consultations/{consultationId}/messages/{messageId}.",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string", "maxLength": 128 },
+        "consultationId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "sender": { "type": "string", "enum": ["user", "consultant"] },
+        "message": { "type": "string", "maxLength": 6000 },
+        "recommendedProductIds": { "type": "array" },
+        "recommendationsJson": { "type": "string", "maxLength": 20000 },
+        "budgetBreakdownJson": { "type": "string", "maxLength": 30000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "messageId",
+        "consultationId",
+        "userId",
+        "sender",
+        "message",
+        "recommendedProductIds",
+        "recommendationsJson",
+        "budgetBreakdownJson",
+        "createdAt"
+      ]
+    },
+    "LeadDoc": {
+      "title": "LeadDoc",
+      "description": "Prospective bride and groom lead and consultation summary record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "consultationId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "partnerName": { "type": "string", "maxLength": 120 },
+        "coupleName": { "type": "string", "maxLength": 150 },
+        "whatsapp": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "maxLength": 120 },
+        "weddingDate": { "type": "string", "maxLength": 40 },
+        "weddingLocation": { "type": "string", "maxLength": 250 },
+        "eventType": { "type": "string", "maxLength": 120 },
+        "guestCount": { "type": "number" },
+        "budget": { "type": "number" },
+        "needs": { "type": "array" },
+        "interestedProductIds": { "type": "array" },
+        "interestedProductNames": { "type": "array" },
+        "recommendedPackageNames": { "type": "array" },
+        "consultationSummary": { "type": "string", "maxLength": 5000 },
+        "notes": { "type": "string", "maxLength": 3000 },
+        "status": {
+          "type": "string",
+          "enum": ["New", "Consultation", "Interested", "Follow Up", "Booking", "Completed", "Cancelled"]
+        },
+        "source": {
+          "type": "string",
+          "enum": ["consultation", "planner", "cart", "catalog"]
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "customerName",
+        "partnerName",
+        "coupleName",
+        "whatsapp",
+        "email",
+        "weddingDate",
+        "weddingLocation",
+        "eventType",
+        "guestCount",
+        "budget",
+        "needs",
+        "interestedProductIds",
+        "interestedProductNames",
+        "recommendedPackageNames",
+        "consultationSummary",
+        "notes",
+        "status",
+        "source",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "WeddingOrderDoc": {
+      "title": "WeddingOrderDoc",
+      "description": "Customer wedding product and package booking order.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "orderNumber": { "type": "string", "maxLength": 60 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "leadId": { "type": "string", "maxLength": 128 },
+        "consultationId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "partnerName": { "type": "string", "maxLength": 120 },
+        "whatsapp": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "maxLength": 120 },
+        "weddingDate": { "type": "string", "maxLength": 40 },
+        "weddingLocation": { "type": "string", "maxLength": 250 },
+        "eventType": { "type": "string", "maxLength": 120 },
+        "guestCount": { "type": "number" },
+        "itemsJson": { "type": "string", "maxLength": 100000 },
+        "totalAmount": { "type": "number" },
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "Confirmed", "DP Paid", "In Progress", "Completed", "Cancelled"]
+        },
+        "notes": { "type": "string", "maxLength": 3000 },
+        "paymentProofUrl": { "type": "string", "maxLength": 800000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "orderNumber",
+        "userId",
+        "customerName",
+        "partnerName",
+        "whatsapp",
+        "email",
+        "weddingDate",
+        "weddingLocation",
+        "eventType",
+        "guestCount",
+        "itemsJson",
+        "totalAmount",
+        "status",
+        "notes",
+        "createdAt",
+        "updatedAt"
       ]
     }
   },
@@ -469,9 +638,25 @@
       "schema": { "$ref": "#/entities/UserWorkspace" },
       "description": "Private per-user cart, wishlist, wedding plan, and budget calculator."
     },
+    "/users/{userId}/consultations/{consultationId}": {
+      "schema": { "$ref": "#/entities/ConsultationSessionDoc" },
+      "description": "Private per-user wedding consultation sessions."
+    },
+    "/users/{userId}/consultations/{consultationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ConsultationMessageDoc" },
+      "description": "Private per-user wedding consultation messages."
+    },
     "/inquiries/{inquiryId}": {
       "schema": { "$ref": "#/entities/ConsultationInquiryDoc" },
       "description": "Consultation inquiry records."
+    },
+    "/leads/{leadId}": {
+      "schema": { "$ref": "#/entities/LeadDoc" },
+      "description": "Prospective bride and groom leads."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/WeddingOrderDoc" },
+      "description": "Customer wedding orders and bookings."
     }
   }
 }
